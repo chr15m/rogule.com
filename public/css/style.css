@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Almendra+SC&family=Cutive+Mono&display=swap');
+
+html, body, #app, #loading {
+  height: 100%;
+}
+
+body {
+  max-width: 100%;
+  width: 800px;
+  margin: auto;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 2em;
+}
+
+p {
+  font-weight: bold;
+}
+
+h1, h2, h3 {
+  font-family: 'Almendra SC', serif;
+}
+
+/***** specific styles *****/
+
+#app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/***** loader *****/
+
+#loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loading div {
+  animation: spin 0.33s linear infinite;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  border: 3px solid transparent;
+  border-left: 3px solid silver;
+  border-right: 3px solid silver;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
