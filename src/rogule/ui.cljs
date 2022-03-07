@@ -39,7 +39,7 @@
       (for [x (range 20)]
         [:span.grid #_ {:style {:background-color "#f00"}}
          (when (= (get tiles [x y]) 0)
-           (tile "1F7EB" ""))
+           (tile "1F7E9" ""))
          (let [entity (get entities [x y])]
            (when entity
              (tile (:char entity) "")))])])]))
@@ -54,7 +54,9 @@
            :entities {:floor [] ; floor layer
                       :air [{:char "1F9DD"
                              :pos first-room-center
-                             :id :player}]}))
+                             :id :player}
+                            {:char "1F344"
+                             :pos (-> m :rooms second room-center)}]}))
   (rdom/render [component-main state]
                (js/document.getElementById "app")))
 
