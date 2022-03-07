@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Almendra+SC&family=Cutive+Mono&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
 html, body, #app, #loading {
   min-height: 100%;
 }
@@ -26,6 +30,13 @@ h1, h2, h3 {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/***** text page specific styles *****/
+
+body.page {
+  height: 100vh;
+  padding: 0.5em;
 }
 
 /***** game styles *****/
@@ -69,4 +80,3 @@ span.grid > * {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
