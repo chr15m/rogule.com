@@ -41,7 +41,19 @@ body.page {
 
 /***** game styles *****/
 
+body.game {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+body.game #app {
+  align-items: center;
+}
+
 div#game {
+
 }
 
 div.row {
