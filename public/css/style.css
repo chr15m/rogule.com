@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Almendra+SC&family=Cutive+Mono&display=swap');
 
 html, body, #app, #loading {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
