@@ -28,6 +28,25 @@ h1, h2, h3 {
   justify-content: center;
 }
 
+/***** game styles *****/
+
+div#game {
+}
+
+div.row {
+  height: 32px;
+}
+
+span.grid {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}
+
+span.grid > * {
+  position: absolute;
+}
+
 /***** loader *****/
 
 #loading {

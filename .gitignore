@@ -1,1 +1,9 @@
 .*.swp
+.shadow-cljs
+devserver.js
+logs
+node_modules
+public/js
+public/twemojis
+database.sqlite
+package-lock.json

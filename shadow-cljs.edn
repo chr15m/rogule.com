@@ -1,0 +1,18 @@
+{:source-paths ["src" "node_modules/sitefox/src"]
+ :dependencies [[reagent "1.0.0-alpha2"]
+                [applied-science/js-interop "0.2.7"]
+                [funcool/promesa "6.0.2"]]
+ :builds {:server {:target :node-script
+                   :output-to "devserver.js"
+                   :main rogule.server/main!
+                   :release {:output-to "build/server.js"}}
+          :app {:target :browser
+                :output-dir "public/js"
+                :asset-path "/js"
+                :modules {:shared {:entries []}
+                          :main {:init-fn rogule.ui/main!
+                                 :depends-on #{:shared}}
+                          :twemojisearch {:init-fn rogule.twemojisearch/main!
+                                          :depends-on #{:shared}}}
+                :devtools {:watch-dir "public"}
+                :release {:output-dir "build/public/js"}}}}
