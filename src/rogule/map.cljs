@@ -19,6 +19,9 @@
                (get tiles [(+ ox x) (+ oy y)]))))
    0))
 
+(defn range-around [x dist]
+  (range (- x dist) (+ x dist)))
+
 (defn make-digger-map [seed w h]
   (js/console.log "make-digger-map" seed w h)
   (ROT/RNG.setSeed (hash-seed "map" seed w h))
