@@ -9,6 +9,8 @@
 
 (defonce state (r/atom {}))
 
+(def size 32)
+
 (defn entities-by-pos [entity-layer]
   (reduce (fn [es e] (assoc es (:pos e) e)) {} entity-layer))
 
@@ -30,22 +32,26 @@
     40 (swap! state update-in [:entities :air 0 :pos 1] inc)
     nil))
 
+(defn component-cell [tiles entities x y]
+  [:span.grid {:key x
+               :style {:background-color "#eee"}}
+   (when (= (get tiles [x y]) 0)
+     (tile "1F7E9" ""))
+   (let [entity (get entities [x y])]
+     (when entity
+       (tile (:char entity) "")))])
+
 (defn component-main [_state]
   (let [tiles (-> @state :map :tiles)
         entities (entities-by-pos (-> @state :entities :air))]
   [:div#game {:on-key-down #(process-game-key state %)}
-   (for [y (range 20)]
-     [:div.row
-      (for [x (range 20)]
-        [:span.grid #_ {:style {:background-color "#f00"}}
-         (when (= (get tiles [x y]) 0)
-           (tile "1F7E9" ""))
-         (let [entity (get entities [x y])]
-           (when entity
-             (tile (:char entity) "")))])])]))
+   (for [y (range size)]
+     [:div.row {:key y}
+      (for [x (range size)]
+        (component-cell tiles entities x y))])]))
 
 (defn start {:dev/after-load true} []
-  (let [m (make-digger-map (js/Math.random) 20 20)
+  (let [m (make-digger-map (js/Math.random) size size)
         first-room (first (:rooms m))
         first-room-center (room-center first-room)]
     (log "map" m)
