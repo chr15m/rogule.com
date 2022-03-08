@@ -42,14 +42,27 @@
 (defn make-player-look-range [pos lookup dist]
   (range (- (lookup pos) dist) (+ (lookup pos) dist)))
 
+(defn make-player [stuff]
+  {:player
+   (merge
+     stuff
+     {:char "1F9DD"
+      :name "you"
+      :fns {:update (fn [])
+            :passable (fn [])}})})
+
+(defn make-thing [stuff]
+  {(random-uuid)
+   (merge
+     stuff
+     {:char "1F344"
+      :name "mushroom"})})
+
 (defn make-entities [game-map]
   {:floor {} ; floor layer
-   :occupy {:player {:char "1F9DD"
-                     :name "you"
-                     :pos (-> game-map :rooms first room-center)}
-            (random-uuid) {:char "1F344"
-                           :name "mushroom"
-                           :pos (-> game-map :rooms second room-center)}}})
+   :occupy (merge
+             (make-player {:pos (-> game-map :rooms first room-center)})
+             (make-thing {:pos (-> game-map :rooms second room-center)}))})
 
 (defn process-game-key [state ev]
   (js/console.log "keyCode" (aget ev "keyCode"))
@@ -63,8 +76,7 @@
 
 (defn component-cell [floor-tiles entities x y opacity]
   [:span.grid {:key x
-               :style {;:background-color "#888"
-                       :opacity opacity}}
+               :style {:opacity opacity}}
    (when (> opacity 0)
      (cond 
        (= (get floor-tiles [x y]) :door)
