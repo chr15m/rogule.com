@@ -40,23 +40,32 @@
     40 (swap! state update-in [:entities :air 0 :pos 1] inc)
     nil))
 
-(defn component-cell [tiles entities x y]
+(defn component-cell [floor-tiles entities x y]
   [:span.grid {:key x
-               :style {:background-color "#eee"}}
-   (when (= (get tiles [x y]) 0)
-     (tile "1F7E9" ""))
+               :style {:background-color "#fff"}}
+   (cond 
+     (= (get floor-tiles [x y]) :door)
+     (tile "1F7E5" "door")
+     (= (get floor-tiles [x y]) :room)
+     (tile "2B1C" "room")
+     (= (get floor-tiles [x y]) :wall)
+     (tile "2B1B" "wall")
+     (= (get floor-tiles [x y]) :corridor)
+     (tile "1F7EB" "corridor")
+     :else nil)
    (let [entity (get entities [x y])]
      (when entity
        (tile (:char entity) "")))])
 
 (defn component-main [_state]
-  (let [tiles (-> @state :map :tiles)
+  (let [game-map (:map @state)
+        floor-tiles (:floor-tiles game-map)
         entities (entities-by-pos (-> @state :entities :air))]
   [:div#game {:on-key-down #(process-game-key state %)}
    (for [y (range size)]
      [:div.row {:key y}
       (for [x (range size)]
-        (component-cell tiles entities x y))])]))
+        (component-cell floor-tiles entities x y))])]))
 
 (defn start {:dev/after-load true} []
   (let [m (make-digger-map (js/Math.random) size size)
