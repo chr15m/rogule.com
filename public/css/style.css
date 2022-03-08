@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  background-color: #F6F5E5;
+}
+
 html, body, #app, #loading {
   min-height: 100%;
 }
