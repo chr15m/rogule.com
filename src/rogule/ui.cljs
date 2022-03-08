@@ -4,7 +4,7 @@
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
-    [rogule.emoji :refer [tile]]
+    [rogule.emoji :refer [tile tile-mem]]
     [rogule.map :refer [make-digger-map]]))
 
 (defonce state (r/atom {}))
@@ -17,6 +17,8 @@
 
 (defn entities-by-pos [entity-layer]
   (reduce (fn [es [id e]] (assoc es (:pos e) (assoc e :id id))) {} entity-layer))
+
+(def entities-by-pos-mem (memoize entities-by-pos))
 
 (defn room-center [room]
   [(int (/ (+ (:_x2 room)
@@ -43,12 +45,14 @@
 (defn make-entities [game-map]
   {:floor {} ; floor layer
    :occupy {:player {:char "1F9DD"
+                     :name "you"
                      :pos (-> game-map :rooms first room-center)}
             (random-uuid) {:char "1F344"
+                           :name "mushroom"
                            :pos (-> game-map :rooms second room-center)}}})
 
 (defn process-game-key [state ev]
-  (js/console.log (aget ev "keyCode"))
+  (js/console.log "keyCode" (aget ev "keyCode"))
   (case (aget ev "keyCode")
     ;27 (swap! state assoc :screen :menu)
     37 (swap! state update-in [:entities :occupy :player :pos 0] dec)
@@ -59,9 +63,8 @@
 
 (defn component-cell [floor-tiles entities x y opacity]
   [:span.grid {:key x
-               :style {;:background-color "#fff"
+               :style {;:background-color "#888"
                        :opacity opacity}}
-   (print "opacity" opacity)
    (when (> opacity 0)
      (cond 
        (= (get floor-tiles [x y]) :door)
@@ -75,23 +78,25 @@
        :else nil))
    (let [entity (get entities [x y])]
      (when entity
-       (tile (:char entity) "")))])
+       (tile-mem (:char entity) (:name entity) {:opacity opacity})))])
 
 (defn component-main [_state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
-        entities (entities-by-pos (-> @state :entities :occupy))
+        entities (entities-by-pos-mem (-> @state :entities :occupy))
         player (-> @state :entities :occupy :player)
         player-pos (:pos player)]
     [:div#game {:on-key-down #(process-game-key state %)}
-     (for [y (make-player-look-range player-pos second visible-dist)]
+     (for [y (range (- (second player-pos) visible-dist)
+                    (+ (second player-pos) visible-dist))]
        [:div.row {:key y}
-        (for [x (make-player-look-range player-pos first visible-dist)]
+        (for [x (range (- (first player-pos) visible-dist)
+                       (+ (first player-pos) visible-dist))]
           (let [dist (distance-sq player-pos [x y])
                 opacity (cond
-                               (> dist visible-dist-sq) 0
-                               (> dist clear-dist-sq) 0.75
-                               :else 1)]
+                          (> dist visible-dist-sq) 0
+                          (> dist clear-dist-sq) 0.75
+                          :else 1)]
             (component-cell floor-tiles entities x y opacity)))])]))
 
 (defn start {:dev/after-load true} []
