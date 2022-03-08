@@ -22,6 +22,14 @@
               (:_y1 room))
            2))])
 
+(defn make-entities [game-map]
+  {:floor [] ; floor layer
+   :air [{:char "1F9DD"
+          :pos (-> game-map :rooms first room-center)
+          :id :player}
+         {:char "1F344"
+          :pos (-> game-map :rooms second room-center)}]})
+
 (defn process-game-key [state ev]
   (js/console.log (aget ev "keyCode"))
   (case (aget ev "keyCode")
@@ -52,17 +60,11 @@
 
 (defn start {:dev/after-load true} []
   (let [m (make-digger-map (js/Math.random) size size)
-        first-room (first (:rooms m))
-        first-room-center (room-center first-room)]
+        entities (make-entities m)]
     (log "map" m)
     (swap! state assoc
            :map m
-           :entities {:floor [] ; floor layer
-                      :air [{:char "1F9DD"
-                             :pos first-room-center
-                             :id :player}
-                            {:char "1F344"
-                             :pos (-> m :rooms second room-center)}]}))
+           :entities entities))
   (rdom/render [component-main state]
                (js/document.getElementById "app")))
 
