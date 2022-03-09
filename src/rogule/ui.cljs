@@ -194,15 +194,18 @@
              (component-cell floor-tiles entities x y opacity)))])]
      [component-inventory player-inventory]]))
 
-(defn start {:dev/after-load true} []
+(defn create-level! []
   (let [m (make-digger-map (js/Math.random) size size)
         entities (make-entities m)]
     (log "map" m)
     (swap! state assoc
            :map m
-           :entities entities))
+           :entities entities)))
+
+(defn start {:dev/after-load true} []
   (rdom/render [component-main state]
                (js/document.getElementById "app")))
 
 (defn main! []
+  (create-level!)
   (start))
