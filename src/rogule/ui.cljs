@@ -120,7 +120,7 @@
                {:pos pos
                 :layer :floor
                 :fns {:encounter add-item-to-inventory}})]
-    [(assoc entities (random-uuid) item)
+    [(assoc entities (-> (random-uuid) str (.slice 0 8)) item)
      (dissoc free-tiles pos)
      game-map]))
 
