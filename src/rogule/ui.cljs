@@ -54,8 +54,22 @@
 (defn can-pass-fn [types]
   (fn [floor-tiles pos]
     (let [tile-type (get floor-tiles pos)]
-      (print "passable?" pos tile-type types)
       (contains? (set types) tile-type))))
+
+(defn add-to-inventory [*state id item-id entity]
+  (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
+
+(defn remove-entity [*state id]
+  (update-in *state [:entities] dissoc id))
+
+(defn add-item-to-inventory [*state their-id item-id]
+  (let [them (get-in *state [:entities their-id])
+        item (get-in *state [:entities item-id])]
+    (if (:inventory them)
+      (-> *state
+          (add-to-inventory their-id item-id item)
+          (remove-entity item-id))
+      *state)))
 
 (defn make-player [stuff]
   {:player
@@ -64,6 +78,8 @@
      {:char "1F9DD"
       :name "you"
       :layer :occupy
+      :stats {}
+      :inventory []
       :fns {:update (fn [])
             :passable (can-pass-fn [:room :door :corridor])}})})
 
@@ -73,23 +89,32 @@
      stuff
      {:char "1F344"
       :layer :floor
-      :name "mushroom"})})
+      :name "mushroom"
+      :fns {:encounter add-item-to-inventory}})})
 
 (defn make-entities [game-map]
   (merge
     (make-player {:pos (-> game-map :rooms first room-center)})
     (make-thing {:pos (-> game-map :rooms second room-center)})))
 
-(defn move-to [state id new-pos]
-  (let [game-map (:map @state)
+(defn move-to [*state id new-pos]
+  (let [game-map (:map *state)
         floor-tiles (:floor-tiles game-map)
-        entity (get-in @state [:entities id])
+        entity (get-in *state [:entities id])
         passable-fn (-> entity :fns :passable)
-        passable? (if passable-fn (passable-fn floor-tiles new-pos) true)]
-    (when passable?
-      (swap! state assoc-in [:entities id :pos] new-pos))))
+        passable? (if passable-fn (passable-fn floor-tiles new-pos) true)
+        entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
+        state-after-encounters (reduce (fn [*state [entity-id e]]
+                                         (let [encounter-fn (-> e :fns :encounter)]
+                                           (if encounter-fn
+                                             (encounter-fn *state id entity-id)
+                                             *state)))
+                                       *state entities-at-pos)]
+    (if passable?
+      (assoc-in state-after-encounters [:entities id :pos] new-pos)
+      state-after-encounters)))
 
-(defn process-arrow-key [state ev]
+(defn process-arrow-key! [state ev]
   ; key down -> if not already pressed, push that key onto queue
   ; after a time out
   ;   if any keys are still down duplicate the end of the queue
@@ -107,14 +132,14 @@
                     new-pos (-> @state
                                 (get-in [:entities :player :pos])
                                 (update-in [dir-idx] dir-fn))]
-                (move-to state :player new-pos)))
+                (swap! state move-to :player new-pos)))
             (not down?)
             (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
     (js/console.log "keymap" (clj->js @keymap))))
 
 (defn install-arrow-key-handler [state el]
   (if el
-    (let [arrow-handler-fn #(process-arrow-key state %)]
+    (let [arrow-handler-fn #(process-arrow-key! state %)]
       (.addEventListener js/window "keydown" arrow-handler-fn)
       (.addEventListener js/window "keyup" arrow-handler-fn)
       (aset js/window "_game-key-handler" arrow-handler-fn))
@@ -142,25 +167,32 @@
        (when entity
          (tile-mem (:char entity) (:name entity) {:opacity opacity}))))])
 
+(defn component-inventory [inventory]
+  [:ul#inventory
+   (for [e inventory]
+     [:li (tile-mem (:char e) (:name e) {:width "64px"})])])
+
 (defn component-main [state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
         entities (entities-by-pos-mem (-> @state :entities))
         player (-> @state :entities :player)
-        player-pos (:pos player)]
+        player-pos (:pos player)
+        player-inventory (:inventory player)]
     [:span
-    [:div#game {:ref #(install-arrow-key-handler state %)}
-     (for [y (range (- (second player-pos) visible-dist)
-                    (+ (second player-pos) visible-dist))]
-       [:div.row {:key y}
-        (for [x (range (- (first player-pos) visible-dist)
-                       (+ (first player-pos) visible-dist))]
-          (let [dist (distance-sq player-pos [x y])
-                opacity (cond
-                          (> dist visible-dist-sq) 0
-                          (> dist clear-dist-sq) 0.75
-                          :else 1)]
-            (component-cell floor-tiles entities x y opacity)))])]]))
+     [:div#game {:ref #(install-arrow-key-handler state %)}
+      (for [y (range (- (second player-pos) visible-dist)
+                     (+ (second player-pos) visible-dist))]
+        [:div.row {:key y}
+         (for [x (range (- (first player-pos) visible-dist)
+                        (+ (first player-pos) visible-dist))]
+           (let [dist (distance-sq player-pos [x y])
+                 opacity (cond
+                           (> dist visible-dist-sq) 0
+                           (> dist clear-dist-sq) 0.75
+                           :else 1)]
+             (component-cell floor-tiles entities x y opacity)))])]
+     [component-inventory player-inventory]]))
 
 (defn start {:dev/after-load true} []
   (let [m (make-digger-map (js/Math.random) size size)

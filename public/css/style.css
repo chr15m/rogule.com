@@ -74,6 +74,17 @@ span.grid > * {
   position: absolute;
 }
 
+ul#inventory {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  list-style-type: none;
+}
+
+#inventory li {
+  display: inline-block;
+}
+
 /***** loader *****/
 
 #loading {
