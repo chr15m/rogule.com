@@ -76,7 +76,8 @@
       {:tiles {:raw @positions
                :room room-tiles
                :room-wall room-wall-tiles
-               :corridor corridor-tiles}
+               :corridor corridor-tiles
+               :door door-tiles}
        :floor-tiles (merge room-tiles room-wall-tiles corridor-tiles door-tiles)
        :rooms rooms
        :corridors corridors

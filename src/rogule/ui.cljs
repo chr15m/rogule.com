@@ -71,31 +71,41 @@
           (remove-entity item-id))
       *state)))
 
-(defn make-player [stuff]
-  {:player
-   (merge
-     stuff
-     {:char "1F9DD"
-      :name "you"
-      :layer :occupy
-      :stats {}
-      :inventory []
-      :fns {:update (fn [])
-            :passable (can-pass-fn [:room :door :corridor])}})})
+(defn make-player [[entities game-map free-tiles]]
+  (let [pos (-> game-map :rooms first room-center)
+        player {:char "1F9DD"
+                :name "you"
+                :layer :occupy
+                :pos pos
+                :stats {}
+                :inventory []
+                :fns {:update (fn [])
+                      :passable (can-pass-fn [:room :door :corridor])}}]
+    [(assoc entities :player player)
+     free-tiles
+     game-map]))
 
-(defn make-thing [stuff]
-  {(random-uuid)
-   (merge
-     stuff
-     {:char "1F344"
-      :layer :floor
-      :name "mushroom"
-      :fns {:encounter add-item-to-inventory}})})
+(defn make-thing [[entities free-tiles game-map]]
+  (let [pos (-> game-map :rooms second room-center)
+        item {:char "1F344"
+              :name "mushroom"
+              :layer :floor
+              :pos pos
+              :fns {:encounter add-item-to-inventory}}]
+    [(assoc entities (random-uuid) item)
+     free-tiles
+     game-map]))
 
 (defn make-entities [game-map]
-  (merge
-    (make-player {:pos (-> game-map :rooms first room-center)})
-    (make-thing {:pos (-> game-map :rooms second room-center)})))
+  (let [tiles (:tiles game-map)
+        free-tiles (merge
+                     (:room tiles)
+                     (:corridor tiles))
+        [entities _game-map _free-tiles]
+        (-> [{} game-map free-tiles]
+            (make-player)
+            (make-thing))]
+    entities))
 
 (defn move-to [*state id new-pos]
   (let [game-map (:map *state)
@@ -198,6 +208,7 @@
   (let [m (make-digger-map (js/Math.random) size size)
         entities (make-entities m)]
     (log "map" m)
+    (log "entities" entities)
     (swap! state assoc
            :map m
            :entities entities)))
