@@ -16,6 +16,34 @@
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
 
+(def forage-items
+  [{:char "1F33F"
+    :name "herbs"
+    :value 1}
+   {:char "1F344"
+    :name "mushroom"
+    :value 10}
+   {:char "1F330"
+    :name "chestnut"
+    :value 2}
+   {:char "1FAD2"
+    :name "olive sprig"
+    :value 7}
+   {:char "1F95A"
+    :name "egg"
+    :value 4}
+   {:char "1F347"
+    :name "grapes"
+    :value 5}])
+
+(def indoor-scenery
+  [{:char "26F2"
+    :name "fountain"}
+   {:char "1FAB4"
+    :name "pot plant"}
+   {:char "1F5FF"
+    :name "statue"}])
+
 (def key-dir-map
   {37 [0 dec]
    72 [0 dec]
@@ -84,17 +112,6 @@
     [(assoc entities :player player)
      (dissoc free-tiles pos)
      game-map]))
-
-(def forage-items
-  [{:char "1F344"
-    :name "mushroom"
-    :value 5}
-   {:char "1F330"
-    :name "chestnut"
-    :value 2}
-   {:char "1FAD2"
-    :name "olive sprig"
-    :value 3}])
 
 (defn make-thing [[entities free-tiles game-map]]
   (let [pos (rand-nth (keys free-tiles))
