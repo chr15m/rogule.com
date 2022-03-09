@@ -1,6 +1,7 @@
 (ns rogule.ui
   (:require
     [shadow.resource :as rc]
+    [clojure.set :refer [difference]]
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
@@ -8,12 +9,23 @@
     [rogule.map :refer [make-digger-map]]))
 
 (defonce state (r/atom {}))
+(defonce keymap (r/atom {}))
 
 (def size 32)
 (def visible-dist 9)
 (def visible-dist-sq (js/Math.pow visible-dist 2))
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
+
+(def key-dir-map
+  {37 [0 dec]
+   72 [0 dec]
+   39 [0 inc]
+   76 [0 inc]
+   38 [1 dec]
+   75 [1 dec]
+   40 [1 inc]
+   74 [1 inc]})
 
 (defn entities-by-pos [entities]
   (reduce (fn [es [id e]] (assoc es (conj (:pos e) (:layer e)) (assoc e :id id))) {} entities))
@@ -65,23 +77,10 @@
     (make-player {:pos (-> game-map :rooms first room-center)})
     (make-thing {:pos (-> game-map :rooms second room-center)})))
 
-(defonce keymap (r/atom {}))
-
-; key down -> if not already pressed, push that key onto queue
-; after a time out
-;   if any keys are still down duplicate the end of the queue
-
-(def key-dir-map
-  {37 [0 dec]
-   72 [0 dec]
-   39 [0 inc]
-   76 [0 inc]
-   38 [1 dec]
-   75 [1 dec]
-   40 [1 inc]
-   74 [1 inc]})
-
 (defn process-arrow-key [state ev]
+  ; key down -> if not already pressed, push that key onto queue
+  ; after a time out
+  ;   if any keys are still down duplicate the end of the queue
   (let [code (aget ev "keyCode")
         down? (= (aget ev "type") "keydown")
         dir (get key-dir-map code)]
@@ -93,7 +92,7 @@
               (swap! keymap update-in [:held] (fn [held] (conj (set held) code)))
               (swap! state update-in [:entities :player :pos (first dir)] (second dir)))
             (not down?)
-            (swap! keymap update-in [:held] (fn [held] (clojure.set/difference (set held) #{code})))))
+            (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
     (js/console.log "keymap" (clj->js @keymap))))
 
 (defn install-arrow-key-handler [state el]
