@@ -77,6 +77,10 @@
     (make-player {:pos (-> game-map :rooms first room-center)})
     (make-thing {:pos (-> game-map :rooms second room-center)})))
 
+(defn move-to [state id new-pos]
+  ; TODO: check for entities in the new space and run their "intrude" fn
+  (swap! state assoc-in [:entities id :pos] new-pos))
+
 (defn process-arrow-key [state ev]
   ; key down -> if not already pressed, push that key onto queue
   ; after a time out
@@ -90,7 +94,12 @@
             (do
               (js/console.log "keyCode" code)
               (swap! keymap update-in [:held] (fn [held] (conj (set held) code)))
-              (swap! state update-in [:entities :player :pos (first dir)] (second dir)))
+              (let [dir-idx (first dir)
+                    dir-fn (second dir)
+                    new-pos (-> @state
+                                (get-in [:entities :player :pos])
+                                (update-in [dir-idx] dir-fn))]
+                (move-to state :player new-pos)))
             (not down?)
             (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
     (js/console.log "keymap" (clj->js @keymap))))
