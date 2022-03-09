@@ -1,6 +1,5 @@
 (ns rogule.ui
   (:require
-    [shadow.resource :as rc]
     [clojure.set :refer [difference]]
     [reagent.core :as r]
     [reagent.dom :as rdom]
@@ -45,14 +44,18 @@
    (js/Math.pow (- x2 x1) 2) 
    (js/Math.pow (- y2 y1) 2)))
 
-(def distance-sq-mem (memoize distance-sq))
-
 (defn distance [a b]
   (js/Math.sqrt
     (distance-sq a b)))
 
 (defn make-player-look-range [pos lookup dist]
   (range (- (lookup pos) dist) (+ (lookup pos) dist)))
+
+(defn can-pass-fn [types]
+  (fn [floor-tiles pos]
+    (let [tile-type (get floor-tiles pos)]
+      (print "passable?" pos tile-type types)
+      (contains? (set types) tile-type))))
 
 (defn make-player [stuff]
   {:player
@@ -62,7 +65,7 @@
       :name "you"
       :layer :occupy
       :fns {:update (fn [])
-            :passable (fn [])}})})
+            :passable (can-pass-fn [:room :door :corridor])}})})
 
 (defn make-thing [stuff]
   {(random-uuid)
@@ -78,8 +81,13 @@
     (make-thing {:pos (-> game-map :rooms second room-center)})))
 
 (defn move-to [state id new-pos]
-  ; TODO: check for entities in the new space and run their "intrude" fn
-  (swap! state assoc-in [:entities id :pos] new-pos))
+  (let [game-map (:map @state)
+        floor-tiles (:floor-tiles game-map)
+        entity (get-in @state [:entities id])
+        passable-fn (-> entity :fns :passable)
+        passable? (if passable-fn (passable-fn floor-tiles new-pos) true)]
+    (when passable?
+      (swap! state assoc-in [:entities id :pos] new-pos))))
 
 (defn process-arrow-key [state ev]
   ; key down -> if not already pressed, push that key onto queue
