@@ -72,7 +72,7 @@
       *state)))
 
 (defn make-player [[entities game-map free-tiles]]
-  (let [pos (-> game-map :rooms first room-center)
+  (let [pos (rand-nth (keys free-tiles))
         player {:char "1F9DD"
                 :name "you"
                 :layer :occupy
@@ -82,18 +82,18 @@
                 :fns {:update (fn [])
                       :passable (can-pass-fn [:room :door :corridor])}}]
     [(assoc entities :player player)
-     free-tiles
+     (dissoc free-tiles pos)
      game-map]))
 
 (defn make-thing [[entities free-tiles game-map]]
-  (let [pos (-> game-map :rooms second room-center)
+  (let [pos (rand-nth (keys free-tiles))
         item {:char "1F344"
               :name "mushroom"
               :layer :floor
               :pos pos
               :fns {:encounter add-item-to-inventory}}]
     [(assoc entities (random-uuid) item)
-     free-tiles
+     (dissoc free-tiles pos)
      game-map]))
 
 (defn make-entities [game-map]
@@ -101,10 +101,12 @@
         free-tiles (merge
                      (:room tiles)
                      (:corridor tiles))
-        [entities _game-map _free-tiles]
-        (-> [{} game-map free-tiles]
-            (make-player)
-            (make-thing))]
+        entities-free-tiles (make-player [{} game-map free-tiles])
+        [entities] (reduce
+                     (fn [entities-free-tiles _i]
+                       (make-thing entities-free-tiles))
+                     entities-free-tiles
+                     (range 10))]
     entities))
 
 (defn move-to [*state id new-pos]

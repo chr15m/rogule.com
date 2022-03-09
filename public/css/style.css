@@ -85,6 +85,10 @@ ul#inventory {
   display: inline-block;
 }
 
+#inventory li + li {
+  margin-left: 8px;
+}
+
 /***** loader *****/
 
 #loading {
