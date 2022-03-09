@@ -85,13 +85,24 @@
      (dissoc free-tiles pos)
      game-map]))
 
+(def forage-items
+  [{:char "1F344"
+    :name "mushroom"
+    :value 5}
+   {:char "1F330"
+    :name "chestnut"
+    :value 2}
+   {:char "1FAD2"
+    :name "olive sprig"
+    :value 3}])
+
 (defn make-thing [[entities free-tiles game-map]]
   (let [pos (rand-nth (keys free-tiles))
-        item {:char "1F344"
-              :name "mushroom"
-              :layer :floor
-              :pos pos
-              :fns {:encounter add-item-to-inventory}}]
+        item (merge
+               (rand-nth forage-items)
+               {:pos pos
+                :layer :floor
+                :fns {:encounter add-item-to-inventory}})]
     [(assoc entities (random-uuid) item)
      (dissoc free-tiles pos)
      game-map]))
