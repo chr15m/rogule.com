@@ -15,8 +15,8 @@
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
 
-(defn entities-by-pos [entity-layer]
-  (reduce (fn [es [id e]] (assoc es (:pos e) (assoc e :id id))) {} entity-layer))
+(defn entities-by-pos [entities]
+  (reduce (fn [es [id e]] (assoc es (conj (:pos e) (:layer e)) (assoc e :id id))) {} entities))
 
 (def entities-by-pos-mem (memoize entities-by-pos))
 
@@ -48,6 +48,7 @@
      stuff
      {:char "1F9DD"
       :name "you"
+      :layer :occupy
       :fns {:update (fn [])
             :passable (fn [])}})})
 
@@ -56,13 +57,13 @@
    (merge
      stuff
      {:char "1F344"
+      :layer :floor
       :name "mushroom"})})
 
 (defn make-entities [game-map]
-  {:floor {} ; floor layer
-   :occupy (merge
-             (make-player {:pos (-> game-map :rooms first room-center)})
-             (make-thing {:pos (-> game-map :rooms second room-center)}))})
+  (merge
+    (make-player {:pos (-> game-map :rooms first room-center)})
+    (make-thing {:pos (-> game-map :rooms second room-center)})))
 
 (defonce keymap (r/atom {}))
 
@@ -90,7 +91,7 @@
             (do
               (js/console.log "keyCode" code)
               (swap! keymap update-in [:held] (fn [held] (conj (set held) code)))
-              (swap! state update-in [:entities :occupy :player :pos (first dir)] (second dir)))
+              (swap! state update-in [:entities :player :pos (first dir)] (second dir)))
             (not down?)
             (swap! keymap update-in [:held] (fn [held] (clojure.set/difference (set held) #{code})))))
     (js/console.log "keymap" (clj->js @keymap))))
@@ -120,15 +121,16 @@
        (= (get floor-tiles [x y]) :corridor)
        (tile "1F7EB" "corridor")
        :else nil))
-   (let [entity (get entities [x y])]
-     (when entity
-       (tile-mem (:char entity) (:name entity) {:opacity opacity})))])
+   (for [layer [:floor :occupy]]
+     (let [entity (get entities [x y layer])]
+       (when entity
+         (tile-mem (:char entity) (:name entity) {:opacity opacity}))))])
 
 (defn component-main [state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
-        entities (entities-by-pos-mem (-> @state :entities :occupy))
-        player (-> @state :entities :occupy :player)
+        entities (entities-by-pos-mem (-> @state :entities))
+        player (-> @state :entities :player)
         player-pos (:pos player)]
     [:span
     [:div#game {:ref #(install-arrow-key-handler state %)}
