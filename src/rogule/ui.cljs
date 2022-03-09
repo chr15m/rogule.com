@@ -120,6 +120,15 @@
                      (range 10))]
     entities))
 
+(defn create-level! []
+  (let [m (make-digger-map (js/Math.random) size size)
+        entities (make-entities m)]
+    (log "map" m)
+    (log "entities" entities)
+    (swap! state assoc
+           :map m
+           :entities entities)))
+
 (defn move-to [*state id new-pos]
   (let [game-map (:map *state)
         floor-tiles (:floor-tiles game-map)
@@ -171,6 +180,15 @@
       (.removeEventListener js/window "keyup" arrow-handler-fn)
       (js-delete js/window "_game-key-handler"))))
 
+(defn key-handler [ev]
+  (let [code (aget ev "keyCode")]
+    (print "keyCode" code)
+    (case code
+      81 (create-level!)
+      191 (swap! state update-in [:modal] #(when (not %) :help))
+      27 (swap! state dissoc :modal)
+      nil)))
+
 (defn component-cell [floor-tiles entities x y opacity]
   [:span.grid {:key x
                :style {:opacity opacity}}
@@ -217,26 +235,11 @@
              (component-cell floor-tiles entities x y opacity)))])]
      [component-inventory player-inventory]]))
 
-(defn create-level! []
-  (let [m (make-digger-map (js/Math.random) size size)
-        entities (make-entities m)]
-    (log "map" m)
-    (log "entities" entities)
-    (swap! state assoc
-           :map m
-           :entities entities)))
-
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]
                (js/document.getElementById "app")))
 
 (defn main! []
   (create-level!)
-  (.addEventListener
-    js/window "keydown"
-    (fn [ev]
-      (let [code (aget ev "keyCode")]
-        (print "keyCode" code)
-        (when (= code 81)
-          (create-level!)))))
+  (.addEventListener js/window "keydown" #(key-handler %))
   (start))
