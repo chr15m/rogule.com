@@ -64,15 +64,47 @@
              (make-player {:pos (-> game-map :rooms first room-center)})
              (make-thing {:pos (-> game-map :rooms second room-center)}))})
 
-(defn process-game-key [state ev]
-  (js/console.log "keyCode" (aget ev "keyCode"))
-  (case (aget ev "keyCode")
-    ;27 (swap! state assoc :screen :menu)
-    37 (swap! state update-in [:entities :occupy :player :pos 0] dec)
-    39 (swap! state update-in [:entities :occupy :player :pos 0] inc)
-    38 (swap! state update-in [:entities :occupy :player :pos 1] dec)
-    40 (swap! state update-in [:entities :occupy :player :pos 1] inc)
-    nil))
+(defonce keymap (r/atom {}))
+
+; key down -> if not already pressed, push that key onto queue
+; after a time out
+;   if any keys are still down duplicate the end of the queue
+
+(def key-dir-map
+  {37 [0 dec]
+   72 [0 dec]
+   39 [0 inc]
+   76 [0 inc]
+   38 [1 dec]
+   75 [1 dec]
+   40 [1 inc]
+   74 [1 inc]})
+
+(defn process-arrow-key [state ev]
+  (let [code (aget ev "keyCode")
+        down? (= (aget ev "type") "keydown")
+        dir (get key-dir-map code)]
+    (when dir
+      (cond (and down?
+                 (nil? (-> @keymap :held (get code))))
+            (do
+              (js/console.log "keyCode" code)
+              (swap! keymap update-in [:held] (fn [held] (conj (set held) code)))
+              (swap! state update-in [:entities :occupy :player :pos (first dir)] (second dir)))
+            (not down?)
+            (swap! keymap update-in [:held] (fn [held] (clojure.set/difference (set held) #{code})))))
+    (js/console.log "keymap" (clj->js @keymap))))
+
+(defn install-arrow-key-handler [state el]
+  (if el
+    (let [arrow-handler-fn #(process-arrow-key state %)]
+      (.addEventListener js/window "keydown" arrow-handler-fn)
+      (.addEventListener js/window "keyup" arrow-handler-fn)
+      (aset js/window "_game-key-handler" arrow-handler-fn))
+    (let [arrow-handler-fn (aget js/window "_game-key-handler")]
+      (.removeEventListener js/window "keydown" arrow-handler-fn)
+      (.removeEventListener js/window "keyup" arrow-handler-fn)
+      (js-delete js/window "_game-key-handler"))))
 
 (defn component-cell [floor-tiles entities x y opacity]
   [:span.grid {:key x
@@ -92,13 +124,14 @@
      (when entity
        (tile-mem (:char entity) (:name entity) {:opacity opacity})))])
 
-(defn component-main [_state]
+(defn component-main [state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
         entities (entities-by-pos-mem (-> @state :entities :occupy))
         player (-> @state :entities :occupy :player)
         player-pos (:pos player)]
-    [:div#game {:on-key-down #(process-game-key state %)}
+    [:span
+    [:div#game {:ref #(install-arrow-key-handler state %)}
      (for [y (range (- (second player-pos) visible-dist)
                     (+ (second player-pos) visible-dist))]
        [:div.row {:key y}
@@ -109,7 +142,7 @@
                           (> dist visible-dist-sq) 0
                           (> dist clear-dist-sq) 0.75
                           :else 1)]
-            (component-cell floor-tiles entities x y opacity)))])]))
+            (component-cell floor-tiles entities x y opacity)))])]]))
 
 (defn start {:dev/after-load true} []
   (let [m (make-digger-map (js/Math.random) size size)
@@ -122,5 +155,4 @@
                (js/document.getElementById "app")))
 
 (defn main! []
-  (.addEventListener js/window "keydown" #(process-game-key state %))
   (start))
