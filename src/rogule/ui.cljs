@@ -7,7 +7,8 @@
     [rogule.emoji :refer [tile tile-mem]]
     [rogule.map :refer [make-digger-map]]))
 
-(defonce state (r/atom {}))
+(defonce state (r/atom {:message {:expires 5
+                                  :text "Press ? for help."}}))
 (defonce keymap (r/atom {}))
 
 (def size 32)
@@ -163,6 +164,14 @@
       (assoc-in state-after-encounters [:entities id :pos] new-pos)
       state-after-encounters)))
 
+(defn expire-messages [*state]
+  (update-in *state [:message]
+             (fn [{:keys [expires text]}]
+               (let [display? (not= expires 0)]
+                 (when display?
+                   {:expires (dec expires)
+                    :text text})))))
+
 (defn process-arrow-key! [state ev]
   ; key down -> if not already pressed, push that key onto queue
   ; after a time out
@@ -180,7 +189,9 @@
                     new-pos (-> @state
                                 (get-in [:entities :player :pos])
                                 (update-in [dir-idx] dir-fn))]
-                (swap! state move-to :player new-pos)))
+                (swap! state #(-> %
+                                  (move-to :player new-pos)
+                                  (expire-messages)))))
             (not down?)
             (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
     ;(js/console.log "keymap" (clj->js @keymap))
@@ -230,6 +241,15 @@
    (for [e inventory]
      [:li (tile-mem (:char e) (:name e) {:width "64px"})])])
 
+(defn component-help [show-help]
+  (when show-help
+    [:div.modal
+     [:h2 "Rogule"]
+     [:p "Try to obtain the best hand by collecting items."]]))
+
+(defn component-messages [message]
+  [:div.message message])
+
 (defn component-main [state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
@@ -237,8 +257,8 @@
         player (-> @state :entities :player)
         player-pos (:pos player)
         player-inventory (:inventory player)]
-    [:span
-     [:div#game {:ref #(install-arrow-key-handler state %)}
+    [:span#game
+     [:div {:ref #(install-arrow-key-handler state %)}
       (for [y (range (- (second player-pos) visible-dist)
                      (+ (second player-pos) visible-dist))]
         [:div.row {:key y}
@@ -250,7 +270,9 @@
                            (> dist clear-dist-sq) 0.75
                            :else 1)]
              (component-cell floor-tiles entities x y opacity)))])]
-     [component-inventory player-inventory]]))
+     [component-inventory player-inventory]
+     [component-help (= (:modal @state) :help)]
+     [component-messages (-> @state :message :text)]]))
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]

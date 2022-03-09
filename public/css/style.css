@@ -56,8 +56,13 @@ body.game #app {
   align-items: center;
 }
 
-div#game {
-
+#game h1 {
+  position: absolute;
+  top: 0px;
+  text-align: center;
+  margin: auto;
+  width: 100%;
+  left: 0px;
 }
 
 div.row {
@@ -87,6 +92,30 @@ ul#inventory {
 
 #inventory li + li {
   margin-left: 8px;
+}
+
+.modal {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  background-color: #F6F5E5;
+}
+
+.message {
+  position: absolute;
+  bottom: 24px;
+  left: 0px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /***** loader *****/
