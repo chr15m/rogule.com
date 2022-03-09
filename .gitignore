@@ -3,6 +3,7 @@
 devserver.js
 logs
 node_modules
+.cache
 public/js
 public/twemojis
 database.sqlite
