@@ -137,7 +137,6 @@
       (cond (and down?
                  (nil? (-> @keymap :held (get code))))
             (do
-              (js/console.log "keyCode" code)
               (swap! keymap update-in [:held] (fn [held] (conj (set held) code)))
               (let [dir-idx (first dir)
                     dir-fn (second dir)
@@ -147,7 +146,8 @@
                 (swap! state move-to :player new-pos)))
             (not down?)
             (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
-    (js/console.log "keymap" (clj->js @keymap))))
+    ;(js/console.log "keymap" (clj->js @keymap))
+    ))
 
 (defn install-arrow-key-handler [state el]
   (if el
@@ -221,4 +221,11 @@
 
 (defn main! []
   (create-level!)
+  (.addEventListener
+    js/window "keydown"
+    (fn [ev]
+      (let [code (aget ev "keyCode")]
+        (print "keyCode" code)
+        (when (= code 81)
+          (create-level!)))))
   (start))
