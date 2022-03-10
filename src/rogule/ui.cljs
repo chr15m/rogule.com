@@ -5,7 +5,8 @@
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile tile-mem]]
-    [rogule.map :refer [make-digger-map]]))
+    [rogule.map :refer [make-digger-map]]
+    ["rot-js" :as ROT]))
 
 (defonce state (r/atom {:message {:expires 5
                                   :text "Press ? for help."}}))
@@ -21,21 +22,36 @@
   [{:char "1F33F"
     :name "herbs"
     :value 1}
-   {:char "1F344"
-    :name "mushroom"
-    :value 10}
-   {:char "1F330"
-    :name "chestnut"
-    :value 2}
+   {:char "1FAB6"
+    :name "feather"
+    :value 1}
+   {:char "1F9B4"
+    :name "bone"
+    :value 1}
    {:char "1FAD2"
     :name "olive sprig"
-    :value 7}
+    :value 1}
+
    {:char "1F95A"
     :name "egg"
-    :value 4}
+    :value 2}
    {:char "1F347"
     :name "grapes"
-    :value 5}])
+    :value 2}
+   {:char "1F356"
+    :name "meat on bone"
+    :value 2}
+
+   {:char "1F344"
+    :name "mushroom"
+    :value 4}
+   {:char "1F330"
+    :name "chestnut"
+    :value 4}
+
+   {:char "1F48E"
+    :name "gem"
+    :value 8}])
 
 (def item-covers
   [{:char "1F573"
@@ -88,6 +104,16 @@
 (defn make-id []
   (-> (random-uuid) str (.slice 0 8)))
 
+(defn get-random-entity-by-value [entity-template-table]
+  (let [weighted-table (->> entity-template-table
+                            (map (fn [i] {(:name i) (/ 1 (:value i))}))
+                            (into {})
+                            clj->js)
+        item-name (ROT/RNG.getWeightedValue weighted-table)]
+    (->> entity-template-table
+         (filter #(= (:name %) item-name))
+         first)))
+
 (defn can-pass-fn [types]
   (fn [floor-tiles pos]
     (let [tile-type (get floor-tiles pos)]
@@ -138,8 +164,9 @@
 
 (defn make-thing [[entities free-tiles game-map]]
   (let [pos (rand-nth (keys free-tiles))
+        item-template (get-random-entity-by-value forage-items)
         item (merge
-               (rand-nth forage-items)
+               item-template
                {:pos pos
                 :id (make-id)
                 :layer :floor
