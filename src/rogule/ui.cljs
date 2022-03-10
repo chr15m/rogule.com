@@ -298,9 +298,11 @@
          (tile-mem (:char entity) (:name entity) {:opacity opacity}))))])
 
 (defn component-inventory [inventory]
-  [:ul#inventory
-   (for [e inventory]
-     [:li (tile-mem (:char e) (:name e) {:width "64px"})])])
+  [:div#inventory
+   [:div#score (apply + (map :value inventory))]
+   [:ul
+    (for [e (sort-by (juxt :value :name) inventory)]
+      [:li (tile-mem (:char e) (:name e) {:width "48px"})])]])
 
 (defn component-help [show-help]
   (when show-help

@@ -79,11 +79,25 @@ span.grid > * {
   position: absolute;
 }
 
-ul#inventory {
+#score {
   position: absolute;
-  top: 0px;
+  bottom: 64px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+}
+
+#inventory ul {
+  position: absolute;
+  bottom: 0px;
   left: 0px;
   list-style-type: none;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 0px;
+  margin: 0px;
 }
 
 #inventory li {
@@ -91,7 +105,6 @@ ul#inventory {
 }
 
 #inventory li + li {
-  margin-left: 8px;
 }
 
 .modal {
