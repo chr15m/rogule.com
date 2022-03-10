@@ -37,6 +37,14 @@
     :name "grapes"
     :value 5}])
 
+(def item-covers
+  [{:char "1F573"
+    :name "hole"}
+   {:char "1FAA8"
+    :name "rock"}
+   {:char "1FAB5"
+    :name "wood block"}])
+
 (def indoor-scenery
   [{:char "26F2"
     :name "fountain"}
@@ -77,28 +85,42 @@
   (js/Math.sqrt
     (distance-sq a b)))
 
-(defn make-player-look-range [pos lookup dist]
-  (range (- (lookup pos) dist) (+ (lookup pos) dist)))
+(defn make-id []
+  (-> (random-uuid) str (.slice 0 8)))
 
 (defn can-pass-fn [types]
   (fn [floor-tiles pos]
     (let [tile-type (get floor-tiles pos)]
       (contains? (set types) tile-type))))
 
+(defn remove-entity [*state id]
+  (log "remove-entity" id (get-in *state [:entities]))
+  (update-in *state [:entities] dissoc id))
+
+(defn add-entity [*state entity]
+  (assoc-in *state [:entities (:id entity)] (dissoc entity :id)))
+
 (defn add-to-inventory [*state id item-id entity]
   (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
 
-(defn remove-entity [*state id]
-  (update-in *state [:entities] dissoc id))
+; *** item interaction functions *** ;
 
 (defn add-item-to-inventory [*state their-id item-id]
   (let [them (get-in *state [:entities their-id])
         item (get-in *state [:entities item-id])]
     (if (:inventory them)
-      (-> *state
-          (add-to-inventory their-id item-id item)
-          (remove-entity item-id))
-      *state)))
+      [false (-> *state
+                 (add-to-inventory their-id item-id item)
+                 (remove-entity item-id))]
+      [false *state])))
+
+(defn uncover-item [*state _their-id item-id]
+  (let [item (get-in *state [:entities item-id])]
+    [true (-> *state
+              (remove-entity item-id)
+              (add-entity (:hidden-item item)))]))
+
+; *** create different types of things *** ;
 
 (defn make-player [[entities game-map free-tiles]]
   (let [pos (rand-nth (keys free-tiles))
@@ -119,9 +141,16 @@
         item (merge
                (rand-nth forage-items)
                {:pos pos
+                :id (make-id)
                 :layer :floor
-                :fns {:encounter add-item-to-inventory}})]
-    [(assoc entities (-> (random-uuid) str (.slice 0 8)) item)
+                :fns {:encounter add-item-to-inventory}})
+        cover (merge
+                (rand-nth item-covers)
+                {:pos pos
+                 :layer :floor
+                 :hidden-item item
+                 :fns {:encounter uncover-item}})]
+    [(assoc entities (make-id) cover)
      (dissoc free-tiles pos)
      game-map]))
 
@@ -152,15 +181,16 @@
         floor-tiles (:floor-tiles game-map)
         entity (get-in *state [:entities id])
         passable-fn (-> entity :fns :passable)
-        passable? (if passable-fn (passable-fn floor-tiles new-pos) true)
+        passable-tile? (if passable-fn (passable-fn floor-tiles new-pos) true)
         entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
-        state-after-encounters (reduce (fn [*state [entity-id e]]
-                                         (let [encounter-fn (-> e :fns :encounter)]
-                                           (if encounter-fn
-                                             (encounter-fn *state id entity-id)
-                                             *state)))
-                                       *state entities-at-pos)]
-    (if passable?
+        [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
+                                                        (let [encounter-fn (-> e :fns :encounter)]
+                                                          (if encounter-fn
+                                                            (let [[this-item-blocks? *state] (encounter-fn *state id entity-id)]
+                                                              [(or item-blocks? this-item-blocks?) *state])
+                                                            [item-blocks? *state])))
+                                                      [false *state] entities-at-pos)]
+    (if (and passable-tile? (not item-blocks?))
       (assoc-in state-after-encounters [:entities id :pos] new-pos)
       state-after-encounters)))
 
