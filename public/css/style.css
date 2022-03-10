@@ -81,7 +81,7 @@ span.grid > * {
 
 #score {
   position: absolute;
-  bottom: 64px;
+  bottom: 128px;
   left: 0px;
   width: 100%;
   text-align: center;
@@ -90,7 +90,7 @@ span.grid > * {
 
 #inventory ul {
   position: absolute;
-  bottom: 0px;
+  bottom: 48px;
   left: 0px;
   list-style-type: none;
   display: flex;
@@ -123,7 +123,7 @@ span.grid > * {
 
 .message {
   position: absolute;
-  bottom: 24px;
+  bottom: 8px;
   left: 0px;
   width: 100%;
   display: flex;
