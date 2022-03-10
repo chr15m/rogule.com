@@ -26,7 +26,7 @@
   (js/console.log "make-digger-map" seed w h)
   (ROT/RNG.setSeed (hash-seed "map" seed w h))
   (let [digger (ROT/Map.Digger. w h
-                                (clj->js {:corridorLength [1 7]
+                                (clj->js {:corridorLength [1 5]
                                           ;:roomWidth [4 8]
                                           ;:roomHeight [4 8]
                                           ;:dugPercentage 0.15 ;TODO: increase this as you go deeper

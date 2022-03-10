@@ -8,11 +8,14 @@
     [rogule.map :refer [make-digger-map]]
     ["rot-js" :as ROT]))
 
-(defonce state (r/atom {:message {:expires 5
-                                  :text "Press ? for help."}}))
+(def initial-state
+  {:message {:expires 5
+             :text "Press ? for help."}})
+
+(defonce state (r/atom initial-state))
 (defonce keymap (r/atom {}))
 
-(def size 32)
+(def size 64)
 (def visible-dist 9)
 (def visible-dist-sq (js/Math.pow visible-dist 2))
 (def clear-dist 7)
@@ -68,6 +71,9 @@
     :name "pot plant"}
    {:char "1F5FF"
     :name "statue"}])
+
+(def shrine-template {:char "26E9"
+                      :name "shrine"})
 
 (def key-dir-map
   {37 [0 dec]
@@ -151,6 +157,9 @@
               (remove-entity item-id)
               (add-entity (:hidden-item item)))]))
 
+(defn finish-game [*state _their-id _item-id]
+  [true (assoc *state :outcome :ascended)])
+
 ; ***** create different types of things ***** ;
 
 (defn make-player [[entities game-map free-tiles]]
@@ -164,6 +173,16 @@
                 :fns {:update (fn [])
                       :passable (can-pass-fn [:room :door :corridor])}}]
     [(assoc entities :player player)
+     (dissoc free-tiles pos)
+     game-map]))
+
+(defn make-shrine [[entities free-tiles game-map]]
+  (let [pos (rand-nth (keys free-tiles))
+        shrine (merge shrine-template
+                      {:pos pos
+                       :layer :occupy
+                       :fns {:encounter finish-game}})]
+    [(assoc entities (make-id) shrine)
      (dissoc free-tiles pos)
      game-map]))
 
@@ -192,6 +211,7 @@
                      (:room tiles)
                      (:corridor tiles))
         entities-free-tiles (make-player [{} game-map free-tiles])
+        entities-free-tiles (make-shrine entities-free-tiles)
         [entities] (reduce
                      (fn [entities-free-tiles _i]
                        (make-thing entities-free-tiles))
@@ -199,12 +219,12 @@
                      (range 10))]
     entities))
 
-(defn create-level! []
+(defn create-level [*state]
   (let [m (make-digger-map (js/Math.random) size size)
         entities (make-entities m)]
     (log "map" m)
     (log "entities" entities)
-    (swap! state assoc
+    (assoc *state
            :map m
            :entities entities)))
 
@@ -276,7 +296,7 @@
   (let [code (aget ev "keyCode")]
     (print "keyCode" code)
     (case code
-      81 (create-level!)
+      81 (swap! state create-level)
       191 (swap! state update-in [:modal] #(when (not %) :help))
       27 (swap! state dissoc :modal)
       nil)))
@@ -313,13 +333,13 @@
   (when show-help
     [:div.modal
      [:h2 "Rogule"]
-     [:p "Try to obtain the best score by collecting items."]
+     [:p "Find items to obtain the best score."]
      [:p "Get to the shrine " (tile-mem "26E9" "shrine") " to ascend."]]))
 
 (defn component-messages [message]
   [:div.message message])
 
-(defn component-main [state]
+(defn component-game [state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
         entities (entities-by-pos-mem (-> @state :entities))
@@ -343,11 +363,41 @@
      [component-help (= (:modal @state) :help)]
      [component-messages (-> @state :message :text)]]))
 
+(defn component-tombstone [state]
+  (let [{:keys [outcome entities]} @state
+        {:keys [player]} entities
+        {:keys [inventory]} player
+        today (js/Date.)]
+    [:div#tombstone
+     [:p "Rogule " (.getFullYear today) "-" (inc (.getMonth today)) "-" (.getDate today)]
+     [:p
+      (tile "1F9DD" "you") " "
+      (name outcome) " "
+      (if (= outcome :ascended)
+        (tile "1F31F" "stars")
+        (tile "2620" "skull and crossbones"))]
+     [:div "Score: " (apply + (map :value inventory))]
+     [:p
+      (for [e (sort-by (juxt :value :name) inventory)]
+        [:span (tile-mem (:char e) (:name e) {:width "48px"})])]
+     [:button {:autoFocus true
+               :on-click #(swap! state
+                                 (fn [*state]
+                                   (-> *state
+                                       create-level
+                                       (dissoc :outcome))))}
+      "restart"]]))
+
+(defn component-main [state]
+  (if (:outcome @state)
+    [component-tombstone state]
+    [component-game state]))
+
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]
                (js/document.getElementById "app")))
 
 (defn main! []
-  (create-level!)
+  (swap! state create-level)
   (.addEventListener js/window "keydown" #(key-handler %))
   (start))
