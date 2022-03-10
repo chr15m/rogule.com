@@ -129,6 +129,10 @@
 (defn add-to-inventory [*state id item-id entity]
   (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
 
+(defn add-message [*state message]
+  (assoc *state :message {:text message
+                          :expires 3}))
+
 ; ***** item interaction functions ***** ;
 
 (defn add-item-to-inventory [*state their-id item-id]
@@ -137,7 +141,8 @@
     (if (:inventory them)
       [false (-> *state
                  (add-to-inventory their-id item-id item)
-                 (remove-entity item-id))]
+                 (remove-entity item-id)
+                 (add-message (str "you found the " (:name item))))]
       [false *state])))
 
 (defn uncover-item [*state _their-id item-id]
@@ -308,7 +313,8 @@
   (when show-help
     [:div.modal
      [:h2 "Rogule"]
-     [:p "Try to obtain the best hand by collecting items."]]))
+     [:p "Try to obtain the best score by collecting items."]
+     [:p "Get to the shrine " (tile-mem "26E9" "shrine") " to ascend."]]))
 
 (defn component-messages [message]
   [:div.message message])
