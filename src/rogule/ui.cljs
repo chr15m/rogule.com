@@ -85,6 +85,8 @@
    40 [1 inc]
    74 [1 inc]})
 
+; ***** utility functions ***** ;
+
 (defn entities-by-pos [entities]
   (reduce (fn [es [id e]] (assoc es (conj (:pos e) (:layer e)) (assoc e :id id))) {} entities))
 
@@ -107,6 +109,8 @@
   (js/Math.sqrt
     (distance-sq a b)))
 
+; ***** rng functions ***** ;
+
 (defn make-id []
   (-> (random-uuid) str (.slice 0 8)))
 
@@ -119,6 +123,8 @@
     (->> entity-template-table
          (filter #(= (:name %) item-name))
          first)))
+
+; ***** state manipulation functions ***** ;
 
 (defn can-pass-fn [types]
   (fn [floor-tiles pos]
@@ -139,6 +145,9 @@
   (assoc *state :message {:text message
                           :expires 3}))
 
+(defn finish-game [*state _their-id _item-id]
+  [true (assoc *state :outcome :ascended)])
+
 ; ***** item interaction functions ***** ;
 
 (defn add-item-to-inventory [*state their-id item-id]
@@ -156,9 +165,6 @@
     [true (-> *state
               (remove-entity item-id)
               (add-entity (:hidden-item item)))]))
-
-(defn finish-game [*state _their-id _item-id]
-  [true (assoc *state :outcome :ascended)])
 
 ; ***** create different types of things ***** ;
 
