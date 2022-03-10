@@ -103,7 +103,7 @@
 (defn add-to-inventory [*state id item-id entity]
   (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
 
-; *** item interaction functions *** ;
+; ***** item interaction functions ***** ;
 
 (defn add-item-to-inventory [*state their-id item-id]
   (let [them (get-in *state [:entities their-id])
@@ -120,7 +120,7 @@
               (remove-entity item-id)
               (add-entity (:hidden-item item)))]))
 
-; *** create different types of things *** ;
+; ***** create different types of things ***** ;
 
 (defn make-player [[entities game-map free-tiles]]
   (let [pos (rand-nth (keys free-tiles))
@@ -175,6 +175,8 @@
     (swap! state assoc
            :map m
            :entities entities)))
+
+; ***** game engine ***** ;
 
 (defn move-to [*state id new-pos]
   (let [game-map (:map *state)
@@ -246,6 +248,8 @@
       191 (swap! state update-in [:modal] #(when (not %) :help))
       27 (swap! state dissoc :modal)
       nil)))
+
+; ***** rendering ***** ;
 
 (defn component-cell [floor-tiles entities x y opacity]
   [:span.grid {:key x
