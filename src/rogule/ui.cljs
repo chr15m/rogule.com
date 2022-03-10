@@ -16,7 +16,7 @@
 (defonce state (r/atom initial-state))
 (defonce keymap (r/atom {}))
 
-(def size 64)
+(def size 32)
 (def visible-dist 9)
 (def visible-dist-sq (js/Math.pow visible-dist 2))
 (def clear-dist 7)
@@ -129,6 +129,12 @@
          (filter #(= (:name %) item-name))
          first)))
 
+(defn calculate-max-score [entities]
+  (reduce (fn [score [_id e]]
+            (let [value (some identity [(:value e) (-> e :drop :value) 0])]
+              (+ score value)))
+          0 entities))
+
 ; ***** state manipulation functions ***** ;
 
 (defn can-pass-fn [types]
@@ -169,7 +175,7 @@
   (let [item (get-in *state [:entities item-id])]
     [true (-> *state
               (remove-entity item-id)
-              (add-entity (:hidden-item item)))]))
+              (add-entity (:drop item)))]))
 
 ; ***** create different types of things ***** ;
 
@@ -197,7 +203,7 @@
      (dissoc free-tiles pos)
      game-map]))
 
-(defn make-thing [[entities free-tiles game-map]]
+(defn make-covered-item [[entities free-tiles game-map]]
   (let [pos (rand-nth (keys free-tiles))
         item-template (get-random-entity-by-value forage-items)
         item (merge
@@ -210,13 +216,13 @@
                 (rand-nth item-covers)
                 {:pos pos
                  :layer :floor
-                 :hidden-item item
+                 :drop item
                  :fns {:encounter uncover-item}})]
     [(assoc entities (make-id) cover)
      (dissoc free-tiles pos)
      game-map]))
 
-(defn make-entities [game-map]
+(defn make-entities [game-map entity-count]
   (let [tiles (:tiles game-map)
         free-tiles (merge
                      (:room tiles)
@@ -225,19 +231,22 @@
         entities-free-tiles (make-shrine entities-free-tiles)
         [entities] (reduce
                      (fn [entities-free-tiles _i]
-                       (make-thing entities-free-tiles))
+                       (make-covered-item entities-free-tiles))
                      entities-free-tiles
-                     (range 10))]
+                     (range entity-count))]
     entities))
 
 (defn create-level [*state]
   (let [m (make-digger-map (js/Math.random) size size)
-        entities (make-entities m)]
+        entities (make-entities m 20)
+        max-score (calculate-max-score entities)]
     (log "map" m)
     (log "entities" entities)
+    (log "max-score" max-score)
     (assoc *state
            :map m
-           :entities entities)))
+           :entities entities
+           :max-score max-score)))
 
 ; ***** game engine ***** ;
 
@@ -380,22 +389,18 @@
         {:keys [inventory]} player]
     [:div#tombstone
      [:p "Rogule " (date-token)]
+     [:div "Score: " (apply + (map :value inventory)) " / " (:max-score @state)]
      [:p
       (tile "1F9DD" "you") " "
       (name outcome) " "
       (if (= outcome :ascended)
         (tile "1F31F" "stars")
         (tile "2620" "skull and crossbones"))]
-     [:div "Score: " (apply + (map :value inventory))]
      [:p
       (for [e (sort-by (juxt :value :name) inventory)]
         [:span (tile-mem (:char e) (:name e) {:width "48px"})])]
      [:button {:autoFocus true
-               :on-click #(swap! state
-                                 (fn [*state]
-                                   (-> *state
-                                       create-level
-                                       (dissoc :outcome))))}
+               :on-click #(reset! state (create-level initial-state))}
       "restart"]]))
 
 (defn component-main [state]
