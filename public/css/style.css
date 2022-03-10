@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Almendra+SC&family=Cutive+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap');
 
 * {
   box-sizing: border-box;
@@ -16,8 +16,10 @@ body {
   max-width: 100%;
   width: 800px;
   margin: auto;
-  font-family: 'Cutive Mono', monospace;
+  font-family: "Courier New", "Courier", "Courier 10 Pitch", monospace;
+  font-weight: bold;
   font-size: 2em;
+  color: #31373D;
 }
 
 p {
@@ -33,7 +35,7 @@ button {
   border-bottom: 5px solid #AAB8C2;
   background-color: #78B159;
   border-radius: 6px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: "Courier New", "Courier", "Courier 10 Pitch", monospace;
   font-size: 1em;
   padding: 0.25em 0.5em;
 }
