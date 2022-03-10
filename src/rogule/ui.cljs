@@ -6,7 +6,8 @@
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile tile-mem]]
     [rogule.map :refer [make-digger-map]]
-    ["rot-js" :as ROT]))
+    ["rot-js" :as ROT]
+    ["seedrandom" :as seedrandom]))
 
 (def initial-state
   {:message {:expires 5
@@ -109,7 +110,11 @@
   (js/Math.sqrt
     (distance-sq a b)))
 
-; ***** rng functions ***** ;
+(defn date-token []
+  (let [today (js/Date.)]
+    (str (.getFullYear today) "-"
+         (inc (.getMonth today)) "-"
+         (.getDate today))))
 
 (defn make-id []
   (-> (random-uuid) str (.slice 0 8)))
@@ -372,10 +377,9 @@
 (defn component-tombstone [state]
   (let [{:keys [outcome entities]} @state
         {:keys [player]} entities
-        {:keys [inventory]} player
-        today (js/Date.)]
+        {:keys [inventory]} player]
     [:div#tombstone
-     [:p "Rogule " (.getFullYear today) "-" (inc (.getMonth today)) "-" (.getDate today)]
+     [:p "Rogule " (date-token)]
      [:p
       (tile "1F9DD" "you") " "
       (name outcome) " "
@@ -404,6 +408,7 @@
                (js/document.getElementById "app")))
 
 (defn main! []
+  (seedrandom (str "Rogule-" (date-token)) #js {:global true})
   (swap! state create-level)
   (.addEventListener js/window "keydown" #(key-handler %))
   (start))
