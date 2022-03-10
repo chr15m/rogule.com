@@ -145,9 +145,11 @@
 ; ***** state manipulation functions ***** ;
 
 (defn can-pass-fn [types]
-  (fn [floor-tiles pos]
-    (let [tile-type (get floor-tiles pos)]
-      (contains? (set types) tile-type))))
+  (fn pass-check
+    ([floor-tiles x y] (pass-check floor-tiles [x y]))
+    ([floor-tiles pos]
+     (let [tile-type (get floor-tiles pos)]
+       (contains? (set types) tile-type)))))
 
 (defn remove-entity [*state id]
   (log "remove-entity" id (get-in *state [:entities]))
@@ -201,12 +203,24 @@
      game-map]))
 
 (defn make-shrine [[entities free-tiles game-map]]
-  (let [pos (rand-nth (keys free-tiles))
+  (let [player (:player entities)
+        pos (rand-nth (keys free-tiles))
+        ; gives us a sequence of [room-center-pos path]
+        paths-to-rooms (->> (:rooms game-map)
+                            (map room-center)
+                            (map (fn [room-center-pos]
+                                   [room-center-pos
+                                    (find-path
+                                      (:pos player) room-center-pos
+                                      (:floor-tiles game-map)
+                                      (-> player :fns :passable))]))
+                            (sort-by (juxt second count)))
+        furthest-room-center-pos (first (last paths-to-rooms))
         shrine (merge shrine-template
-                      {:pos pos
+                      {:pos furthest-room-center-pos
                        :layer :occupy
                        :fns {:encounter finish-game}})]
-    [(assoc entities (make-id) shrine)
+    [(assoc entities :shrine shrine)
      (dissoc free-tiles pos)
      game-map]))
 
