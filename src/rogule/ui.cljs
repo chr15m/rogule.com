@@ -5,7 +5,7 @@
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile tile-mem]]
-    [rogule.map :refer [make-digger-map distance-sq room-center]]
+    [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   ;(:require-macros [rogule.loader :refer [load-sprites lookup-twemoji load-sprite]])
@@ -160,7 +160,9 @@
   (update-in *state [:entities] dissoc id))
 
 (defn add-entity [*state entity]
-  (assoc-in *state [:entities (:id entity)] (dissoc entity :id)))
+  (if entity
+    (assoc-in *state [:entities (:id entity)] (dissoc entity :id))
+    *state))
 
 (defn add-to-inventory [*state id item-id entity]
   (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
@@ -192,7 +194,7 @@
 
 ; ***** create different types of things ***** ;
 
-(defn make-player [[entities game-map free-tiles]]
+(defn make-player [entities free-tiles]
   (let [pos (rand-nth (keys free-tiles))
         player {:sprite (load-sprite :elf)
                 :name "you"
@@ -203,40 +205,40 @@
                 :fns {:update (fn [])
                       :passable (can-pass-fn [:room :door :corridor])}}]
     [(assoc entities :player player)
-     (dissoc free-tiles pos)
-     game-map]))
+     (dissoc free-tiles pos)]))
 
-(defn make-shrine [[entities free-tiles game-map]]
-  (let [player (:player entities)
-        pos (rand-nth (keys free-tiles))
-        ; gives us a sequence of [room-center-pos path]
-        paths-to-rooms (->> (:rooms game-map)
-                            (map room-center)
-                            (map (fn [room-center-pos]
-                                   [room-center-pos
-                                    (find-path
-                                      (:pos player) room-center-pos
-                                      (:floor-tiles game-map)
-                                      (-> player :fns :passable))]))
-                            (sort-by (juxt second count)))
-        furthest-room-center-pos (first (last paths-to-rooms))
+(defn make-shrine [entities free-tiles paths-to-rooms]
+  (let [pos (rand-nth (keys free-tiles))
+        furthest-room-center-pos (:center-pos (last paths-to-rooms))
         shrine (merge shrine-template
                       {:pos furthest-room-center-pos
                        :layer :occupy
                        :fns {:encounter finish-game}})]
     [(assoc entities :shrine shrine)
-     (dissoc free-tiles pos)
-     game-map]))
+     (dissoc free-tiles pos)]))
 
-(defn make-covered-item [[entities free-tiles game-map]]
-  (let [pos (rand-nth (keys free-tiles))
+(defn make-covered-item [entities free-tiles game-map paths-to-rooms]
+  (let [{:keys [room]} (rand-nth paths-to-rooms)
+        player (:player entities)
+        room-tiles (tiles-for-room room)
+        free-room-tiles (clojure.set/intersection (set (keys room-tiles)) (set (keys free-tiles)))
+        pos (rand-nth (vec free-room-tiles))
+        furthest-room-path-length (count (:path (last paths-to-rooms)))
+        path-to-item (find-path
+                       (:pos player) pos
+                       (:floor-tiles game-map)
+                       (-> player :fns :passable))
+        path-to-item-length (count path-to-item)
+        difficulty (* (/ path-to-item-length furthest-room-path-length) 0.9)
         item-template (get-random-entity-by-value forage-items)
-        item (merge
-               item-template
-               {:pos pos
-                :id (make-id)
-                :layer :floor
-                :fns {:encounter add-item-to-inventory}})
+        item (when
+               (> (js/Math.random) difficulty)
+               (merge
+                 item-template
+                 {:pos pos
+                  :id (make-id)
+                  :layer :floor
+                  :fns {:encounter add-item-to-inventory}}))
         cover (merge
                 (rand-nth item-covers)
                 {:pos pos
@@ -244,20 +246,31 @@
                  :drop item
                  :fns {:encounter uncover-item}})]
     [(assoc entities (make-id) cover)
-     (dissoc free-tiles pos)
-     game-map]))
+     (dissoc free-tiles pos)]))
 
 (defn make-entities [game-map entity-count]
   (let [tiles (:tiles game-map)
         free-tiles (merge
                      (:room tiles)
                      (:corridor tiles))
-        entities-free-tiles (make-player [{} game-map free-tiles])
-        entities-free-tiles (make-shrine entities-free-tiles)
+        [entities free-tiles] (make-player {} free-tiles)
+        player (:player entities)
+        paths-to-rooms (->> (:rooms game-map)
+                            (map (fn [room] [room (room-center room)]))
+                            (map (fn [[room room-center-pos]]
+                                   (let [path (find-path
+                                                (:pos player) room-center-pos
+                                                (:floor-tiles game-map)
+                                                (-> player :fns :passable))]
+                                     {:center-pos room-center-pos
+                                      :room room
+                                      :path path})))
+                            (sort-by (juxt last count)))
+        [entities free-tiles] (make-shrine entities free-tiles paths-to-rooms)
         [entities] (reduce
-                     (fn [entities-free-tiles _i]
-                       (make-covered-item entities-free-tiles))
-                     entities-free-tiles
+                     (fn [[entities free-tiles] _i]
+                       (make-covered-item entities free-tiles game-map paths-to-rooms))
+                     [entities free-tiles]
                      (range entity-count))]
     entities))
 
