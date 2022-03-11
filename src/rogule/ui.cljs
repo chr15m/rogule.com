@@ -63,8 +63,8 @@
    {:name "grapes"
     :sprite (load-sprite :grapes)
     :value 2}
-   {:name "meat on bone"
-    :sprite (load-sprite :meat-on-bone)
+   {:name "shell"
+    :sprite (load-sprite :spiral-shell)
     :value 2}
 
    {:name "mushroom"
@@ -96,6 +96,35 @@
 
 (def shrine-template {:sprite (load-sprite :shinto-shrine)
                       :name "shrine"})
+
+(def monster-table
+  [{:sprite (load-sprite :rat)
+    :name "rat"}
+   {:sprite (load-sprite :bat)
+    :name "bat"}
+
+   {:sprite (load-sprite :ghost)
+    :name "ghost"}
+   {:sprite (load-sprite :bat)
+    :name "bat"}
+   {:sprite (load-sprite :wolf)
+    :name "wolf"}
+   {:sprite (load-sprite :boar)
+    :name "boar"}
+
+   {:sprite (load-sprite :ogre)
+    :name "ogre"}
+   {:sprite (load-sprite :vampire)
+    :name "vampire"}
+   {:sprite (load-sprite :zombie)
+    :name "zombie"}
+   {:sprite (load-sprite :genie)
+    :name "genie"}
+
+   {:sprite (load-sprite :dragon)
+    :name "dragon"}
+   {:sprite (load-sprite :t-rex)
+    :name "t-rex"}])
 
 (def key-dir-map
   {37 [0 dec]
@@ -149,7 +178,6 @@
        (contains? (set types) tile-type)))))
 
 (defn remove-entity [*state id]
-  (log "remove-entity" id (get-in *state [:entities]))
   (update-in *state [:entities] dissoc id))
 
 (defn add-entity [*state entity]
@@ -185,6 +213,17 @@
               (remove-entity item-id)
               (add-entity (:drop item)))]))
 
+(defn combat [*state their-id my-id]
+  (let [them (get-in *state [:entities their-id])
+        me (get-in *state [:entities my-id])]
+    (log "combat" (:name them) "hit" (:name me))
+    [true
+      ; roll dice
+      ; reduce their hitpints
+      ; add a message
+      (-> *state
+          (remove-entity my-id))]))
+
 ; ***** create different types of things ***** ;
 
 (defn make-player [entities free-tiles]
@@ -195,7 +234,7 @@
                 :pos pos
                 :stats {}
                 :inventory []
-                :fns {:update (fn [])
+                :fns {:encounter #'combat
                       :passable (can-pass-fn [:room :door :corridor])}}]
     [(assoc entities :player player)
      (dissoc free-tiles pos)]))
@@ -241,7 +280,19 @@
     [(assoc entities (make-id) cover)
      (dissoc free-tiles pos)]))
 
-(defn make-entities [game-map entity-count]
+(defn make-monster [entities free-tiles _game-map _paths-to-rooms]
+  (let [pos (rand-nth (keys free-tiles))
+        monster (merge
+                  (rand-nth monster-table)
+                  {:pos pos
+                   :layer :occupy
+                   :fns {:encounter combat
+                         :update (fn [*state monster-id monster] (log "update" (:name monster) monster-id) *state)
+                         :passable (can-pass-fn [:room :door :corridor])}})]
+    [(assoc entities (make-id) monster)
+     (dissoc free-tiles pos)]))
+
+(defn make-entities [game-map entity-count monster-count]
   (let [tiles (:tiles game-map)
         free-tiles (merge
                      (:room tiles)
@@ -260,16 +311,21 @@
                                       :path path})))
                             (sort-by (juxt last count)))
         [entities free-tiles] (make-shrine entities free-tiles paths-to-rooms)
+        [entities free-tiles] (reduce
+                                (fn [[entities free-tiles] _i]
+                                  (make-covered-item entities free-tiles game-map paths-to-rooms))
+                                [entities free-tiles]
+                                (range entity-count))
         [entities] (reduce
                      (fn [[entities free-tiles] _i]
-                       (make-covered-item entities free-tiles game-map paths-to-rooms))
+                       (make-monster entities free-tiles game-map paths-to-rooms))
                      [entities free-tiles]
-                     (range entity-count))]
+                     (range monster-count))]
     entities))
 
 (defn create-level [*state]
   (let [m (make-digger-map (js/Math.random) size size)
-        entities (make-entities m 20)
+        entities (make-entities m 20 5)
         max-score (calculate-max-score entities)]
     (log "map" m)
     (log "entities" entities)
@@ -299,6 +355,16 @@
       (assoc-in state-after-encounters [:entities id :pos] new-pos)
       state-after-encounters)))
 
+(defn update-monsters [*state]
+  (->> *state
+      :entities
+      (filter (fn [[_id entity]] (-> entity :fns :update)))
+      (reduce
+        (fn [*state [id entity]]
+          (let [update-fn (-> entity :fns :update)]
+            (update-fn *state id entity)))
+        *state)))
+
 (defn expire-messages [*state]
   (update-in *state [:message]
              (fn [{:keys [expires text]}]
@@ -326,6 +392,7 @@
                                 (update-in [dir-idx] dir-fn))]
                 (swap! state #(-> %
                                   (move-to :player new-pos)
+                                  (update-monsters)
                                   (expire-messages)))))
             (not down?)
             (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
