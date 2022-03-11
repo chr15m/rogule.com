@@ -83,3 +83,20 @@
        :corridors corridors
        :size [(aget digger "_width") (aget digger "_height")]
        :digger digger})))
+
+(defn room-center [room]
+  [(int (/ (+ (:_x2 room)
+              (:_x1 room))
+           2))
+   (int (/ (+ (:_y2 room)
+              (:_y1 room))
+           2))])
+
+(defn distance-sq [[x1 y1] [x2 y2]]
+  (+
+   (js/Math.pow (- x2 x1) 2) 
+   (js/Math.pow (- y2 y1) 2)))
+
+(defn distance [a b]
+  (js/Math.sqrt
+    (distance-sq a b)))

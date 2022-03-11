@@ -5,7 +5,7 @@
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile tile-mem]]
-    [rogule.map :refer [make-digger-map]]
+    [rogule.map :refer [make-digger-map distance-sq room-center]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   ;(:require-macros [rogule.loader :refer [load-sprites lookup-twemoji load-sprite]])
@@ -113,23 +113,6 @@
   (reduce (fn [es [id e]] (assoc es (conj (:pos e) (:layer e)) (assoc e :id id))) {} entities))
 
 (def entities-by-pos-mem (memoize entities-by-pos))
-
-(defn room-center [room]
-  [(int (/ (+ (:_x2 room)
-              (:_x1 room))
-           2))
-   (int (/ (+ (:_y2 room)
-              (:_y1 room))
-           2))])
-
-(defn distance-sq [[x1 y1] [x2 y2]]
-  (+
-   (js/Math.pow (- x2 x1) 2) 
-   (js/Math.pow (- y2 y1) 2)))
-
-(defn distance [a b]
-  (js/Math.sqrt
-    (distance-sq a b)))
 
 (defn date-token []
   (let [today (js/Date.)]
