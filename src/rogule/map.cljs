@@ -108,4 +108,4 @@
         p (ROT/Path.AStar. x1 y1 passable-fn-wrapped)
         path (atom [])]
     (.compute p x2 y2 (fn [x y] (swap! path conj [x y])))
-    @path))
+    (-> @path reverse vec)))

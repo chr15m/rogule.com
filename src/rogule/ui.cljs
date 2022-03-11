@@ -6,7 +6,7 @@
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile tile-mem]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
-    [rogule.engine :refer [install-arrow-key-handler]]
+    [rogule.engine :refer [install-arrow-key-handler move-to]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   (:require-macros
@@ -195,6 +195,20 @@
       (-> *state
           (remove-entity my-id))]))
 
+(defn chase-player [{:keys [entities] :as *state} monster-id monster]
+  (log "update" (:name monster) monster-id)
+  (let [player (:player entities)
+        game-map (:map *state)
+        path-to-player (when player
+                         (find-path
+                           (:pos monster) (:pos player)
+                           (:floor-tiles game-map)
+                           (-> monster :fns :passable)))]
+    (log "path-to-player" (:pos monster) (:pos player) path-to-player)
+    (if (and player (< (count path-to-player) 10))
+      (move-to *state monster-id (second path-to-player))
+      *state)))
+
 ; ***** create different types of things ***** ;
 
 (defn make-player [entities free-tiles]
@@ -258,7 +272,7 @@
                   {:pos pos
                    :layer :occupy
                    :fns {:encounter combat
-                         :update (fn [*state monster-id monster] (log "update" (:name monster) monster-id) *state)
+                         :update chase-player
                          :passable (can-pass-fn [:room :door :corridor])}})]
     [(assoc entities (make-id) monster)
      (dissoc free-tiles pos)]))
@@ -280,7 +294,7 @@
                                      {:center-pos room-center-pos
                                       :room room
                                       :path path})))
-                            (sort-by (juxt last count)))
+                            (sort-by (juxt :path count)))
         [entities free-tiles] (make-shrine entities free-tiles paths-to-rooms)
         [entities free-tiles] (reduce
                                 (fn [[entities free-tiles] _i]
