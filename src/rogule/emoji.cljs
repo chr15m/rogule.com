@@ -1,13 +1,10 @@
-(ns rogule.emoji)
+(ns rogule.emoji
+  (:require
+    [rogule.twemojis :refer [codes-to-filename]]))
 
 (def re-spaces (js/RegExp. " " "g"))
 
-(defn codes-to-img [codes]
-  (-> codes
-      (.toLowerCase)
-      (.replace re-spaces "-")))
-
-(def codes-to-img-mem (memoize codes-to-img))
+(def codes-to-img-mem (memoize codes-to-filename))
 
 (defn select-me [ev]
   (let [selection (.getSelection js/window)]

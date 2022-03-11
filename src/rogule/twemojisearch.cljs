@@ -3,7 +3,8 @@
     [shadow.resource :as rc]
     [reagent.core :as r]
     [reagent.dom :as rdom]
-    [rogule.emoji :refer [tile re-spaces alt-from-codes select-me codes-to-img-mem]])
+    [rogule.emoji :refer [tile alt-from-codes select-me codes-to-img-mem]]
+    [rogule.twemojis :refer [name-to-key]])
   #_ (:require-macros
        [rogule.loader :refer [get-twemojis]]))
 
@@ -54,7 +55,7 @@
           (tile (assoc (js->clj r) "src" (str "/twemoji/svg/" (codes-to-img-mem (aget r "codes"))))
                 (when (aget r "codes") (alt-from-codes (aget r "codes"))))]
          " "
-         [:span {:on-click select-me} ":" (.replace (aget r "name") re-spaces "-")]])])])
+         [:span {:on-click select-me} ":" (name-to-key (aget r "name"))]])])])
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]
