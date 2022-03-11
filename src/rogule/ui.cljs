@@ -8,8 +8,6 @@
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
-  ;(:require-macros [rogule.loader :refer [load-sprites lookup-twemoji load-sprite]])
-  ; (:require-macros [rogule.static :refer [copy-sprites]])
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
 
@@ -25,23 +23,6 @@
 (def visible-dist-sq (js/Math.pow visible-dist 2))
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
-
-#_ (def sprites (load-sprites {:shrine "26E9"
-                               :herbs "1F33F"
-                               :feather "1FAB6"
-                               :bone "1F9B4"
-                               :olive-sprig "1FAD2"
-                               :egg "1F95A"
-                               :grapes "1F347"
-                               :meat-on-bone "1F356"
-                               :mushroom "1F344"
-                               :chestnut "1F330"
-                               :hole "1F573"}))
-
-; (log (lookup-twemoji :bone))
-; (log (load-sprite :bone))
-
-; (log (prep :bone))
 
 (def forage-items
   [{:name "herbs"
