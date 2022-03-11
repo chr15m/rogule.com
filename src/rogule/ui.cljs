@@ -7,7 +7,11 @@
     [rogule.emoji :refer [tile tile-mem]]
     [rogule.map :refer [make-digger-map]]
     ["rot-js" :as ROT]
-    ["seedrandom" :as seedrandom]))
+    ["seedrandom" :as seedrandom])
+  ;(:require-macros [rogule.loader :refer [load-sprites lookup-twemoji load-sprite]])
+  ; (:require-macros [rogule.static :refer [copy-sprites]])
+  (:require-macros
+    [rogule.loader :refer [load-sprite]]))
 
 (def initial-state
   {:message {:expires 5
@@ -22,58 +26,75 @@
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
 
+#_ (def sprites (load-sprites {:shrine "26E9"
+                               :herbs "1F33F"
+                               :feather "1FAB6"
+                               :bone "1F9B4"
+                               :olive-sprig "1FAD2"
+                               :egg "1F95A"
+                               :grapes "1F347"
+                               :meat-on-bone "1F356"
+                               :mushroom "1F344"
+                               :chestnut "1F330"
+                               :hole "1F573"}))
+
+; (log (lookup-twemoji :bone))
+; (log (load-sprite :bone))
+
+; (log (prep :bone))
+
 (def forage-items
-  [{:char "1F33F"
-    :name "herbs"
+  [{:name "herbs"
+    :sprite (load-sprite :herb)
     :value 1}
-   {:char "1FAB6"
-    :name "feather"
+   {:name "feather"
+    :sprite (load-sprite :feather)
     :value 1}
-   {:char "1F9B4"
-    :name "bone"
+   {:name "bone"
+    :sprite (load-sprite :bone)
     :value 1}
-   {:char "1FAD2"
-    :name "olive sprig"
+   {:name "olive sprig"
+    :sprite (load-sprite :olive)
     :value 1}
 
-   {:char "1F95A"
-    :name "egg"
+   {:name "egg"
+    :sprite (load-sprite :egg)
     :value 2}
-   {:char "1F347"
-    :name "grapes"
+   {:name "grapes"
+    :sprite (load-sprite :grapes)
     :value 2}
-   {:char "1F356"
-    :name "meat on bone"
+   {:name "meat on bone"
+    :sprite (load-sprite :meat-on-bone)
     :value 2}
 
-   {:char "1F344"
-    :name "mushroom"
+   {:name "mushroom"
+    :sprite (load-sprite :mushroom)
     :value 4}
-   {:char "1F330"
-    :name "chestnut"
+   {:name "chestnut"
+    :sprite (load-sprite :chestnut)
     :value 4}
 
-   {:char "1F48E"
-    :name "gem"
+   {:name "gem"
+    :sprite (load-sprite :gem-stone)
     :value 8}])
 
 (def item-covers
-  [{:char "1F573"
+  [{:sprite (load-sprite :hole)
     :name "hole"}
-   {:char "1FAA8"
+   {:sprite (load-sprite :rock)
     :name "rock"}
-   {:char "1FAB5"
+   {:sprite (load-sprite :wood)
     :name "wood block"}])
 
 (def indoor-scenery
-  [{:char "26F2"
+  [{:sprite (load-sprite :fountain)
     :name "fountain"}
-   {:char "1FAB4"
+   {:sprite (load-sprite :potted-plant)
     :name "pot plant"}
-   {:char "1F5FF"
+   {:sprite (load-sprite :moai)
     :name "statue"}])
 
-(def shrine-template {:char "26E9"
+(def shrine-template {:sprite (load-sprite :shinto-shrine)
                       :name "shrine"})
 
 (def key-dir-map
@@ -190,7 +211,7 @@
 
 (defn make-player [[entities game-map free-tiles]]
   (let [pos (rand-nth (keys free-tiles))
-        player {:char "1F9DD"
+        player {:sprite (load-sprite :elf)
                 :name "you"
                 :layer :occupy
                 :pos pos
@@ -350,32 +371,32 @@
    (when (> opacity 0)
      (cond 
        (= (get floor-tiles [x y]) :door)
-       (tile "2B1C" "door")
+       (tile (load-sprite :white-large-square) "door")
        (= (get floor-tiles [x y]) :room)
-       (tile "2B1C" "room")
+       (tile (load-sprite :white-large-square) "room")
        (= (get floor-tiles [x y]) :wall)
-       (tile "2B1B" "wall")
+       (tile (load-sprite :black-large-square) "wall")
        (= (get floor-tiles [x y]) :corridor)
-       (tile "1F7EB" "corridor")
+       (tile (load-sprite :brown-square) "corridor")
        :else nil))
    (for [layer [:floor :occupy]]
      (let [entity (get entities [x y layer])]
        (when entity
-         (tile-mem (:char entity) (:name entity) {:opacity opacity}))))])
+         (tile-mem (:sprite entity) (:name entity) {:opacity opacity}))))])
 
 (defn component-inventory [inventory]
   [:div#inventory
    [:div#score (apply + (map :value inventory))]
    [:ul
     (for [e (sort-by (juxt :value :name) inventory)]
-      [:li (tile-mem (:char e) (:name e) {:width "48px"})])]])
+      [:li (tile-mem (:sprite e) (:name e) {:width "48px"})])]])
 
 (defn component-help [show-help]
   (when show-help
     [:div.modal
      [:h2 "Rogule"]
      [:p "Find items to obtain the best score."]
-     [:p "Get to the shrine " (tile-mem "26E9" "shrine") " to ascend."]]))
+     [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend."]]))
 
 (defn component-messages [message]
   [:div.message message])
@@ -404,6 +425,12 @@
      [component-help (= (:modal @state) :help)]
      [component-messages (-> @state :message :text)]]))
 
+(defn copy-element [selector]
+  (let [el (.querySelector js/document selector)]
+    (->
+      (js/navigator.clipboard.writeText (aget el "innerText"))
+      (.then (fn [] (js/alert "copied"))))))
+
 (defn component-tombstone [state]
   (let [{:keys [outcome entities]} @state
         {:keys [player]} entities
@@ -412,17 +439,18 @@
      [:p "Rogule " (date-token)]
      [:div "Score: " (apply + (map :value inventory)) " / " (:max-score @state)]
      [:p
-      (tile "1F9DD" "you") " "
+      (tile (load-sprite :elf) "you") " "
       (name outcome) " "
       (if (= outcome :ascended)
-        (tile "1F31F" "stars")
-        (tile "2620" "skull and crossbones"))]
+        (tile (load-sprite :glowing-star))
+        (tile (load-sprite :skull-and-crossbones)))]
      [:p
       (for [e (sort-by (juxt :value :name) inventory)]
-        [:span (tile-mem (:char e) (:name e) {:width "48px"})])]
+        [:span (tile-mem (:sprite e) (:name e) {:width "48px"})])]
      [:button {:autoFocus true
                :on-click #(reset! state (create-level initial-state))}
-      "restart"]]))
+      "restart"]
+     [:button {:on-click #(copy-element "#tombstone")} "share"]]))
 
 (defn component-main [state]
   (if (:outcome @state)

@@ -3,7 +3,6 @@
     ["fs" :as fs]
     [applied-science.js-interop :as j]
     [promesa.core :as p]
-    [sitefox.util :refer [env]]
     [sitefox.html :refer [render-into]]
     [sitefox.web :as web]
     [sitefox.logging :refer [bind-console-to-file]]))
@@ -27,6 +26,7 @@
   (web/reset-routes app)
   (j/call app :get "/mypage" #(.send %2 (render-into template "body" [my-page])))
   (j/call app :get "/api/example.json" api-example)
+  (web/static-folder app "/twemoji" "node_modules/twemoji-emojis/vendor")
   (web/static-folder app "/" "public"))
 
 (defn main! []

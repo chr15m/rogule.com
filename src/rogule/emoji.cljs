@@ -1,4 +1,15 @@
-(ns rogule.emoji)
+(ns rogule.emoji
+  (:require
+    [shadow.resource :as rc])
+  (:require-macros
+    [rogule.loader :refer [get-twemojis]]))
+
+(def twemojis-clj (get-twemojis))
+(def twemojis (js/JSON.parse (rc/inline "emojis.json")))
+; (def twemojis-clj (js->clj twemojis :keywordize-keys true))
+
+; (print twemojis-clj)
+;(print (load-sprite :bone))
 
 (def re-spaces (js/RegExp. " " "g"))
 
@@ -9,12 +20,21 @@
 
 (def codes-to-img-mem (memoize codes-to-img))
 
-(defn tile [codes tile-name & [extra]]
-  (let [c (codes-to-img-mem codes)]
-    [:img (merge {:title tile-name
-                  :alt tile-name
+(defn select-me [ev]
+  (let [selection (.getSelection js/window)]
+    (.selectAllChildren selection (aget ev "target"))))
+
+(defn alt-from-codes [codes]
+  (js/String.fromCodePoint.apply nil (.map (.split codes " ") #(str "0x" %))))
+
+(defn tile [sprite & [tile-name extra]]
+  (let [src (get sprite "src")]
+    [:img (merge {:title (or tile-name (get sprite "name"))
+                  ; :alt (alt-from-codes (get sprite "codes"))
                   :width "32px"
-                  :src (str "twemojis/svg/" c ".svg")}
+                  :src (if (= (.indexOf src "/") 0)
+                         (str src ".svg")
+                         (str "data:image/svg+xml;base64," src))}
                  extra)]))
 
 (def tile-mem (memoize tile))

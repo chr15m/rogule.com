@@ -1,13 +1,10 @@
 (ns rogule.twemojisearch
   (:require
-    [shadow.resource :as rc]
     [reagent.core :as r]
     [reagent.dom :as rdom]
-    [rogule.emoji :refer [tile]]))
+    [rogule.emoji :refer [tile twemojis re-spaces alt-from-codes select-me codes-to-img-mem]]))
 
 (defonce state (r/atom {}))
-
-(def twemojis (js/JSON.parse (rc/inline "emojis.json")))
 
 (defn field-match [t term field]
   (let [lookup (.toLowerCase (aget t field))]
@@ -46,7 +43,12 @@
      [:pre (count results)]
      [:ul
       (for [r (.slice results 0 100)]
-        [:li (tile (aget r "codes") (aget r "codes")) " " (aget r "name")])])])
+        [:li
+         [:span {:on-click select-me}
+          (tile (assoc (js->clj r) "src" (str "/twemoji/svg/" (codes-to-img-mem (aget r "codes"))))
+                (when (aget r "codes") (alt-from-codes (aget r "codes"))))]
+         " "
+         [:span {:on-click select-me} ":" (.replace (aget r "name") re-spaces "-")]])])])
 
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]
