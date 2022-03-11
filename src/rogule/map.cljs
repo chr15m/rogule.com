@@ -102,3 +102,10 @@
 (defn distance [a b]
   (js/Math.sqrt
     (distance-sq a b)))
+
+(defn find-path [[x1 y1] [x2 y2] tiles passable-fn]
+  (let [passable-fn-wrapped (partial passable-fn tiles)
+        p (ROT/Path.AStar. x1 y1 passable-fn-wrapped)
+        path (atom [])]
+    (.compute p x2 y2 (fn [x y] (swap! path conj [x y])))
+    @path))

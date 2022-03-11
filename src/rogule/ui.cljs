@@ -5,7 +5,7 @@
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile tile-mem]]
-    [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room]]
+    [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   ;(:require-macros [rogule.loader :refer [load-sprites lookup-twemoji load-sprite]])
@@ -138,13 +138,6 @@
             (let [value (some identity [(:value e) (-> e :drop :value) 0])]
               (+ score value)))
           0 entities))
-
-(defn find-path [[x1 y1] [x2 y2] tiles passable-fn]
-  (let [passable-fn-wrapped (partial passable-fn tiles)
-        p (ROT/Path.AStar. x1 y1 passable-fn-wrapped)
-        path (atom [])]
-    (.compute p x2 y2 (fn [x y] (swap! path conj [x y])))
-    @path))
 
 ; ***** state manipulation functions ***** ;
 
