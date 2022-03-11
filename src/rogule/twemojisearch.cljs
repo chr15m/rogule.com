@@ -11,6 +11,10 @@
 ; (def twemojis-clj (get-twemojis))
 (def twemojis (js/JSON.parse (rc/inline "emojis.json")))
 
+(def twemojis-url (if (not= (.indexOf (aget js/document "location" "href") "localhost") -1)
+                    "/twemoji/svg/"  
+                    "https://twemoji.maxcdn.com/v/latest/svg/"))
+
 (defonce state (r/atom {}))
 
 (defn field-match [t term field]
@@ -52,7 +56,7 @@
       (for [r (.slice results 0 100)]
         [:li
          [:span {:on-click select-me}
-          (tile (assoc (js->clj r) "src" (str "/twemoji/svg/" (codes-to-img-mem (aget r "codes"))))
+          (tile (assoc (js->clj r) "src" (str twemojis-url (codes-to-img-mem (aget r "codes"))))
                 (when (aget r "codes") (alt-from-codes (aget r "codes"))))]
          " "
          [:span {:on-click select-me} ":" (name-to-key (aget r "name"))]])])])
