@@ -1,11 +1,12 @@
 (ns rogule.ui
   (:require
-    [clojure.set :refer [difference]]
+    [clojure.set :refer [intersection]]
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile tile-mem]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
+    [rogule.engine :refer [install-arrow-key-handler]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   (:require-macros
@@ -16,7 +17,6 @@
              :text "Press ? for help."}})
 
 (defonce state (r/atom initial-state))
-(defonce keymap (r/atom {}))
 
 (def size 32)
 (def visible-dist 9)
@@ -106,16 +106,6 @@
     :name "dragon"}
    {:sprite (load-sprite :t-rex)
     :name "t-rex"}])
-
-(def key-dir-map
-  {37 [0 dec]
-   72 [0 dec]
-   39 [0 inc]
-   76 [0 inc]
-   38 [1 dec]
-   75 [1 dec]
-   40 [1 inc]
-   74 [1 inc]})
 
 ; ***** utility functions ***** ;
 
@@ -234,7 +224,7 @@
   (let [{:keys [room]} (rand-nth paths-to-rooms)
         player (:player entities)
         room-tiles (tiles-for-room room)
-        free-room-tiles (clojure.set/intersection (set (keys room-tiles)) (set (keys free-tiles)))
+        free-room-tiles (intersection (set (keys room-tiles)) (set (keys free-tiles)))
         pos (rand-nth (vec free-room-tiles))
         furthest-room-path-length (count (:path (last paths-to-rooms)))
         path-to-item (find-path
@@ -304,7 +294,7 @@
                      (range monster-count))]
     entities))
 
-(defn create-level [*state]
+(defn make-level [*state size]
   (let [m (make-digger-map (js/Math.random) size size)
         entities (make-entities m 20 5)
         max-score (calculate-max-score entities)]
@@ -315,90 +305,6 @@
            :map m
            :entities entities
            :max-score max-score)))
-
-; ***** game engine ***** ;
-
-(defn move-to [*state id new-pos]
-  (let [game-map (:map *state)
-        floor-tiles (:floor-tiles game-map)
-        entity (get-in *state [:entities id])
-        passable-fn (-> entity :fns :passable)
-        passable-tile? (if passable-fn (passable-fn floor-tiles new-pos) true)
-        entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
-        [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
-                                                        (let [encounter-fn (-> e :fns :encounter)]
-                                                          (if encounter-fn
-                                                            (let [[this-item-blocks? *state] (encounter-fn *state id entity-id)]
-                                                              [(or item-blocks? this-item-blocks?) *state])
-                                                            [item-blocks? *state])))
-                                                      [false *state] entities-at-pos)]
-    (if (and passable-tile? (not item-blocks?))
-      (assoc-in state-after-encounters [:entities id :pos] new-pos)
-      state-after-encounters)))
-
-(defn update-monsters [*state]
-  (->> *state
-      :entities
-      (filter (fn [[_id entity]] (-> entity :fns :update)))
-      (reduce
-        (fn [*state [id entity]]
-          (let [update-fn (-> entity :fns :update)]
-            (update-fn *state id entity)))
-        *state)))
-
-(defn expire-messages [*state]
-  (update-in *state [:message]
-             (fn [{:keys [expires text]}]
-               (let [display? (not= expires 0)]
-                 (when display?
-                   {:expires (dec expires)
-                    :text text})))))
-
-(defn process-arrow-key! [state ev]
-  ; key down -> if not already pressed, push that key onto queue
-  ; after a time out
-  ;   if any keys are still down duplicate the end of the queue
-  (let [code (aget ev "keyCode")
-        down? (= (aget ev "type") "keydown")
-        dir (get key-dir-map code)]
-    (when dir
-      (cond (and down?
-                 (nil? (-> @keymap :held (get code))))
-            (do
-              (swap! keymap update-in [:held] (fn [held] (conj (set held) code)))
-              (let [dir-idx (first dir)
-                    dir-fn (second dir)
-                    new-pos (-> @state
-                                (get-in [:entities :player :pos])
-                                (update-in [dir-idx] dir-fn))]
-                (swap! state #(-> %
-                                  (move-to :player new-pos)
-                                  (update-monsters)
-                                  (expire-messages)))))
-            (not down?)
-            (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
-    ;(js/console.log "keymap" (clj->js @keymap))
-    ))
-
-(defn install-arrow-key-handler [state el]
-  (if el
-    (let [arrow-handler-fn #(process-arrow-key! state %)]
-      (.addEventListener js/window "keydown" arrow-handler-fn)
-      (.addEventListener js/window "keyup" arrow-handler-fn)
-      (aset js/window "_game-key-handler" arrow-handler-fn))
-    (let [arrow-handler-fn (aget js/window "_game-key-handler")]
-      (.removeEventListener js/window "keydown" arrow-handler-fn)
-      (.removeEventListener js/window "keyup" arrow-handler-fn)
-      (js-delete js/window "_game-key-handler"))))
-
-(defn key-handler [ev]
-  (let [code (aget ev "keyCode")]
-    (print "keyCode" code)
-    (case code
-      81 (swap! state create-level)
-      191 (swap! state update-in [:modal] #(when (not %) :help))
-      27 (swap! state dissoc :modal)
-      nil)))
 
 ; ***** rendering ***** ;
 
@@ -485,7 +391,7 @@
       (for [e (sort-by (juxt :value :name) inventory)]
         [:span (tile-mem (:sprite e) (:name e) {:width "48px"})])]
      [:button {:autoFocus true
-               :on-click #(reset! state (create-level initial-state))}
+               :on-click #(reset! state (make-level initial-state size))}
       "restart"]
      [:button {:on-click #(copy-element "#tombstone")} "share"]]))
 
@@ -494,12 +400,21 @@
     [component-tombstone state]
     [component-game state]))
 
+(defn key-handler [ev]
+  (let [code (aget ev "keyCode")]
+    (print "keyCode" code)
+    (case code
+      81 (swap! state make-level)
+      191 (swap! state update-in [:modal] #(when (not %) :help))
+      27 (swap! state dissoc :modal)
+      nil)))
+
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]
                (js/document.getElementById "app")))
 
 (defn main! []
   (seedrandom (str "Rogule-" (date-token)) #js {:global true})
-  (swap! state create-level)
+  (swap! state make-level)
   (.addEventListener js/window "keydown" #(key-handler %))
   (start))
