@@ -22,6 +22,12 @@
 (defn range-around [x dist]
   (range (- x dist) (+ x dist)))
 
+(defn tiles-for-room [room]
+  (apply merge
+         (for [x (range (:_x1 room) (inc (:_x2 room)))
+               y (range (:_y1 room) (inc (:_y2 room)))]
+           {[x y] :room})))
+
 (defn make-digger-map [seed w h]
   (js/console.log "make-digger-map" seed w h)
   (ROT/RNG.setSeed (hash-seed "map" seed w h))
@@ -45,11 +51,7 @@
     (let [rooms (-> digger (aget "_rooms") js/JSON.stringify js/JSON.parse (js->clj :keywordize-keys true))
           corridors (-> digger (aget "_corridors") js/JSON.stringify js/JSON.parse (js->clj :keywordize-keys true))
           room-tiles (->> rooms
-                          (map (fn [room]
-                                 (apply merge
-                                        (for [x (range (:_x1 room) (inc (:_x2 room)))
-                                              y (range (:_y1 room) (inc (:_y2 room)))]
-                                          {[x y] :room}))))
+                          (map tiles-for-room)
                           (apply concat)
                           (into {}))
           door-tiles (->> rooms
