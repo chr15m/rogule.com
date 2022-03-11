@@ -1,8 +1,14 @@
 (ns rogule.twemojisearch
   (:require
+    [shadow.resource :as rc]
     [reagent.core :as r]
     [reagent.dom :as rdom]
-    [rogule.emoji :refer [tile twemojis re-spaces alt-from-codes select-me codes-to-img-mem]]))
+    [rogule.emoji :refer [tile re-spaces alt-from-codes select-me codes-to-img-mem]])
+  #_ (:require-macros
+       [rogule.loader :refer [get-twemojis]]))
+
+; (def twemojis-clj (get-twemojis))
+(def twemojis (js/JSON.parse (rc/inline "emojis.json")))
 
 (defonce state (r/atom {}))
 

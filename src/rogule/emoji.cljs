@@ -1,15 +1,4 @@
-(ns rogule.emoji
-  (:require
-    [shadow.resource :as rc])
-  (:require-macros
-    [rogule.loader :refer [get-twemojis]]))
-
-(def twemojis-clj (get-twemojis))
-(def twemojis (js/JSON.parse (rc/inline "emojis.json")))
-; (def twemojis-clj (js->clj twemojis :keywordize-keys true))
-
-; (print twemojis-clj)
-;(print (load-sprite :bone))
+(ns rogule.emoji)
 
 (def re-spaces (js/RegExp. " " "g"))
 
