@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #F6F5E5;
+}
+
+html, body, #app, #loading {
+  min-height: 100%;
+}
+
+body {
+  max-width: 100%;
+  width: 800px;
+  margin: auto;
+  font-family: "Courier New", "Courier", "Courier 10 Pitch", monospace;
+  font-weight: bold;
+  font-size: 2em;
+  color: #31373D;
+}
+
+p {
+  font-weight: bold;
+}
+
+h1, h2, h3 {
+  font-family: 'Almendra SC', serif;
+}
+
+button {
+  border: 1px solid #AAB8C2;
+  border-bottom: 5px solid #AAB8C2;
+  background-color: #78B159;
+  border-radius: 6px;
+  font-family: "Courier New", "Courier", "Courier 10 Pitch", monospace;
+  font-size: 1em;
+  padding: 0.25em 0.5em;
+}
+
+button:active {
+  border-bottom: 1px solid #AAB8C2;
+  margin-bottom: 4px;
+  transform: translateY(4px);
+}
+
+/***** specific styles *****/
+
+#app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/***** text page specific styles *****/
+
+body.page {
+  height: 100vh;
+  padding: 0.5em;
+}
+
+/***** game styles *****/
+
+body.game {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+body.game #app {
+  align-items: center;
+}
+
+#game h1 {
+  position: absolute;
+  top: 0px;
+  text-align: center;
+  margin: auto;
+  width: 100%;
+  left: 0px;
+}
+
+div.row {
+  height: 32px;
+}
+
+span.grid {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}
+
+span.grid > * {
+  position: absolute;
+}
+
+#score {
+  position: absolute;
+  bottom: 128px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+}
+
+#inventory ul {
+  position: absolute;
+  bottom: 48px;
+  left: 0px;
+  list-style-type: none;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 0px;
+  margin: 0px;
+}
+
+#inventory li {
+  display: inline-block;
+}
+
+#inventory li + li {
+}
+
+.modal {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  background-color: #F6F5E5;
+}
+
+.message {
+  position: absolute;
+  bottom: 8px;
+  left: 0px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#tombstone {
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #CCD6DD;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+/***** loader *****/
+
+#loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loading div {
+  animation: spin 0.33s linear infinite;
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  border: 3px solid transparent;
+  border-left: 3px solid silver;
+  border-right: 3px solid silver;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
