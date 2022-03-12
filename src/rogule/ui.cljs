@@ -269,7 +269,10 @@
                          (find-path
                            (:pos monster) (:pos player)
                            passable-fn))]
-    (if (and player (< (count path-to-player) 10))
+    (if (and player
+             (< (count path-to-player) 10)
+             ; every now and then just don't move
+             (< (.getUniform combat-dice) 0.9))
       (move-to *state monster-id (second path-to-player))
       *state)))
 
