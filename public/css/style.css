@@ -5,7 +5,7 @@
 }
 
 html {
-  background-color: #F6F5E5;
+  background-color: #FCFBF3;
 }
 
 html, body, #app, #loading {
@@ -144,7 +144,7 @@ span.grid > * {
   justify-content: center;
   align-items: center;
   padding: 1em;
-  background-color: #F6F5E5;
+  background-color: #FCFBF3;
 }
 
 .message {
