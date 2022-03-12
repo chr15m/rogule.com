@@ -1,6 +1,7 @@
 (ns rogule.ui
   (:require
     [clojure.set :refer [intersection]]
+    [clojure.string :refer [join]]
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
@@ -17,12 +18,14 @@
              :text "Press ? for help."}})
 
 (defonce state (r/atom initial-state))
+(defonce combat-dice (ROT/RNG.clone))
 
 (def size 32)
 (def visible-dist 9)
 (def visible-dist-sq (js/Math.pow visible-dist 2))
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
+(def coin #js [0 1])
 
 (def forage-items
   [{:name "herbs"
@@ -80,32 +83,41 @@
 
 (def monster-table
   [{:sprite (load-sprite :rat)
-    :name "rat"}
+    :stats {:xp 1 :hp [2 2]}
+    :name "the rat"}
    {:sprite (load-sprite :bat)
-    :name "bat"}
+    :stats {:xp 1 :hp [3 3]}
+    :name "the bat"}
 
    {:sprite (load-sprite :ghost)
-    :name "ghost"}
-   {:sprite (load-sprite :bat)
-    :name "bat"}
-   {:sprite (load-sprite :wolf)
-    :name "wolf"}
+    :stats {:xp 2 :hp [3 3]}
+    :name "the ghost"}
    {:sprite (load-sprite :boar)
-    :name "boar"}
-
+    :stats {:xp 2 :hp [4 4]}
+    :name "the boar"}
+   {:sprite (load-sprite :wolf)
+    :stats {:xp 2 :hp [5 5]}
+    :name "the wolf"}
    {:sprite (load-sprite :ogre)
-    :name "ogre"}
+    :stats {:xp 2 :hp [7 7]}
+    :name "the ogre"}
+
    {:sprite (load-sprite :vampire)
-    :name "vampire"}
+    :stats {:xp 3 :hp [8 8]}
+    :name "the vampire"}
    {:sprite (load-sprite :zombie)
-    :name "zombie"}
+    :stats {:xp 3 :hp [9 9]}
+    :name "the zombie"}
    {:sprite (load-sprite :genie)
-    :name "genie"}
+    :stats {:xp 3 :hp [10 10]}
+    :name "the genie"}
 
    {:sprite (load-sprite :dragon)
-    :name "dragon"}
+    :stats {:xp 4 :hp [15 15]}
+    :name "the dragon"}
    {:sprite (load-sprite :t-rex)
-    :name "t-rex"}])
+    :stats {:xp 4 :hp [12 12]}
+    :name "the t-rex"}])
 
 ; ***** utility functions ***** ;
 
@@ -122,6 +134,9 @@
 
 (defn make-id []
   (-> (random-uuid) str (.slice 0 8)))
+
+(defn coin-flip []
+  (.getItem combat-dice coin))
 
 (defn get-random-entity-by-value [entity-template-table]
   (let [weighted-table (->> entity-template-table
@@ -186,21 +201,31 @@
       *state)))
 
 (defn combat [*state their-id my-id]
+  ; hit goes them -> me
   (let [them (get-in *state [:entities their-id])
-        me (get-in *state [:entities my-id])]
-    (log "combat" (:name them) "hit" (:name me))
+        me (get-in *state [:entities my-id])
+        their-xp (-> them :stats :xp)
+        my-hp (-> me :stats :hp first)
+        ; flip a coin for every xp and compute the boolean
+        hits (map (fn [_] (coin-flip)) (range their-xp))
+        hp-reduction (-> hits join (js/parseInt 2))
+        updated-hp (js/Math.max 0 (- my-hp hp-reduction))
+        hit-miss-msg (if (= hp-reduction 0) "missed" "hit")
+        killed (= updated-hp 0)
+        updated-hp-state (assoc-in *state [:entities my-id :stats :hp 0] updated-hp)
+        updated-message-state (add-message updated-hp-state (str (:name them) " " hit-miss-msg " " (:name me)))
+        updated-message-state (if killed (add-message updated-message-state (str (:name them) " killed " (:name me))) updated-message-state)]
+    (log "combat" (:name them) "hit" (:name me) hits hp-reduction " hp:" my-hp updated-hp)
     [true
-     ; TODO:
-     ; roll dice
-     ; reduce their hitpints
-     ; add a message
-     (-> *state
-         (update-in [:entities my-id] assoc
-                    :dead true
-                    :layer :floor
-                    :sprite (load-sprite :skull-and-crossbones))
-         (update-in [:entities my-id :fns] dissoc :update :encounter)
-         (check-for-endgame))]))
+     (if (= updated-hp 0)
+       (-> updated-message-state ; entity dies
+           (update-in [:entities my-id] assoc
+                      :dead true
+                      :layer :floor
+                      :sprite (load-sprite :skull-and-crossbones))
+           (update-in [:entities my-id :fns] dissoc :update :encounter)
+           (check-for-endgame))
+       updated-message-state)]))
 
 (defn can-pass-tile [floor-tiles pos allowed-tiles]
   (let [tile-type (get floor-tiles pos)]
@@ -245,9 +270,8 @@
                 :name "you"
                 :layer :occupy
                 :pos pos
-                :stats {:hp [6 10]
-                        :xp 3
-                        :dmg 2}
+                :stats {:hp [10 10]
+                        :xp 2}
                 :inventory []
                 :fns {:encounter #'combat
                       :passable (fn [*state _player-id _player]
