@@ -4,6 +4,8 @@
     ["djb2a$default" :as djb2a]
     [sitefox.ui :refer [log]]))
 
+(log "rogule.map loaded")
+
 (defn hash-seed [& args]
   (djb2a (.join (clj->js args) "-")))
 

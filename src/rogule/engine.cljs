@@ -1,7 +1,10 @@
 (ns rogule.engine
   (:require
     [reagent.core :as r]
-    [clojure.set :refer [difference]]))
+    [clojure.set :refer [difference]]
+    [sitefox.ui :refer [log]]))
+
+(log "rogule.engine loaded")
 
 (defonce keymap (r/atom {}))
 
@@ -17,22 +20,24 @@
    190 []})
 
 (defn move-to [*state id new-pos]
-  (let [game-map (:map *state)
-        floor-tiles (:floor-tiles game-map)
-        entity (get-in *state [:entities id])
-        passable-fn (-> entity :fns :passable)
-        passable-tile? (if passable-fn (passable-fn floor-tiles new-pos) true)
-        entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
-        [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
-                                                        (let [encounter-fn (-> e :fns :encounter)]
-                                                          (if encounter-fn
-                                                            (let [[this-item-blocks? *state] (encounter-fn *state id entity-id)]
-                                                              [(or item-blocks? this-item-blocks?) *state])
-                                                            [item-blocks? *state])))
-                                                      [false *state] entities-at-pos)]
-    (if (and passable-tile? (not item-blocks?))
-      (assoc-in state-after-encounters [:entities id :pos] new-pos)
-      state-after-encounters)))
+  (if new-pos
+    (let [game-map (:map *state)
+          floor-tiles (:floor-tiles game-map)
+          entity (get-in *state [:entities id])
+          passable-fn (-> entity :fns :passable)
+          passable-tile? (if passable-fn (passable-fn floor-tiles new-pos) true)
+          entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
+          [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
+                                                          (let [encounter-fn (-> e :fns :encounter)]
+                                                            (if encounter-fn
+                                                              (let [[this-item-blocks? *state] (encounter-fn *state id entity-id)]
+                                                                [(or item-blocks? this-item-blocks?) *state])
+                                                              [item-blocks? *state])))
+                                                        [false *state] entities-at-pos)]
+      (if (and passable-tile? (not item-blocks?))
+        (assoc-in state-after-encounters [:entities id :pos] new-pos)
+        state-after-encounters))
+    *state))
 
 (defn update-monsters [*state]
   (->> *state

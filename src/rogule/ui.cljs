@@ -184,16 +184,26 @@
               (remove-entity item-id)
               (add-entity (:drop item)))]))
 
+(defn check-for-endgame [*state]
+  (let [player (-> *state :entities :player)]
+    (if (:dead player)
+      (assoc *state :outcome :died)
+      *state)))
+
 (defn combat [*state their-id my-id]
   (let [them (get-in *state [:entities their-id])
         me (get-in *state [:entities my-id])]
     (log "combat" (:name them) "hit" (:name me))
     [true
-      ; roll dice
-      ; reduce their hitpints
-      ; add a message
-      (-> *state
-          (remove-entity my-id))]))
+     ; TODO:
+     ; roll dice
+     ; reduce their hitpints
+     ; add a message
+     (-> *state
+         (assoc-in [:entities my-id :dead] true)
+         (assoc-in [:entities my-id :sprite] (load-sprite :skull-and-crossbones))
+         (update-in [:entities my-id :fns] dissoc :update :encounter)
+         (check-for-endgame))]))
 
 (defn chase-player [{:keys [entities] :as *state} monster-id monster]
   (log "update" (:name monster) monster-id)
