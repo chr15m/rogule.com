@@ -210,7 +210,7 @@
   (let [floor-tiles (-> *state :map :floor-tiles)]
     (can-pass-tile floor-tiles [x y] [:room :door :corridor])))
 
-(defn make-monster-passable-fn [*state monster-id monster]
+(defn make-monster-passable-fn [*state monster-id _monster]
   (let [floor-tiles (-> *state :map :floor-tiles)
         entities (-> *state :entities)
         entities-to-avoid (->>
@@ -220,7 +220,6 @@
                                                    (not= id monster-id)
                                                    (not= id :player))))
                             entities-by-pos-mem)]
-    (log "make-monster-passable-fn" (:name monster) monster-id entities-to-avoid)
     (fn [x y]
       (and
         (can-pass-tile floor-tiles [x y] [:room :door :corridor])
@@ -234,7 +233,6 @@
                          (find-path
                            (:pos monster) (:pos player)
                            passable-fn))]
-    (log "path-to-player" path-to-player)
     (if (and player (< (count path-to-player) 10))
       (move-to *state monster-id (second path-to-player))
       *state)))
