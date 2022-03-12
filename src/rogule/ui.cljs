@@ -250,14 +250,13 @@
      (dissoc free-tiles pos)]))
 
 (defn make-shrine [entities free-tiles paths-to-rooms]
-  (let [pos (rand-nth (keys free-tiles))
-        furthest-room-center-pos (:center-pos (last paths-to-rooms))
+  (let [furthest-room-center-pos (:center-pos (last paths-to-rooms))
         shrine (merge shrine-template
                       {:pos furthest-room-center-pos
                        :layer :occupy
-                       :fns {:encounter finish-game}})]
+                       :fns {:encounter #'finish-game}})]
     [(assoc entities :shrine shrine)
-     (dissoc free-tiles pos)]))
+     (dissoc free-tiles furthest-room-center-pos)]))
 
 (defn make-covered-item [entities free-tiles paths-to-rooms player-path-find-fn]
   (let [{:keys [room]} (rand-nth paths-to-rooms)
