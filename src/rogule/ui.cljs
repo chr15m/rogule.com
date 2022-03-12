@@ -4,7 +4,7 @@
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
-    [rogule.emoji :refer [tile tile-mem]]
+    [rogule.emoji :refer [tile-mem]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
     [rogule.engine :refer [install-arrow-key-handler move-to]]
     ["rot-js" :as ROT]
@@ -358,13 +358,13 @@
    (when (> opacity 0)
      (cond 
        (= (get floor-tiles [x y]) :door)
-       (tile (load-sprite :white-large-square) "door")
+       (tile-mem (load-sprite :white-large-square) "door")
        (= (get floor-tiles [x y]) :room)
-       (tile (load-sprite :white-large-square) "room")
+       (tile-mem (load-sprite :white-large-square) "room")
        (= (get floor-tiles [x y]) :wall)
-       (tile (load-sprite :black-large-square) "wall")
+       (tile-mem (load-sprite :black-large-square) "wall")
        (= (get floor-tiles [x y]) :corridor)
-       (tile (load-sprite :brown-square) "corridor")
+       (tile-mem (load-sprite :brown-square) "corridor")
        :else nil))
    (for [layer [:floor :occupy]]
      (let [entity (get entities [x y layer])]
