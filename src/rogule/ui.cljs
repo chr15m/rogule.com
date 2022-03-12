@@ -193,8 +193,10 @@
      ; reduce their hitpints
      ; add a message
      (-> *state
-         (assoc-in [:entities my-id :dead] true)
-         (assoc-in [:entities my-id :sprite] (load-sprite :skull-and-crossbones))
+         (update-in [:entities my-id] assoc
+                    :dead true
+                    :layer :floor
+                    :sprite (load-sprite :skull-and-crossbones))
          (update-in [:entities my-id :fns] dissoc :update :encounter)
          (check-for-endgame))]))
 
