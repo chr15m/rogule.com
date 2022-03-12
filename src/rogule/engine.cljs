@@ -19,6 +19,8 @@
    74 [1 inc]
    190 []})
 
+(def rejuvination-rate 13)
+
 (defn move-to [*state id new-pos]
   (if new-pos
     (let [entity (get-in *state [:entities id])
@@ -56,6 +58,20 @@
                    {:expires (dec expires)
                     :text text})))))
 
+(defn restore-player-health [*state]
+  (update-in *state [:entities :player :stats]
+             (fn [stats]
+               (log
+                    (let [hp (:hp stats)]
+                      (if (< (first hp) (second hp))
+                        (let [hp-inc (inc (:hp-inc stats))]
+                          (if (>= hp-inc rejuvination-rate)
+                            (-> stats
+                                (assoc :hp-inc 0)
+                                (update-in [:hp 0] inc))
+                            (update-in stats [:hp-inc] inc)))
+                        (assoc stats :hp-inc 0)))))))
+
 (defn process-arrow-key! [state ev]
   ; key down -> if not already pressed, push that key onto queue
   ; after a time out
@@ -78,6 +94,7 @@
                                   ; TODO: if player move was rejected
                                   ; don't update monsters
                                   (move-to :player new-pos)
+                                  (restore-player-health)
                                   (update-monsters)
                                   (expire-messages)))))
             (not down?)
