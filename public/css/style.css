@@ -131,6 +131,7 @@ span.grid > * {
 }
 
 #inventory li + li {
+  margin-left: 16px;
 }
 
 .modal {
