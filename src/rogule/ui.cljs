@@ -418,7 +418,7 @@
   (let [code (aget ev "keyCode")]
     (print "keyCode" code)
     (case code
-      81 (swap! state make-level)
+      81 (reset! state (make-level initial-state size))
       191 (swap! state update-in [:modal] #(when (not %) :help))
       27 (swap! state dissoc :modal)
       nil)))
@@ -429,6 +429,6 @@
 
 (defn main! []
   (seedrandom (str "Rogule-" (date-token)) #js {:global true})
-  (swap! state make-level)
+  (reset! state (make-level initial-state size))
   (.addEventListener js/window "keydown" #(key-handler %))
   (start))

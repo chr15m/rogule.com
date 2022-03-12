@@ -1,7 +1,8 @@
 (ns rogule.map
   (:require
     ["rot-js" :as ROT]
-    ["djb2a$default" :as djb2a]))
+    ["djb2a$default" :as djb2a]
+    [sitefox.ui :refer [log]]))
 
 (defn hash-seed [& args]
   (djb2a (.join (clj->js args) "-")))
@@ -65,9 +66,10 @@
           room-wall-tiles (apply merge
                                  (for [x (range w)
                                        y (range h)]
-                                   (when (and (is-adjacent-tile [x y] room-tiles)
-                                              (not (get @positions [x y]))
-                                              (not (get room-tiles [x y])))
+                                   (when (and
+                                           (is-adjacent-tile [x y] room-tiles)
+                                           (not (get @positions [x y]))
+                                           (not (get room-tiles [x y])))
                                      {[x y] :wall})))
           corridor-tiles (->> @positions
                               (map (fn [[pos _kind]]
