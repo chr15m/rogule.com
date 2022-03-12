@@ -13,7 +13,8 @@
    38 [1 dec]
    75 [1 dec]
    40 [1 inc]
-   74 [1 inc]})
+   74 [1 inc]
+   190 []})
 
 (defn move-to [*state id new-pos]
   (let [game-map (:map *state)
@@ -65,9 +66,10 @@
               (swap! keymap update-in [:held] (fn [held] (conj (set held) code)))
               (let [dir-idx (first dir)
                     dir-fn (second dir)
-                    new-pos (-> @state
-                                (get-in [:entities :player :pos])
-                                (update-in [dir-idx] dir-fn))]
+                    new-pos (when dir-idx
+                              (-> @state
+                                  (get-in [:entities :player :pos])
+                                  (update-in [dir-idx] dir-fn)))]
                 (swap! state #(-> %
                                   (move-to :player new-pos)
                                   (update-monsters)
