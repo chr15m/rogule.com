@@ -337,12 +337,14 @@
         difficulty (-> (pos-to-difficulty (:player entities) pos paths-to-rooms player-path-find-fn)
                        (* 0.75)
                        (js/Math.min 1))
-        monster-difficulty-index (js/Math.floor (* difficulty (count monster-table)))
+        min-index 0
+        max-index (dec (count monster-table))
+        monster-difficulty-index (js/Math.floor (* difficulty max-index))
         monster-sub-table {monster-difficulty-index 6
-                           (js/Math.min (+ monster-difficulty-index 1) (count monster-table)) 2
-                           (js/Math.max (- monster-difficulty-index 1) 0) 2
-                           (js/Math.min (+ monster-difficulty-index 2) (count monster-table)) 1
-                           (js/Math.max (- monster-difficulty-index 2) 0) 1}
+                           (js/Math.min (+ monster-difficulty-index 1) max-index) 2
+                           (js/Math.max (- monster-difficulty-index 1) min-index) 2
+                           (js/Math.min (+ monster-difficulty-index 2) max-index) 1
+                           (js/Math.max (- monster-difficulty-index 2) min-index) 1}
         monster-index (js/parseInt (ROT/RNG.getWeightedValue (clj->js monster-sub-table)))
         monster (merge
                   (nth monster-table monster-index)
