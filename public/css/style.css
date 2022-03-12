@@ -97,6 +97,14 @@ span.grid > * {
   position: absolute;
 }
 
+#player-stats {
+  position: absolute;
+  top: 8px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+}
+
 #score {
   position: absolute;
   bottom: 128px;

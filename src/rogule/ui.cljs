@@ -245,7 +245,9 @@
                 :name "you"
                 :layer :occupy
                 :pos pos
-                :stats {}
+                :stats {:hp [6 10]
+                        :xp 3
+                        :dmg 2}
                 :inventory []
                 :fns {:encounter #'combat
                       :passable (fn [*state _player-id _player]
@@ -376,6 +378,14 @@
     (for [e (sort-by (juxt :value :name) inventory)]
       [:li (tile-mem (:sprite e) (:name e) {:width "48px"})])]])
 
+(defn component-health [stats]
+  [:div#player-stats
+   (let [hp (-> stats :hp first)]
+     (for [i (range (-> stats :hp second))]
+       (if (> i hp)
+         (tile-mem (load-sprite :white-large-square))
+         (tile-mem (load-sprite :green-square)))))])
+
 (defn component-help [show-help]
   (when show-help
     [:div.modal
@@ -392,8 +402,10 @@
         entities (entities-by-pos-mem (-> @state :entities))
         player (-> @state :entities :player)
         player-pos (:pos player)
-        player-inventory (:inventory player)]
+        player-inventory (:inventory player)
+        stats (-> player :stats)]
     [:span#game
+     [component-health stats]
      [:div {:ref #(install-arrow-key-handler state %)}
       (for [y (range (- (second player-pos) visible-dist)
                      (+ (second player-pos) visible-dist))]
