@@ -264,18 +264,21 @@
     [(assoc entities :shrine shrine)
      (dissoc free-tiles furthest-room-center-pos)]))
 
-(defn make-covered-item [entities free-tiles paths-to-rooms player-path-find-fn]
-  (let [{:keys [room]} (rand-nth paths-to-rooms)
-        player (:player entities)
-        room-tiles (tiles-for-room room)
-        free-room-tiles (intersection (set (keys room-tiles)) (set (keys free-tiles)))
-        pos (rand-nth (vec free-room-tiles))
-        furthest-room-path-length (count (:path (last paths-to-rooms)))
+(defn pos-to-difficulty [player pos paths-to-rooms player-path-find-fn]
+  (let [furthest-room-path-length (count (:path (last paths-to-rooms)))
         path-to-item (find-path
                        (:pos player) pos
                        player-path-find-fn)
-        path-to-item-length (count path-to-item)
-        difficulty (* (/ path-to-item-length furthest-room-path-length) 0.9)
+        path-to-item-length (count path-to-item)]
+    (/ path-to-item-length furthest-room-path-length)))
+
+(defn make-covered-item [entities free-tiles paths-to-rooms player-path-find-fn]
+  (let [{:keys [room]} (rand-nth paths-to-rooms)
+        room-tiles (tiles-for-room room)
+        free-room-tiles (intersection (set (keys room-tiles)) (set (keys free-tiles)))
+        pos (rand-nth (vec free-room-tiles))
+        difficulty (-> (pos-to-difficulty (:player entities) pos paths-to-rooms player-path-find-fn)
+                       (* 0.9))
         item-template (get-random-entity-by-value forage-items)
         item (when
                (> (js/Math.random) difficulty)
@@ -294,10 +297,20 @@
     [(assoc entities (make-id) cover)
      (dissoc free-tiles pos)]))
 
-(defn make-monster [entities free-tiles _game-map _paths-to-rooms]
+(defn make-monster [entities free-tiles paths-to-rooms player-path-find-fn]
   (let [pos (rand-nth (keys free-tiles))
+        difficulty (-> (pos-to-difficulty (:player entities) pos paths-to-rooms player-path-find-fn)
+                       (* 0.75)
+                       (js/Math.min 1))
+        monster-difficulty-index (js/Math.floor (* difficulty (count monster-table)))
+        monster-sub-table {monster-difficulty-index 6
+                           (js/Math.min (+ monster-difficulty-index 1) (count monster-table)) 2
+                           (js/Math.max (- monster-difficulty-index 1) 0) 2
+                           (js/Math.min (+ monster-difficulty-index 2) (count monster-table)) 1
+                           (js/Math.max (- monster-difficulty-index 2) 0) 1}
+        monster-index (js/parseInt (ROT/RNG.getWeightedValue (clj->js monster-sub-table)))
         monster (merge
-                  (rand-nth monster-table)
+                  (nth monster-table monster-index)
                   {:pos pos
                    :layer :occupy
                    :fns {:encounter #'combat
@@ -333,7 +346,7 @@
                                 (range entity-count))
         [entities] (reduce
                      (fn [[entities free-tiles] _i]
-                       (make-monster entities free-tiles game-map paths-to-rooms))
+                       (make-monster entities free-tiles paths-to-rooms player-path-find-fn))
                      [entities free-tiles]
                      (range monster-count))]
     entities))
