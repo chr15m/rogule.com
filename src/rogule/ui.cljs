@@ -27,7 +27,7 @@
 (def clear-dist-sq (js/Math.pow clear-dist 2))
 (def coin #js [0 1])
 
-(def forage-items
+#_ (def forage-items
   [{:name "herbs"
     :sprite (load-sprite :herb)
     :value 1}
@@ -61,6 +61,17 @@
    {:name "gem"
     :sprite (load-sprite :gem-stone)
     :value 8}])
+
+(def forage-items
+  [{:name "chestnut"
+    :sprite (load-sprite :chestnut)
+    :value 1}
+   {:name "mushroom"
+    :sprite (load-sprite :mushroom)
+    :value 2}
+   {:name "egg"
+    :sprite (load-sprite :egg)
+    :value 2}])
 
 (def item-covers
   [{:sprite (load-sprite :hole)
