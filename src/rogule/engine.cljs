@@ -22,8 +22,9 @@
 (defn move-to [*state id new-pos]
   (if new-pos
     (let [entity (get-in *state [:entities id])
-          passable-fn (-> entity :fns :passable)
-          passable-tile? (if passable-fn (passable-fn *state (first new-pos) (second new-pos)) true)
+          passable-fn-maker (-> entity :fns :passable)
+          passable-fn (when passable-fn-maker (passable-fn-maker *state id entity))
+          passable-tile? (if passable-fn (passable-fn (first new-pos) (second new-pos)) true)
           entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
           [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
                                                           (let [encounter-fn (-> e :fns :encounter)]

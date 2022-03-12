@@ -171,11 +171,13 @@
                  (add-message (str "you found the " (:name item))))]
       [false *state])))
 
-(defn uncover-item [*state _their-id item-id]
+(defn uncover-item [*state their-id item-id]
   (let [item (get-in *state [:entities item-id])]
-    [true (-> *state
-              (remove-entity item-id)
-              (add-entity (:drop item)))]))
+    (if (not= their-id :player)
+      [false *state]
+      [true (-> *state
+                (remove-entity item-id)
+                (add-entity (:drop item)))])))
 
 (defn check-for-endgame [*state]
   (let [player (-> *state :entities :player)]
@@ -204,32 +206,35 @@
   (let [tile-type (get floor-tiles pos)]
        (contains? (set allowed-tiles) tile-type)))
 
-(defn can-pass-fn [types]
-  (fn pass-check
-    ([floor-tiles x y] (pass-check floor-tiles [x y]))
-    ([floor-tiles pos]
-     (let [tile-type (get floor-tiles pos)]
-       (contains? (set types) tile-type)))))
-
-(defn monster-passable-fn [*state x y]
-  (let [floor-tiles (-> *state :map :floor-tiles)
-        entities (entities-by-pos-mem (-> *state :entities))]
-    (and
-      (not (:dead (get entities [x y])))
-      (can-pass-tile floor-tiles [x y] [:room :door :corridor]))))
-
 (defn player-passable-fn [*state x y]
   (let [floor-tiles (-> *state :map :floor-tiles)]
     (can-pass-tile floor-tiles [x y] [:room :door :corridor])))
 
+(defn make-monster-passable-fn [*state monster-id monster]
+  (let [floor-tiles (-> *state :map :floor-tiles)
+        entities (-> *state :entities)
+        entities-to-avoid (->>
+                            entities
+                            (filter (fn [[id e]] (and
+                                                   (= (:layer e) :occupy)
+                                                   (not= id monster-id)
+                                                   (not= id :player))))
+                            entities-by-pos-mem)]
+    (log "make-monster-passable-fn" (:name monster) monster-id entities-to-avoid)
+    (fn [x y]
+      (and
+        (can-pass-tile floor-tiles [x y] [:room :door :corridor])
+        (nil? (get entities-to-avoid [x y :occupy]))))))
+
 (defn chase-player [{:keys [entities] :as *state} monster-id monster]
   (log "update" (:name monster) monster-id)
   (let [player (:player entities)
+        passable-fn ((-> monster :fns :passable) *state monster-id monster)
         path-to-player (when player
                          (find-path
                            (:pos monster) (:pos player)
-                           (partial (-> monster :fns :passable) *state)))]
-    (log "path-to-player" (:pos monster) (:pos player) path-to-player)
+                           passable-fn))]
+    (log "path-to-player" path-to-player)
     (if (and player (< (count path-to-player) 10))
       (move-to *state monster-id (second path-to-player))
       *state)))
@@ -245,7 +250,8 @@
                 :stats {}
                 :inventory []
                 :fns {:encounter #'combat
-                      :passable player-passable-fn}}]
+                      :passable (fn [*state _player-id _player]
+                                  (partial player-passable-fn *state))}}]
     [(assoc entities :player player)
      (dissoc free-tiles pos)]))
 
@@ -278,13 +284,13 @@
                  {:pos pos
                   :id (make-id)
                   :layer :floor
-                  :fns {:encounter add-item-to-inventory}}))
+                  :fns {:encounter #'add-item-to-inventory}}))
         cover (merge
                 (rand-nth item-covers)
                 {:pos pos
                  :layer :floor
                  :drop item
-                 :fns {:encounter uncover-item}})]
+                 :fns {:encounter #'uncover-item}})]
     [(assoc entities (make-id) cover)
      (dissoc free-tiles pos)]))
 
@@ -295,8 +301,8 @@
                   {:pos pos
                    :layer :occupy
                    :fns {:encounter #'combat
-                         :update chase-player
-                         :passable monster-passable-fn}})]
+                         :update #'chase-player
+                         :passable #'make-monster-passable-fn}})]
     [(assoc entities (make-id) monster)
      (dissoc free-tiles pos)]))
 
