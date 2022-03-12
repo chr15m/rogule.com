@@ -5,7 +5,7 @@
 }
 
 html {
-  background-color: #F6F5E5;
+  background-color: #FCFBF3;
 }
 
 html, body, #app, #loading {
@@ -97,6 +97,14 @@ span.grid > * {
   position: absolute;
 }
 
+#player-stats {
+  position: absolute;
+  top: 8px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+}
+
 #score {
   position: absolute;
   bottom: 128px;
@@ -123,6 +131,7 @@ span.grid > * {
 }
 
 #inventory li + li {
+  margin-left: 16px;
 }
 
 .modal {
@@ -136,7 +145,7 @@ span.grid > * {
   justify-content: center;
   align-items: center;
   padding: 1em;
-  background-color: #F6F5E5;
+  background-color: #FCFBF3;
 }
 
 .message {
