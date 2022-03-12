@@ -21,11 +21,9 @@
 
 (defn move-to [*state id new-pos]
   (if new-pos
-    (let [game-map (:map *state)
-          floor-tiles (:floor-tiles game-map)
-          entity (get-in *state [:entities id])
+    (let [entity (get-in *state [:entities id])
           passable-fn (-> entity :fns :passable)
-          passable-tile? (if passable-fn (passable-fn floor-tiles new-pos) true)
+          passable-tile? (if passable-fn (passable-fn *state (first new-pos) (second new-pos)) true)
           entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
           [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
                                                           (let [encounter-fn (-> e :fns :encounter)]
@@ -76,6 +74,8 @@
                                   (get-in [:entities :player :pos])
                                   (update-in [dir-idx] dir-fn)))]
                 (swap! state #(-> %
+                                  ; TODO: if player move was rejected
+                                  ; don't update monsters
                                   (move-to :player new-pos)
                                   (update-monsters)
                                   (expire-messages)))))

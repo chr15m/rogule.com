@@ -141,13 +141,6 @@
 
 ; ***** state manipulation functions ***** ;
 
-(defn can-pass-fn [types]
-  (fn pass-check
-    ([floor-tiles x y] (pass-check floor-tiles [x y]))
-    ([floor-tiles pos]
-     (let [tile-type (get floor-tiles pos)]
-       (contains? (set types) tile-type)))))
-
 (defn remove-entity [*state id]
   (update-in *state [:entities] dissoc id))
 
@@ -205,15 +198,35 @@
          (update-in [:entities my-id :fns] dissoc :update :encounter)
          (check-for-endgame))]))
 
+(defn can-pass-tile [floor-tiles pos allowed-tiles]
+  (let [tile-type (get floor-tiles pos)]
+       (contains? (set allowed-tiles) tile-type)))
+
+(defn can-pass-fn [types]
+  (fn pass-check
+    ([floor-tiles x y] (pass-check floor-tiles [x y]))
+    ([floor-tiles pos]
+     (let [tile-type (get floor-tiles pos)]
+       (contains? (set types) tile-type)))))
+
+(defn monster-passable-fn [*state x y]
+  (let [floor-tiles (-> *state :map :floor-tiles)
+        entities (entities-by-pos-mem (-> *state :entities))]
+    (and
+      (not (:dead (get entities [x y])))
+      (can-pass-tile floor-tiles [x y] [:room :door :corridor]))))
+
+(defn player-passable-fn [*state x y]
+  (let [floor-tiles (-> *state :map :floor-tiles)]
+    (can-pass-tile floor-tiles [x y] [:room :door :corridor])))
+
 (defn chase-player [{:keys [entities] :as *state} monster-id monster]
   (log "update" (:name monster) monster-id)
   (let [player (:player entities)
-        game-map (:map *state)
         path-to-player (when player
                          (find-path
                            (:pos monster) (:pos player)
-                           (:floor-tiles game-map)
-                           (-> monster :fns :passable)))]
+                           (partial (-> monster :fns :passable) *state)))]
     (log "path-to-player" (:pos monster) (:pos player) path-to-player)
     (if (and player (< (count path-to-player) 10))
       (move-to *state monster-id (second path-to-player))
@@ -230,7 +243,7 @@
                 :stats {}
                 :inventory []
                 :fns {:encounter #'combat
-                      :passable (can-pass-fn [:room :door :corridor])}}]
+                      :passable player-passable-fn}}]
     [(assoc entities :player player)
      (dissoc free-tiles pos)]))
 
@@ -244,7 +257,7 @@
     [(assoc entities :shrine shrine)
      (dissoc free-tiles pos)]))
 
-(defn make-covered-item [entities free-tiles game-map paths-to-rooms]
+(defn make-covered-item [entities free-tiles paths-to-rooms player-path-find-fn]
   (let [{:keys [room]} (rand-nth paths-to-rooms)
         player (:player entities)
         room-tiles (tiles-for-room room)
@@ -253,8 +266,7 @@
         furthest-room-path-length (count (:path (last paths-to-rooms)))
         path-to-item (find-path
                        (:pos player) pos
-                       (:floor-tiles game-map)
-                       (-> player :fns :passable))
+                       player-path-find-fn)
         path-to-item-length (count path-to-item)
         difficulty (* (/ path-to-item-length furthest-room-path-length) 0.9)
         item-template (get-random-entity-by-value forage-items)
@@ -281,9 +293,9 @@
                   (rand-nth monster-table)
                   {:pos pos
                    :layer :occupy
-                   :fns {:encounter combat
+                   :fns {:encounter #'combat
                          :update chase-player
-                         :passable (can-pass-fn [:room :door :corridor])}})]
+                         :passable monster-passable-fn}})]
     [(assoc entities (make-id) monster)
      (dissoc free-tiles pos)]))
 
@@ -294,13 +306,14 @@
                      (:corridor tiles))
         [entities free-tiles] (make-player {} free-tiles)
         player (:player entities)
+        floor-tiles (:floor-tiles game-map)
+        player-path-find-fn (fn [x y] (can-pass-tile floor-tiles [x y] [:room :door :corridor]))
         paths-to-rooms (->> (:rooms game-map)
                             (map (fn [room] [room (room-center room)]))
                             (map (fn [[room room-center-pos]]
                                    (let [path (find-path
                                                 (:pos player) room-center-pos
-                                                (:floor-tiles game-map)
-                                                (-> player :fns :passable))]
+                                                player-path-find-fn)]
                                      {:center-pos room-center-pos
                                       :room room
                                       :path path})))
@@ -308,7 +321,7 @@
         [entities free-tiles] (make-shrine entities free-tiles paths-to-rooms)
         [entities free-tiles] (reduce
                                 (fn [[entities free-tiles] _i]
-                                  (make-covered-item entities free-tiles game-map paths-to-rooms))
+                                  (make-covered-item entities free-tiles paths-to-rooms player-path-find-fn))
                                 [entities free-tiles]
                                 (range entity-count))
         [entities] (reduce
