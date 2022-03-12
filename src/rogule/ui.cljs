@@ -256,13 +256,13 @@
      (dissoc free-tiles pos)]))
 
 (defn make-shrine [entities free-tiles paths-to-rooms]
-  (let [furthest-room-center-pos (:center-pos (last paths-to-rooms))
+  (let [pos (:center-pos (last paths-to-rooms))
         shrine (merge shrine-template
-                      {:pos furthest-room-center-pos
+                      {:pos pos
                        :layer :occupy
                        :fns {:encounter #'finish-game}})]
     [(assoc entities :shrine shrine)
-     (dissoc free-tiles furthest-room-center-pos)]))
+     (dissoc free-tiles pos)]))
 
 (defn pos-to-difficulty [player pos paths-to-rooms player-path-find-fn]
   (let [furthest-room-path-length (count (:path (last paths-to-rooms)))
