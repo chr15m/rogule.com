@@ -74,6 +74,11 @@ body.game #app {
   align-items: center;
 }
 
+#game {
+  display: flex;
+  justify-content: center;
+}
+
 #game h1 {
   position: absolute;
   top: 0px;
@@ -112,12 +117,10 @@ span.stat {
   opacity: 0.5;
 }
 
-#player-stats {
-  position: absolute;
+#health-bars {
   top: 8px;
-  left: 0px;
-  width: 100%;
-  text-align: center;
+  margin: auto;
+  position: absolute;
 }
 
 #score {

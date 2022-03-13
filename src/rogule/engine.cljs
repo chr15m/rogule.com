@@ -50,6 +50,14 @@
             (update-fn *state id entity)))
         *state)))
 
+(defn reset-combat-list [*state]
+  (assoc *state :combatants {}))
+
+(defn add-to-combat-list [*state id entity]
+  (if (not= id :player)
+    (assoc-in *state [:combatants id] entity)
+    *state))
+
 (defn expire-messages [*state]
   (update-in *state [:message]
              (fn [{:keys [expires text]}]
@@ -93,6 +101,7 @@
                 (swap! state #(-> %
                                   ; TODO: if player move was rejected
                                   ; don't update monsters
+                                  (reset-combat-list)
                                   (move-to :player new-pos)
                                   (restore-player-health)
                                   (update-monsters)

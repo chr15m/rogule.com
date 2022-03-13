@@ -7,7 +7,7 @@
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile-mem]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
-    [rogule.engine :refer [install-arrow-key-handler move-to]]
+    [rogule.engine :refer [install-arrow-key-handler move-to add-to-combat-list]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   (:require-macros
@@ -234,20 +234,24 @@
         updated-hp (js/Math.max 0 (- my-hp hp-reduction))
         hit-miss-msg (if (= hp-reduction 0) "missed" "hit")
         killed (= updated-hp 0)
-        updated-hp-state (assoc-in *state [:entities my-id :stats :hp 0] updated-hp)
-        updated-message-state (add-message updated-hp-state (str (:name them) " " hit-miss-msg " " (:name me)))
-        updated-message-state (if killed (add-message updated-message-state (str (:name them) " killed " (:name me))) updated-message-state)]
+        *state (assoc-in *state [:entities my-id :stats :hp 0] updated-hp)
+        *state (add-message *state (str (:name them) " " hit-miss-msg " " (:name me)))
+        *state (if killed
+                 (add-message *state (str (:name them) " killed " (:name me)))
+                 (-> *state
+                     (add-to-combat-list their-id (get-in *state [:entities their-id]))
+                     (add-to-combat-list my-id (get-in *state [:entities my-id]))))]
     (log "combat" (:name them) "hit" (:name me) hits hp-reduction " hp:" my-hp updated-hp)
     [true
      (if (= updated-hp 0)
-       (-> updated-message-state ; entity dies
+       (-> *state ; entity dies
            (update-in [:entities my-id] assoc
                       :dead true
                       :layer :floor
                       :sprite (load-sprite :skull-and-crossbones))
            (update-in [:entities my-id :fns] dissoc :update :encounter)
            (check-for-endgame))
-       updated-message-state)]))
+       *state)]))
 
 (defn can-pass-tile [floor-tiles pos allowed-tiles]
   (let [tile-type (get floor-tiles pos)]
@@ -443,13 +447,22 @@
     (for [e (sort-by (juxt :value :name) inventory)]
       [:li (tile-mem (:sprite e) (:name e) {:width "48px"})])]])
 
-(defn component-health [stats]
-  [:div#player-stats
+(defn component-health-bar [entity stats]
+  [:div
+   (tile-mem (:sprite entity))
    (let [hp (-> stats :hp first)]
      (for [i (range (-> stats :hp second))]
        (if (> i hp)
          (tile-mem (load-sprite :white-large-square))
          (tile-mem (load-sprite :green-square)))))])
+
+(defn component-health-bars [player combatants]
+  [:div#health-bars
+   [component-health-bar player (:stats player)]
+   (for [[_id entity] combatants]
+     (let [stats (:stats entity)] [component-health-bar entity stats]))])
+
+(def component-health-bars-mem (memoize component-health-bars))
 
 (defn component-help [show-help]
   (when show-help
@@ -468,9 +481,8 @@
         player (-> @state :entities :player)
         player-pos (:pos player)
         player-inventory (:inventory player)
-        stats (-> player :stats)]
+        combatants (:combatants @state)]
     [:span#game
-     [component-health stats]
      [:div {:ref #(install-arrow-key-handler state %)}
       (for [y (range (- (second player-pos) visible-dist)
                      (+ (second player-pos) visible-dist))]
@@ -483,6 +495,7 @@
                            (> dist clear-dist-sq) 0.75
                            :else 1)]
              (component-cell floor-tiles entities x y opacity)))])]
+     (component-health-bars-mem player combatants)
      [component-inventory player-inventory]
      [component-help (= (:modal @state) :help)]
      [component-messages (-> @state :message :text)]]))
