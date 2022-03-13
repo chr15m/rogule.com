@@ -16,9 +16,20 @@
 (defn emoj [sprite]
   (alt-from-codes (get sprite "codes")))
 
+(defn replay-pop-animation-on-change [el]
+  (when el
+    (aset el "onload"
+          (fn []
+            (when (not= (.indexOf (aget el "className") "pop") -1)
+              (let [cl (aget el "classList")]
+                (.remove cl "pop")
+                (aget el "offsetHeight")
+                (.add cl "pop")))))))
+
 (defn tile [sprite & [tile-name extra]]
   (let [src (get sprite "src")]
-    [:img.tile (merge {:title (or tile-name (get sprite "name"))
+    [:img.tile (merge {:ref replay-pop-animation-on-change
+                       :title (or tile-name (get sprite "name"))
                        :alt (when (get sprite "codes") (alt-from-codes (get sprite "codes")))
                        :width "32px"
                        :src (if (or (= (.indexOf src "/") 0)

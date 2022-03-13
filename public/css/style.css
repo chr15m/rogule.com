@@ -162,7 +162,7 @@ span.xp {
 
 #inventory ul {
   position: absolute;
-  bottom: 48px;
+  bottom: 8px;
   left: 0px;
   list-style-type: none;
   display: flex;
@@ -217,6 +217,22 @@ span.xp {
   max-width: 400px;
   width: 100%;
   text-align: center;
+}
+
+/***** juice *****/
+
+.pop {
+  animation: pop .25s;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0);
+    animation-timing-function: cubic-bezier(.59,2.5,.88,.32);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 /***** loader *****/

@@ -308,8 +308,8 @@
 (defn component-inventory [inventory]
   [:div#inventory
    [:ul
-    (for [e (sort-by (juxt :value :name) inventory)]
-      [:li (tile-mem (:sprite e) (:name e) {:width "48px"})])]])
+    (for [e inventory]
+      [:li.pop (tile-mem (:sprite e) (:name e) {:width "32px"})])]])
 
 (defn component-health-bar [entity]
   [:div
@@ -319,8 +319,8 @@
          hp (-> stats :hp first)]
      (for [i (range (-> stats :hp second))]
        (if (> i hp)
-         (tile-mem (load-sprite :white-large-square))
-         (tile-mem (load-sprite :green-square)))))])
+         (tile-mem (load-sprite :white-large-square) nil {:class "pop"})
+         (tile-mem (load-sprite :green-square) nil {:class "pop"}))))])
 
 (defn component-health-bars [player combatants]
   [:div#health-bars
@@ -422,7 +422,7 @@
 
 (defn component-tombstone [state]
   (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
-    [:div#tombstone
+    [:div#tombstone.pop
      [:div (concat [] (make-share-string tile-mem [:br] @state))]
      [component-countdown]
      [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]]))
