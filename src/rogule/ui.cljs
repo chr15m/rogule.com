@@ -67,6 +67,16 @@
 (def shrine-template {:sprite (load-sprite :shinto-shrine)
                       :name "shrine"})
 
+(def weapons
+  [{:sprite (load-sprite :dagger)
+    :dmg 1}
+   {:sprite (load-sprite :pick)
+    :dmg 2}
+   {:sprite (load-sprite :axe)
+    :dmg 4}])
+
+(def shield {:sprite (load-sprite :shield)})
+
 (def monster-table
   [{:sprite (load-sprite :rat)
     :activation 3
