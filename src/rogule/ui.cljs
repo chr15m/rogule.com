@@ -205,6 +205,15 @@
         killed (= updated-hp 0)
         *state (assoc-in *state [:entities my-id :stats :hp 0] updated-hp)
         *state (add-message *state (str (:name them) " " hit-miss-msg " " (:name me)))
+        *state (if (and killed (= their-id :player))
+                 (update-in *state [:entities their-id :kills] conj (get-in *state [:entities my-id]))
+                 *state)
+        kills (count (get-in *state [:entities their-id :kills]))
+        *state (if (and killed (= their-id :player) (= (mod kills 3) 0)) ; every 3 kills add XP
+                 (-> *state
+                     (update-in [:entities their-id :stats :xp] inc)
+                     (add-message "You gained xp."))
+                 *state)
         *state (if killed
                  (add-message *state (str (:name them) " killed " (:name me)))
                  (-> *state
