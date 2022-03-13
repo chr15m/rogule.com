@@ -158,6 +158,7 @@
                                   ; TODO: if player move was rejected
                                   ; don't update monsters
                                   (reset-combat-list)
+                                  (update-in [:moves] inc)
                                   (move-to :player new-pos)
                                   (restore-player-health)
                                   (update-monsters)
