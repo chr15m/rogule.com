@@ -415,7 +415,7 @@
        (when entity
          [:span
           (tile-mem (:sprite entity) (:name entity) {:opacity opacity})
-          (when (and (:stats entity) (not= (:id entity) :player))
+          (when (and (:stats entity) (not (:dead entity)) (not= (:id entity) :player))
             [:span.stat (-> entity :stats :xp)])])))])
 
 (defn component-inventory [inventory]
