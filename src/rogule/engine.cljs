@@ -129,7 +129,13 @@
                 (remove-entity item-id)
                 (add-entity (:drop item)))])))
 
-; ***** event handline ***** ;
+; ***** event handling ***** ;
+
+(defn trigger-key [key-code]
+  (.dispatchEvent js/window
+                  (js/KeyboardEvent.
+                    "keydown"
+                    #js {:keyCode key-code})))
 
 (defn process-arrow-key! [state ev]
   ; key down -> if not already pressed, push that key onto queue

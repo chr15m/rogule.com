@@ -7,7 +7,7 @@
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile-mem]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
-    [rogule.engine :refer [install-arrow-key-handler move-to add-to-combat-list
+    [rogule.engine :refer [install-arrow-key-handler trigger-key move-to add-to-combat-list
                            add-message finish-game add-item-to-inventory uncover-item
                            increase-hp]]
     ["rot-js" :as ROT]
@@ -444,11 +444,13 @@
 (def component-health-bars-mem (memoize component-health-bars))
 
 (defn component-help [show-help]
-  (when show-help
+  (if show-help
     [:div.modal
      [:h2 "Rogule"]
      [:p "Find items to obtain the best score."]
-     [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend."]]))
+     [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend."]
+     [:button#help.key {:on-click #(trigger-key 27)} "esc"]]
+    [:button#help.key {:on-click #(trigger-key 191)} "?"]))
 
 (defn component-messages [message]
   [:div.message message])
