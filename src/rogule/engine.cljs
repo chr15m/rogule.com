@@ -61,16 +61,15 @@
 (defn restore-player-health [*state]
   (update-in *state [:entities :player :stats]
              (fn [stats]
-               (log
-                    (let [hp (:hp stats)]
-                      (if (< (first hp) (second hp))
-                        (let [hp-inc (inc (:hp-inc stats))]
-                          (if (>= hp-inc rejuvination-rate)
-                            (-> stats
-                                (assoc :hp-inc 0)
-                                (update-in [:hp 0] inc))
-                            (update-in stats [:hp-inc] inc)))
-                        (assoc stats :hp-inc 0)))))))
+               (let [hp (:hp stats)]
+                 (if (< (first hp) (second hp))
+                   (let [hp-inc (inc (:hp-inc stats))]
+                     (if (>= hp-inc rejuvination-rate)
+                       (-> stats
+                           (assoc :hp-inc 0)
+                           (update-in [:hp 0] inc))
+                       (update-in stats [:hp-inc] inc)))
+                   (assoc stats :hp-inc 0))))))
 
 (defn reset-combat-list [*state]
   (assoc *state :combatants {}))
