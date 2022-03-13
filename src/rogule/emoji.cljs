@@ -13,6 +13,9 @@
 (defn alt-from-codes [codes]
   (js/String.fromCodePoint.apply nil (.map (.split codes " ") #(str "0x" %))))
 
+(defn emoj [sprite]
+  (alt-from-codes (get sprite "codes")))
+
 (defn tile [sprite & [tile-name extra]]
   (let [src (get sprite "src")]
     [:img.tile (merge {:title (or tile-name (get sprite "name"))
