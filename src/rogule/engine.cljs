@@ -50,14 +50,6 @@
             (update-fn *state id entity)))
         *state)))
 
-(defn reset-combat-list [*state]
-  (assoc *state :combatants {}))
-
-(defn add-to-combat-list [*state id entity]
-  (if (not= id :player)
-    (assoc-in *state [:combatants id] entity)
-    *state))
-
 (defn expire-messages [*state]
   (update-in *state [:message]
              (fn [{:keys [expires text]}]
@@ -79,6 +71,54 @@
                                 (update-in [:hp 0] inc))
                             (update-in stats [:hp-inc] inc)))
                         (assoc stats :hp-inc 0)))))))
+
+(defn reset-combat-list [*state]
+  (assoc *state :combatants {}))
+
+(defn add-to-combat-list [*state id entity]
+  (if (not= id :player)
+    (assoc-in *state [:combatants id] entity)
+    *state))
+
+(defn add-to-inventory [*state id item-id entity]
+  (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
+
+(defn remove-entity [*state id]
+  (update-in *state [:entities] dissoc id))
+
+(defn add-entity [*state entity]
+  (if entity
+    (assoc-in *state [:entities (:id entity)] (dissoc entity :id))
+    *state))
+
+(defn add-message [*state message]
+  (assoc *state :message {:text message
+                          :expires 3}))
+
+(defn finish-game [*state _their-id _item-id]
+  [true (assoc *state :outcome :ascended)])
+
+; ***** item encounter fns ***** ;
+
+(defn add-item-to-inventory [*state their-id item-id]
+  (let [them (get-in *state [:entities their-id])
+        item (get-in *state [:entities item-id])]
+    (if (:inventory them)
+      [false (-> *state
+                 (add-to-inventory their-id item-id item)
+                 (remove-entity item-id)
+                 (add-message (str "you found the " (:name item))))]
+      [false *state])))
+
+(defn uncover-item [*state their-id item-id]
+  (let [item (get-in *state [:entities item-id])]
+    (if (not= their-id :player)
+      [false *state]
+      [true (-> *state
+                (remove-entity item-id)
+                (add-entity (:drop item)))])))
+
+; ***** event handline ***** ;
 
 (defn process-arrow-key! [state ev]
   ; key down -> if not already pressed, push that key onto queue

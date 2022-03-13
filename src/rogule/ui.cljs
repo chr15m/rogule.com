@@ -7,7 +7,8 @@
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile-mem]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
-    [rogule.engine :refer [install-arrow-key-handler move-to add-to-combat-list]]
+    [rogule.engine :refer [install-arrow-key-handler move-to add-to-combat-list
+                           add-message finish-game add-item-to-inventory uncover-item]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   (:require-macros
@@ -65,20 +66,26 @@
 (def forage-items
   [{:name "chestnut"
     :sprite (load-sprite :chestnut)
+    :fns {:encounter #'add-item-to-inventory}
     :value 1}
    {:name "mushroom"
     :sprite (load-sprite :mushroom)
+    :fns {:encounter #'add-item-to-inventory}
     :value 2}
    {:name "egg"
     :sprite (load-sprite :egg)
+    :fns {:encounter #'add-item-to-inventory}
     :value 2}])
 
 (def item-covers
   [{:sprite (load-sprite :hole)
+    :fns {:encounter #'uncover-item}
     :name "hole"}
    {:sprite (load-sprite :rock)
+    :fns {:encounter #'uncover-item}
     :name "rock"}
    {:sprite (load-sprite :wood)
+    :fns {:encounter #'uncover-item}
     :name "wood block"}])
 
 (def indoor-scenery
@@ -176,45 +183,7 @@
               (+ score value)))
           0 entities))
 
-; ***** state manipulation functions ***** ;
-
-(defn remove-entity [*state id]
-  (update-in *state [:entities] dissoc id))
-
-(defn add-entity [*state entity]
-  (if entity
-    (assoc-in *state [:entities (:id entity)] (dissoc entity :id))
-    *state))
-
-(defn add-to-inventory [*state id item-id entity]
-  (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
-
-(defn add-message [*state message]
-  (assoc *state :message {:text message
-                          :expires 3}))
-
-(defn finish-game [*state _their-id _item-id]
-  [true (assoc *state :outcome :ascended)])
-
 ; ***** item interaction functions ***** ;
-
-(defn add-item-to-inventory [*state their-id item-id]
-  (let [them (get-in *state [:entities their-id])
-        item (get-in *state [:entities item-id])]
-    (if (:inventory them)
-      [false (-> *state
-                 (add-to-inventory their-id item-id item)
-                 (remove-entity item-id)
-                 (add-message (str "you found the " (:name item))))]
-      [false *state])))
-
-(defn uncover-item [*state their-id item-id]
-  (let [item (get-in *state [:entities item-id])]
-    (if (not= their-id :player)
-      [false *state]
-      [true (-> *state
-                (remove-entity item-id)
-                (add-entity (:drop item)))])))
 
 (defn check-for-endgame [*state]
   (let [player (-> *state :entities :player)]
@@ -339,14 +308,12 @@
                  item-template
                  {:pos pos
                   :id (make-id)
-                  :layer :floor
-                  :fns {:encounter #'add-item-to-inventory}}))
+                  :layer :floor}))
         cover (merge
                 (rand-nth item-covers)
                 {:pos pos
                  :layer :floor
-                 :drop item
-                 :fns {:encounter #'uncover-item}})]
+                 :drop item})]
     [(assoc entities (make-id) cover)
      (dissoc free-tiles pos)]))
 
