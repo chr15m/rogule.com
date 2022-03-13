@@ -27,41 +27,6 @@
 (def clear-dist-sq (js/Math.pow clear-dist 2))
 (def coin #js [0 1])
 
-#_ (def forage-items
-  [{:name "herbs"
-    :sprite (load-sprite :herb)
-    :value 1}
-   {:name "feather"
-    :sprite (load-sprite :feather)
-    :value 1}
-   {:name "bone"
-    :sprite (load-sprite :bone)
-    :value 1}
-   {:name "olive sprig"
-    :sprite (load-sprite :olive)
-    :value 1}
-
-   {:name "egg"
-    :sprite (load-sprite :egg)
-    :value 2}
-   {:name "grapes"
-    :sprite (load-sprite :grapes)
-    :value 2}
-   {:name "shell"
-    :sprite (load-sprite :spiral-shell)
-    :value 2}
-
-   {:name "mushroom"
-    :sprite (load-sprite :mushroom)
-    :value 4}
-   {:name "chestnut"
-    :sprite (load-sprite :chestnut)
-    :value 4}
-
-   {:name "gem"
-    :sprite (load-sprite :gem-stone)
-    :value 8}])
-
 (def forage-items
   [{:name "chestnut"
     :sprite (load-sprite :chestnut)
@@ -71,6 +36,10 @@
     :sprite (load-sprite :mushroom)
     :fns {:encounter #'add-item-to-inventory}
     :value 2}
+   {:name "gem-stone"
+    :sprite (load-sprite :gem-stone)
+    :fns {:encounter #'add-item-to-inventory}
+    :value 8}
 
    {:name "health"
     :sprite (load-sprite :green-heart)
@@ -401,8 +370,8 @@
 (defn make-level [*state size]
   (let [m (make-digger-map (js/Math.random) size size)
         entities (make-entities m 20 5)
-        counts {:mushroom (count-entities (vals entities) :name "mushroom")
-                :chestnut (count-entities (vals entities) :name "chestnut")}]
+        counts (into {} (for [t [:mushroom :chestnut :gem-stone]]
+                          {t (count-entities (vals entities) :name (name t))}))]
     (log "ents" (vals entities))
     (log "map" m)
     (log "entities" entities)
@@ -465,7 +434,7 @@
      [:h2 "Rogule"]
      [:p "Use the arrow keys to move."]
      [:p "Move over items and " (tile-mem (load-sprite :ghost)) " monsters to interact."]
-     [:p "Collect all the " (tile-mem (load-sprite :mushroom)) " mushrooms and " (tile-mem (load-sprite :chestnut)) " chestnuts."]
+     [:p "Collect all the " (tile-mem (load-sprite :mushroom)) " items."]
      [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend and win the game."]
      [:button#help.key {:on-click #(trigger-key 27)} "esc"]]
     [:button#help.key {:on-click #(trigger-key 191)} "?"]))
@@ -524,8 +493,8 @@
       [(if (= outcome :ascended) (emoj-fn (load-sprite :shinto-shrine)) (emoj-fn death-sprite)) " "
        moves " " (emoj-fn (load-sprite :down-arrow)) " " break]
 
-      (let [hp (-> stats :hp first)]
-        (for [i (range (-> stats :hp second))]
+      (let [hp (/ (-> stats :hp first) 2)]
+        (for [i (range (/ (-> stats :hp second) 2))]
           (if (> i hp)
             (emoj-fn blank-sprite)
             (emoj-fn (load-sprite :green-square)))))
@@ -536,7 +505,8 @@
         (emoj-fn (:sprite entity)))
       [break]
       (emoj-bar emoj-fn inventory counts :chestnut blank-sprite (load-sprite :chestnut)) [break]
-      (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom)))))
+      (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom)) [break]
+      (emoj-bar emoj-fn inventory counts :gem-stone blank-sprite (load-sprite :gem-stone)))))
 
 (defn component-countdown []
   (let [n (r/atom nil)
