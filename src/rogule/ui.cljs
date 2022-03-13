@@ -431,7 +431,10 @@
    (for [layer [:floor :occupy]]
      (let [entity (get entities [x y layer])]
        (when entity
-         (tile-mem (:sprite entity) (:name entity) {:opacity opacity}))))])
+         [:span
+          (tile-mem (:sprite entity) (:name entity) {:opacity opacity})
+          (when (and (:stats entity) (not= (:id entity) :player))
+            [:span.stat (-> entity :stats :xp)])])))])
 
 (defn component-inventory [inventory]
   [:div#inventory

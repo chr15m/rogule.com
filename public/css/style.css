@@ -95,6 +95,21 @@ span.grid {
 
 span.grid > * {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img.tile {
+}
+
+span.stat {
+  font-size: 0.5em;
+  top: -16px;
+  position: absolute;
+  color: #333;
+  text-shadow: 0px 0px 3px white;
+  opacity: 0.5;
 }
 
 #player-stats {

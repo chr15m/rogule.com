@@ -15,13 +15,13 @@
 
 (defn tile [sprite & [tile-name extra]]
   (let [src (get sprite "src")]
-    [:img (merge {:title (or tile-name (get sprite "name"))
-                  :alt (when (get sprite "codes") (alt-from-codes (get sprite "codes")))
-                  :width "32px"
-                  :src (if (or (= (.indexOf src "/") 0)
-                               (= (.indexOf src "http") 0))
-                         (str src ".svg")
-                         (str "data:image/svg+xml;base64," src))}
-                 extra)]))
+    [:img.tile (merge {:title (or tile-name (get sprite "name"))
+                       :alt (when (get sprite "codes") (alt-from-codes (get sprite "codes")))
+                       :width "32px"
+                       :src (if (or (= (.indexOf src "/") 0)
+                                    (= (.indexOf src "http") 0))
+                              (str src ".svg")
+                              (str "data:image/svg+xml;base64," src))}
+                      extra)]))
 
 (def tile-mem (memoize tile))
