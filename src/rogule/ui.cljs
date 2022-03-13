@@ -420,11 +420,9 @@
   [:span.grid {:key x
                :style {:opacity opacity}}
    (when (> opacity 0)
-     (cond 
+     (cond
        (= (get floor-tiles [x y]) :door)
        (tile-mem (load-sprite :white-large-square) "door")
-       (= (get floor-tiles [x y]) :room)
-       (tile-mem (load-sprite :white-large-square) "room")
        (= (get floor-tiles [x y]) :wall)
        (tile-mem (load-sprite :black-large-square) "wall")
        (= (get floor-tiles [x y]) :corridor)
