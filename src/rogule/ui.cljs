@@ -447,8 +447,10 @@
   (if show-help
     [:div.modal
      [:h2 "Rogule"]
+     [:p "Use the arrow keys to move."]
+     [:p "Move over items and monsters to interact."]
      [:p "Find items to obtain the best score."]
-     [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend."]
+     [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend and win the game."]
      [:button#help.key {:on-click #(trigger-key 27)} "esc"]]
     [:button#help.key {:on-click #(trigger-key 191)} "?"]))
 

@@ -31,20 +31,33 @@ h1, h2, h3 {
 }
 
 button {
-  border: 1px solid #AAB8C2;
-  border-bottom: 5px solid #AAB8C2;
+  border: 2px solid #4D9029;
+  border-bottom: 5px solid #4D9029;
   background-color: #78B159;
   border-radius: 6px;
   font-family: "Courier New", "Courier", "Courier 10 Pitch", monospace;
   font-size: 1em;
+  font-weight: bold;
+  color: #555;
   padding: 0.25em 0.5em;
 }
 
 button:active {
-  border-bottom: 1px solid #AAB8C2;
-  margin-bottom: 4px;
+  border-bottom: 2px solid #4D9029;
+  margin-bottom: 5px;
   transform: translateY(4px);
 }
+
+button.key {
+  border: 2px solid #AAB8C2;
+  border-bottom: 5px solid #AAB8C2;
+  background-color: #D4E1EA;
+}
+
+button.key:active {
+  border-bottom: 2px solid #AAB8C2;
+}
+
 
 /***** specific styles *****/
 
@@ -59,6 +72,12 @@ button:active {
 body.page {
   height: 100vh;
   padding: 0.5em;
+}
+
+button#help {
+  position: absolute;
+  top: 8px;
+  left: 8px;
 }
 
 /***** game styles *****/
@@ -173,6 +192,7 @@ span.xp {
   align-items: center;
   padding: 1em;
   background-color: #FCFBF3;
+  z-index: 2;
 }
 
 .message {
