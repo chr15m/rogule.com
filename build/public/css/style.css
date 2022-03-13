@@ -30,7 +30,7 @@ h1, h2, h3 {
   font-family: 'Almendra SC', serif;
 }
 
-button {
+button, .button {
   border: 2px solid #4D9029;
   border-bottom: 5px solid #4D9029;
   background-color: #78B159;
@@ -42,7 +42,7 @@ button {
   padding: 0.25em 0.5em;
 }
 
-button:active {
+button:active, .button:active {
   border-bottom: 2px solid #4D9029;
   margin-bottom: 5px;
   transform: translateY(4px);
@@ -80,6 +80,20 @@ button#help {
   left: 8px;
 }
 
+.page a {
+  color: grey;
+  font-size: 0.75em;
+}
+
+.page a.button {
+    text-decoration: none;
+    color: white;
+}
+
+.page .cta {
+  text-align: center;
+}
+
 /***** game styles *****/
 
 body.game {
@@ -105,6 +119,14 @@ body.game #app {
   margin: auto;
   width: 100%;
   left: 0px;
+}
+
+h1.splash {
+  position: absolute;
+  z-index: 3;
+  text-shadow: 0px 0px 10px white;
+  font-size: 6em;
+  top: 100px !important;
 }
 
 div.row {
@@ -162,7 +184,7 @@ span.xp {
 
 #inventory ul {
   position: absolute;
-  bottom: 48px;
+  bottom: 8px;
   left: 0px;
   list-style-type: none;
   display: flex;
@@ -217,6 +239,22 @@ span.xp {
   max-width: 400px;
   width: 100%;
   text-align: center;
+}
+
+/***** juice *****/
+
+.pop {
+  animation: pop .25s;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0);
+    animation-timing-function: cubic-bezier(.59,2.5,.88,.32);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 /***** loader *****/
