@@ -1,8 +1,12 @@
 (ns rogule.engine
   (:require
-    [reagent.core :as r]
     [clojure.set :refer [difference]]
-    [sitefox.ui :refer [log]]))
+    [clojure.string :refer [join]]
+    [reagent.core :as r]
+    [sitefox.ui :refer [log]]
+    ["rot-js" :as ROT])
+  (:require-macros
+    [rogule.loader :refer [load-sprite]]))
 
 (log "rogule.engine loaded")
 
@@ -20,6 +24,29 @@
    190 []})
 
 (def rejuvination-rate 13)
+
+; ***** rng fns ***** ;
+
+(defonce combat-dice (ROT/RNG.clone))
+(def coin #js [0 1])
+
+(defn make-id []
+  (-> (random-uuid) str (.slice 0 8)))
+
+(defn coin-flip []
+  (.getItem combat-dice coin))
+
+(defn get-random-entity-by-value [entity-template-table]
+  (let [weighted-table (->> entity-template-table
+                            (map (fn [i] {(:name i) (/ 1 (:value i))}))
+                            (into {})
+                            clj->js)
+        item-name (ROT/RNG.getWeightedValue weighted-table)]
+    (->> entity-template-table
+         (filter #(= (:name %) item-name))
+         first)))
+
+; ***** state update ***** ;
 
 (defn move-to [*state id new-pos]
   (if new-pos
@@ -97,6 +124,12 @@
 (defn finish-game [*state _their-id _item-id]
   [true (assoc *state :outcome :ascended)])
 
+(defn check-for-endgame [*state]
+  (let [player (-> *state :entities :player)]
+    (if (:dead player)
+      (assoc *state :outcome :died)
+      *state)))
+
 ; ***** item encounter fns ***** ;
 
 (defn increase-hp [*state their-id item-id]
@@ -127,6 +160,46 @@
       [true (-> *state
                 (remove-entity item-id)
                 (add-entity (:drop item)))])))
+
+(defn combat [*state their-id my-id]
+  ; hit goes them -> me
+  (let [them (get-in *state [:entities their-id])
+        me (get-in *state [:entities my-id])
+        their-xp (-> them :stats :xp)
+        my-hp (-> me :stats :hp first)
+        ; flip a coin for every xp and compute the boolean
+        hits (map (fn [_] (coin-flip)) (range their-xp))
+        hp-reduction (-> hits join (js/parseInt 2))
+        updated-hp (js/Math.max 0 (- my-hp hp-reduction))
+        hit-miss-msg (if (= hp-reduction 0) "missed" "hit")
+        killed (= updated-hp 0)
+        *state (assoc-in *state [:entities my-id :stats :hp 0] updated-hp)
+        *state (add-message *state (str (:name them) " " hit-miss-msg " " (:name me)))
+        *state (if (and killed (= their-id :player))
+                 (update-in *state [:entities their-id :kills] conj (get-in *state [:entities my-id]))
+                 *state)
+        kills (count (get-in *state [:entities their-id :kills]))
+        *state (if (and killed (= their-id :player) (= (mod kills 3) 0)) ; every 3 kills add XP
+                 (-> *state
+                     (update-in [:entities their-id :stats :xp] inc)
+                     (add-message "You gained xp."))
+                 *state)
+        *state (if killed
+                 (add-message *state (str (:name them) " killed " (:name me)))
+                 (-> *state
+                     (add-to-combat-list their-id (get-in *state [:entities their-id]))
+                     (add-to-combat-list my-id (get-in *state [:entities my-id]))))]
+    (log "combat" (:name them) "hit" (:name me) hits hp-reduction " hp:" my-hp updated-hp)
+    [true
+     (if (= updated-hp 0)
+       (-> *state ; entity dies
+           (update-in [:entities my-id] assoc
+                      :dead true
+                      :layer :floor
+                      :sprite (load-sprite :skull-and-crossbones))
+           (update-in [:entities my-id :fns] dissoc :update :encounter)
+           (check-for-endgame))
+       *state)]))
 
 ; ***** event handling ***** ;
 
