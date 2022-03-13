@@ -314,7 +314,7 @@
                      (range monster-count))]
     entities))
 
-(defn make-level [*state size]
+(defn make-level [*state seed size]
   (let [m (make-digger-map (js/Math.random) size size)
         entities (make-entities m 20 5)
         counts (into {} (for [t [:mushroom :chestnut :gem-stone]]
@@ -324,6 +324,7 @@
     (log "entities" entities)
     (log "counts" counts)
     (assoc *state
+           :seed seed
            :map m
            :entities entities
            :counts counts)))
@@ -428,13 +429,13 @@
           (emoj-fn sprite))))
 
 (defn make-share-string [emoj-fn break *state]
-  (let [{:keys [outcome entities moves counts]} *state
+  (let [{:keys [outcome entities moves counts seed]} *state
         {:keys [player]} entities
         {:keys [inventory kills stats]} player
         death-sprite (load-sprite :skull-and-crossbones)
         blank-sprite (load-sprite :white-large-square)]
     (concat
-      ["Rogule " (date-token) break
+      ["Rogule " seed break
        (emoj-fn (load-sprite :elf)) " "
        (:xp stats) " "]
 
@@ -457,8 +458,7 @@
       (emoj-bar emoj-fn inventory counts :gem-stone blank-sprite (load-sprite :gem-stone)))))
 
 (defn component-countdown []
-  (let [n (r/atom nil)
-        ]
+  (let [n (r/atom nil)]
     (js/setInterval #(swap! n inc) 100)
     (fn []
       (let [until (time-until (tomorrow))]
@@ -482,7 +482,7 @@
   (let [code (aget ev "keyCode")]
     (print "keyCode" code)
     (case code
-      81 (reset! state (make-level initial-state size))
+      ;81 (reset! state (make-level initial-state size))
       191 (swap! state update-in [:modal] #(when (not %) :help))
       27 (swap! state dissoc :modal)
       nil)))
@@ -492,7 +492,11 @@
                (js/document.getElementById "app")))
 
 (defn main! []
-  (seedrandom (str "Rogule-" (date-token)) #js {:global true})
-  (reset! state (make-level initial-state size))
+  (let [url (js/URL. (aget js/document "location" "href"))
+        q (aget url "search")
+        seed (if (seq q) (last (.split q "?")) (date-token))]
+    (log "seed" seed)
+    (seedrandom (str "Rogule-" seed) #js {:global true})
+    (reset! state (make-level initial-state seed size)))
   (.addEventListener js/window "keydown" #(key-handler %))
   (start))
