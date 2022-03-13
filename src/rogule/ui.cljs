@@ -417,6 +417,7 @@
 (defn component-health-bar [entity stats]
   [:div
    (tile-mem (:sprite entity))
+   [:span.xp (-> entity :stats :xp)]
    (let [hp (-> stats :hp first)]
      (for [i (range (-> stats :hp second))]
        (if (> i hp)

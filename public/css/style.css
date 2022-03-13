@@ -117,6 +117,15 @@ span.stat {
   opacity: 0.5;
 }
 
+span.xp {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  vertical-align: top;
+}
+
 #health-bars {
   top: 8px;
   margin: auto;
