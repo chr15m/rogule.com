@@ -413,7 +413,8 @@
      (component-health-bars-mem player combatants)
      [component-inventory player-inventory]
      [component-help (= (:modal @state) :help)]
-     [component-messages (-> @state :message :text)]]))
+     ;[component-messages (-> @state :message :text)]
+     ]))
 
 (defn copy-text [txt]
   (->
