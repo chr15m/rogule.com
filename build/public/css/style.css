@@ -31,20 +31,33 @@ h1, h2, h3 {
 }
 
 button {
-  border: 1px solid #AAB8C2;
-  border-bottom: 5px solid #AAB8C2;
+  border: 2px solid #4D9029;
+  border-bottom: 5px solid #4D9029;
   background-color: #78B159;
   border-radius: 6px;
   font-family: "Courier New", "Courier", "Courier 10 Pitch", monospace;
   font-size: 1em;
+  font-weight: bold;
+  color: #555;
   padding: 0.25em 0.5em;
 }
 
 button:active {
-  border-bottom: 1px solid #AAB8C2;
-  margin-bottom: 4px;
+  border-bottom: 2px solid #4D9029;
+  margin-bottom: 5px;
   transform: translateY(4px);
 }
+
+button.key {
+  border: 2px solid #AAB8C2;
+  border-bottom: 5px solid #AAB8C2;
+  background-color: #D4E1EA;
+}
+
+button.key:active {
+  border-bottom: 2px solid #AAB8C2;
+}
+
 
 /***** specific styles *****/
 
@@ -61,6 +74,12 @@ body.page {
   padding: 0.5em;
 }
 
+button#help {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
 /***** game styles *****/
 
 body.game {
@@ -72,6 +91,11 @@ body.game {
 
 body.game #app {
   align-items: center;
+}
+
+#game {
+  display: flex;
+  justify-content: center;
 }
 
 #game h1 {
@@ -95,14 +119,36 @@ span.grid {
 
 span.grid > * {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-#player-stats {
+img.tile {
+}
+
+span.stat {
+  font-size: 0.5em;
+  top: -16px;
   position: absolute;
+  color: #333;
+  text-shadow: 0px 0px 3px white;
+  opacity: 0.5;
+}
+
+span.xp {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  vertical-align: top;
+}
+
+#health-bars {
   top: 8px;
-  left: 0px;
-  width: 100%;
-  text-align: center;
+  margin: auto;
+  position: absolute;
 }
 
 #score {
@@ -146,6 +192,7 @@ span.grid > * {
   align-items: center;
   padding: 1em;
   background-color: #FCFBF3;
+  z-index: 2;
 }
 
 .message {
