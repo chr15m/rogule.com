@@ -8,7 +8,8 @@
     [rogule.emoji :refer [tile-mem]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
     [rogule.engine :refer [install-arrow-key-handler move-to add-to-combat-list
-                           add-message finish-game add-item-to-inventory uncover-item]]
+                           add-message finish-game add-item-to-inventory uncover-item
+                           increase-hp]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   (:require-macros
@@ -72,9 +73,10 @@
     :sprite (load-sprite :mushroom)
     :fns {:encounter #'add-item-to-inventory}
     :value 2}
-   {:name "egg"
-    :sprite (load-sprite :egg)
-    :fns {:encounter #'add-item-to-inventory}
+
+   {:name "health"
+    :sprite (load-sprite :green-heart)
+    :fns {:encounter #'increase-hp}
     :value 2}])
 
 (def item-covers

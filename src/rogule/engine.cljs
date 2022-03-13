@@ -100,6 +100,17 @@
 
 ; ***** item encounter fns ***** ;
 
+(defn increase-hp [*state their-id item-id]
+  (let [hp (get-in *state [:entities their-id :stats :hp])
+        add-hp (< (first hp) (second hp))
+        *state (remove-entity *state item-id)]
+    [false
+     (if add-hp
+       (-> *state
+           (update-in [:entities their-id :stats :hp 0] (fn [old-hp] (js/Math.min (+ old-hp 3) (second hp))))
+           (add-message "You feel better."))
+       *state)]))
+
 (defn add-item-to-inventory [*state their-id item-id]
   (let [them (get-in *state [:entities their-id])
         item (get-in *state [:entities item-id])]
