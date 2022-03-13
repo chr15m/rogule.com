@@ -495,7 +495,7 @@
 
       (let [hp (/ (-> stats :hp first) 2)]
         (for [i (range (/ (-> stats :hp second) 2))]
-          (if (> i hp)
+          (if (>= i hp)
             (emoj-fn blank-sprite)
             (emoj-fn (load-sprite :green-square)))))
       [break]
