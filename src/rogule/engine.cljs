@@ -109,7 +109,7 @@
        (-> *state
            (update-in [:entities their-id :stats :hp 0] (fn [old-hp] (js/Math.min (+ old-hp 3) (second hp))))
            (add-message "You feel better."))
-       *state)]))
+       (add-message *state "You already have full health."))]))
 
 (defn add-item-to-inventory [*state their-id item-id]
   (let [them (get-in *state [:entities their-id])
