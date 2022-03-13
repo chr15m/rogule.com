@@ -5,7 +5,7 @@
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [sitefox.ui :refer [log]]
-    [rogule.emoji :refer [tile-mem]]
+    [rogule.emoji :refer [tile-mem emoj]]
     [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
     [rogule.engine :refer [install-arrow-key-handler trigger-key move-to add-to-combat-list
                            add-message finish-game add-item-to-inventory uncover-item
@@ -15,9 +15,7 @@
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
 
-(def initial-state
-  {:message {:expires 5
-             :text "Press ? for help."}})
+(def initial-state {})
 
 (defonce state (r/atom initial-state))
 (defonce combat-dice (ROT/RNG.clone))
@@ -157,11 +155,33 @@
 
 (def entities-by-pos-mem (memoize entities-by-pos))
 
-(defn date-token []
-  (let [today (js/Date.)]
+(defn count-entities [entities k v]
+  (count (filter #(or (= (k %) v)
+                      (= (-> % :drop k) v))
+                 entities)))
+
+(defn zero-pad [n]
+  (.slice (str "0" n) -2))
+
+(defn time-until [date-string]
+  (let [since-epoch (-> date-string (js/Date.))
+        s (js/Math.floor (/ (- since-epoch (js/Date.) (* (.getTimezoneOffset since-epoch) 60 1000 -1)) 1000))
+        minutes (zero-pad (mod (js/Math.floor (/ s 60)) 60))
+        hours (zero-pad (js/Math.floor (/ s 3600)))
+        seconds (zero-pad (mod s 60))]
+    [hours minutes seconds]))
+
+(defn date-token [& [d]]
+  (let [today (if d (js/Date. d) (js/Date.))]
     (str (.getFullYear today) "-"
          (inc (.getMonth today)) "-"
          (.getDate today))))
+
+(defn tomorrow []
+  (-> (js/Date.)
+      (.getTime)
+      (+ (* 1000 60 60 24))
+      date-token))
 
 (defn make-id []
   (-> (random-uuid) str (.slice 0 8)))
@@ -178,12 +198,6 @@
     (->> entity-template-table
          (filter #(= (:name %) item-name))
          first)))
-
-(defn calculate-max-score [entities]
-  (reduce (fn [score [_id e]]
-            (let [value (some identity [(:value e) (-> e :drop :value) 0])]
-              (+ score value)))
-          0 entities))
 
 ; ***** item interaction functions ***** ;
 
@@ -387,14 +401,16 @@
 (defn make-level [*state size]
   (let [m (make-digger-map (js/Math.random) size size)
         entities (make-entities m 20 5)
-        max-score (calculate-max-score entities)]
+        counts {:mushroom (count-entities (vals entities) :name "mushroom")
+                :chestnut (count-entities (vals entities) :name "chestnut")}]
+    (log "ents" (vals entities))
     (log "map" m)
     (log "entities" entities)
-    (log "max-score" max-score)
+    (log "counts" counts)
     (assoc *state
            :map m
            :entities entities
-           :max-score max-score)))
+           :counts counts)))
 
 ; ***** rendering ***** ;
 
@@ -420,16 +436,16 @@
 
 (defn component-inventory [inventory]
   [:div#inventory
-   [:div#score (apply + (map :value inventory))]
    [:ul
     (for [e (sort-by (juxt :value :name) inventory)]
       [:li (tile-mem (:sprite e) (:name e) {:width "48px"})])]])
 
-(defn component-health-bar [entity stats]
+(defn component-health-bar [entity]
   [:div
    (tile-mem (:sprite entity))
    [:span.xp (-> entity :stats :xp)]
-   (let [hp (-> stats :hp first)]
+   (let [stats (:stats entity)
+         hp (-> stats :hp first)]
      (for [i (range (-> stats :hp second))]
        (if (> i hp)
          (tile-mem (load-sprite :white-large-square))
@@ -437,7 +453,7 @@
 
 (defn component-health-bars [player combatants]
   [:div#health-bars
-   [component-health-bar player (:stats player)]
+   [component-health-bar player]
    (for [[_id entity] combatants]
      (let [stats (:stats entity)] [component-health-bar entity stats]))])
 
@@ -448,8 +464,8 @@
     [:div.modal
      [:h2 "Rogule"]
      [:p "Use the arrow keys to move."]
-     [:p "Move over items and monsters to interact."]
-     [:p "Find items to obtain the best score."]
+     [:p "Move over items and " (tile-mem (load-sprite :ghost)) " monsters to interact."]
+     [:p "Collect all the " (tile-mem (load-sprite :mushroom)) " mushrooms and " (tile-mem (load-sprite :chestnut)) " chestnuts."]
      [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend and win the game."]
      [:button#help.key {:on-click #(trigger-key 27)} "esc"]]
     [:button#help.key {:on-click #(trigger-key 191)} "?"]))
@@ -483,32 +499,61 @@
      [component-help (= (:modal @state) :help)]
      [component-messages (-> @state :message :text)]]))
 
-(defn copy-element [selector]
-  (let [el (.querySelector js/document selector)]
-    (->
-      (js/navigator.clipboard.writeText (aget el "innerText"))
-      (.then (fn [] (js/alert "copied"))))))
+(defn copy-text [txt]
+  (->
+    (js/navigator.clipboard.writeText txt)
+    (.then (fn [] (js/alert "copied results to clipboard")))))
+
+(defn emoj-bar [emoj-fn inventory counts k blank-sprite sprite]
+  (for [x (range (k counts))]
+        (if (> x (count-entities inventory :name (name k)))
+          (emoj-fn blank-sprite)
+          (emoj-fn sprite))))
+
+(defn make-share-string [emoj-fn break *state]
+  (let [{:keys [outcome entities moves counts]} *state
+        {:keys [player]} entities
+        {:keys [inventory kills stats]} player
+        death-sprite (load-sprite :skull-and-crossbones)
+        blank-sprite (load-sprite :white-large-square)]
+    (concat
+      ["Rogule " (date-token) break
+       (emoj-fn (load-sprite :elf)) " "
+       (:xp stats) " "]
+
+      [(if (= outcome :ascended) (emoj-fn (load-sprite :shinto-shrine)) (emoj-fn death-sprite)) " "
+       moves " " (emoj-fn (load-sprite :down-arrow)) " " break]
+
+      (let [hp (-> stats :hp first)]
+        (for [i (range (-> stats :hp second))]
+          (if (> i hp)
+            (emoj-fn blank-sprite)
+            (emoj-fn (load-sprite :green-square)))))
+      [break]
+
+      [(emoj-fn (load-sprite :crossed-swords)) " "]
+      (for [entity (reverse kills)]
+        (emoj-fn (:sprite entity)))
+      [break]
+      (emoj-bar emoj-fn inventory counts :chestnut blank-sprite (load-sprite :chestnut)) [break]
+      (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom)))))
+
+(defn component-countdown []
+  (let [n (r/atom nil)
+        ]
+    (js/setInterval #(swap! n inc) 100)
+    (fn []
+      (let [until (time-until (tomorrow))]
+        [:p {:nothing @n}
+         "next rogule" [:br]
+         (join ":" until)]))))
 
 (defn component-tombstone [state]
-  (let [{:keys [outcome entities]} @state
-        {:keys [player]} entities
-        {:keys [inventory]} player]
+  (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
     [:div#tombstone
-     [:p "Rogule " (date-token)]
-     [:div "Score: " (apply + (map :value inventory)) " / " (:max-score @state)]
-     [:p
-      (tile (load-sprite :elf) "you") " "
-      (name outcome) " "
-      (if (= outcome :ascended)
-        (tile (load-sprite :glowing-star))
-        (tile (load-sprite :skull-and-crossbones)))]
-     [:p
-      (for [e (sort-by (juxt :value :name) inventory)]
-        [:span (tile-mem (:sprite e) (:name e) {:width "48px"})])]
-     [:button {:autoFocus true
-               :on-click #(reset! state (make-level initial-state size))}
-      "restart"]
-     [:button {:on-click #(copy-element "#tombstone")} "share"]]))
+     [:div (concat [] (make-share-string tile-mem [:br] @state))]
+     [component-countdown]
+     [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]]))
 
 (defn component-main [state]
   (if (:outcome @state)
