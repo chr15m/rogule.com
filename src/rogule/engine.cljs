@@ -4,13 +4,16 @@
     [clojure.string :refer [join]]
     [reagent.core :as r]
     [sitefox.ui :refer [log]]
-    ["rot-js" :as ROT])
+    ["rot-js" :as ROT]
+    [rogule.map :refer [entities-by-pos-mem find-path]])
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
 
 (log "rogule.engine loaded")
 
 (defonce keymap (r/atom {}))
+; dirty hack to avoid functions in serialized state
+(def fn-table (atom {}))
 
 (def key-dir-map
   {37 [0 dec]
@@ -52,13 +55,13 @@
   (if new-pos
     (let [entity (get-in *state [:entities id])
           passable-fn-maker (-> entity :fns :passable)
-          passable-fn (when passable-fn-maker (passable-fn-maker *state id entity))
+          passable-fn (when passable-fn-maker ((passable-fn-maker @fn-table) *state id entity))
           passable-tile? (if passable-fn (passable-fn (first new-pos) (second new-pos)) true)
           entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
           [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
                                                           (let [encounter-fn (-> e :fns :encounter)]
                                                             (if encounter-fn
-                                                              (let [[this-item-blocks? *state] (encounter-fn *state id entity-id)]
+                                                              (let [[this-item-blocks? *state] ((encounter-fn @fn-table) *state id entity-id)]
                                                                 [(or item-blocks? this-item-blocks?) *state])
                                                               [item-blocks? *state])))
                                                         [false *state] entities-at-pos)]
@@ -73,7 +76,7 @@
       (filter (fn [[_id entity]] (-> entity :fns :update)))
       (reduce
         (fn [*state [id entity]]
-          (let [update-fn (-> entity :fns :update)]
+          (let [update-fn ((-> entity :fns :update) @fn-table)]
             (update-fn *state id entity)))
         *state)))
 
@@ -200,6 +203,60 @@
            (update-in [:entities my-id :fns] dissoc :update :encounter)
            (check-for-endgame))
        *state)]))
+
+; ***** player movement functions ***** ;
+
+(defn can-pass-tile [floor-tiles pos allowed-tiles]
+  (let [tile-type (get floor-tiles pos)]
+       (contains? (set allowed-tiles) tile-type)))
+
+(defn player-passable-fn [*state x y]
+  (let [floor-tiles (-> *state :map :floor-tiles)]
+    (can-pass-tile floor-tiles [x y] [:room :door :corridor])))
+
+(defn make-monster-passable-fn [*state monster-id _monster]
+  (let [floor-tiles (-> *state :map :floor-tiles)
+        entities (-> *state :entities)
+        entities-to-avoid (->>
+                            entities
+                            (filter (fn [[id e]] (and
+                                                   (= (:layer e) :occupy)
+                                                   (not= id monster-id)
+                                                   (not= id :player))))
+                            entities-by-pos-mem)]
+    (fn [x y]
+      (and
+        (can-pass-tile floor-tiles [x y] [:room :door :corridor])
+        (nil? (get entities-to-avoid [x y :occupy]))))))
+
+(defn chase-player [{:keys [entities] :as *state} monster-id monster]
+  (log "update" (:name monster) monster-id)
+  (let [player (:player entities)
+        passable-fn (make-monster-passable-fn *state monster-id monster)
+        path-to-player (when player
+                         (find-path
+                           (:pos monster) (:pos player)
+                           passable-fn))]
+    (if (and player
+             (< (count path-to-player) (:activation monster))
+             ; every now and then just don't move
+             (< (.getUniform combat-dice) 0.9))
+      (move-to *state monster-id (second path-to-player))
+      *state)))
+
+; ***** function lookup table (serialization friendly) ***** ;
+
+; dirty hack
+(reset! fn-table
+  {:add-item-to-inventory add-item-to-inventory
+   :increase-hp increase-hp
+   :uncover-item uncover-item
+   :finish-game finish-game
+   :combat combat
+   :chase-player chase-player
+   :player-passable-wrapper (fn [*state _player-id _player]
+                                  (partial player-passable-fn *state))
+   :make-monster-passable-fn make-monster-passable-fn})
 
 ; ***** event handling ***** ;
 

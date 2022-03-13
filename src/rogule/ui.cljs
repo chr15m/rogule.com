@@ -4,13 +4,13 @@
     [clojure.string :refer [join]]
     [reagent.core :as r]
     [reagent.dom :as rdom]
+    [alandipert.storage-atom :refer [local-storage]]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile-mem emoj]]
-    [rogule.map :refer [make-digger-map distance-sq room-center tiles-for-room find-path]]
-    [rogule.engine :refer [install-arrow-key-handler trigger-key move-to
-                           finish-game add-item-to-inventory uncover-item
-                           get-random-entity-by-value make-id
-                           increase-hp combat-dice combat]]
+    [rogule.map :refer [make-digger-map distance-sq room-center
+                        tiles-for-room find-path entities-by-pos-mem]]
+    [rogule.engine :refer [install-arrow-key-handler trigger-key
+                           get-random-entity-by-value make-id can-pass-tile]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
   (:require-macros
@@ -18,7 +18,7 @@
 
 (def initial-state {})
 
-(defonce state (r/atom initial-state))
+(defonce state (local-storage (r/atom initial-state) :game-state))
 
 (def size 32)
 (def visible-dist 9)
@@ -29,31 +29,31 @@
 (def forage-items
   [{:name "chestnut"
     :sprite (load-sprite :chestnut)
-    :fns {:encounter #'add-item-to-inventory}
+    :fns {:encounter :add-item-to-inventory}
     :value 1}
    {:name "mushroom"
     :sprite (load-sprite :mushroom)
-    :fns {:encounter #'add-item-to-inventory}
+    :fns {:encounter :add-item-to-inventory}
     :value 2}
    {:name "gem-stone"
     :sprite (load-sprite :gem-stone)
-    :fns {:encounter #'add-item-to-inventory}
+    :fns {:encounter :add-item-to-inventory}
     :value 8}
 
    {:name "health"
     :sprite (load-sprite :green-heart)
-    :fns {:encounter #'increase-hp}
+    :fns {:encounter :increase-hp}
     :value 2}])
 
 (def item-covers
   [{:sprite (load-sprite :hole)
-    :fns {:encounter #'uncover-item}
+    :fns {:encounter :uncover-item}
     :name "hole"}
    {:sprite (load-sprite :rock)
-    :fns {:encounter #'uncover-item}
+    :fns {:encounter :uncover-item}
     :name "rock"}
    {:sprite (load-sprite :wood)
-    :fns {:encounter #'uncover-item}
+    :fns {:encounter :uncover-item}
     :name "wood block"}])
 
 (def indoor-scenery
@@ -128,11 +128,6 @@
 
 ; ***** utility functions ***** ;
 
-(defn entities-by-pos [entities]
-  (reduce (fn [es [id e]] (assoc es (conj (:pos e) (:layer e)) (assoc e :id id))) {} entities))
-
-(def entities-by-pos-mem (memoize entities-by-pos))
-
 (defn count-entities [entities k v]
   (count (filter #(or (= (k %) v)
                       (= (-> % :drop k) v))
@@ -161,46 +156,6 @@
       (+ (* 1000 60 60 24))
       date-token))
 
-; ***** player movement fns ***** ;
-
-(defn can-pass-tile [floor-tiles pos allowed-tiles]
-  (let [tile-type (get floor-tiles pos)]
-       (contains? (set allowed-tiles) tile-type)))
-
-(defn player-passable-fn [*state x y]
-  (let [floor-tiles (-> *state :map :floor-tiles)]
-    (can-pass-tile floor-tiles [x y] [:room :door :corridor])))
-
-(defn make-monster-passable-fn [*state monster-id _monster]
-  (let [floor-tiles (-> *state :map :floor-tiles)
-        entities (-> *state :entities)
-        entities-to-avoid (->>
-                            entities
-                            (filter (fn [[id e]] (and
-                                                   (= (:layer e) :occupy)
-                                                   (not= id monster-id)
-                                                   (not= id :player))))
-                            entities-by-pos-mem)]
-    (fn [x y]
-      (and
-        (can-pass-tile floor-tiles [x y] [:room :door :corridor])
-        (nil? (get entities-to-avoid [x y :occupy]))))))
-
-(defn chase-player [{:keys [entities] :as *state} monster-id monster]
-  (log "update" (:name monster) monster-id)
-  (let [player (:player entities)
-        passable-fn ((-> monster :fns :passable) *state monster-id monster)
-        path-to-player (when player
-                         (find-path
-                           (:pos monster) (:pos player)
-                           passable-fn))]
-    (if (and player
-             (< (count path-to-player) (:activation monster))
-             ; every now and then just don't move
-             (< (.getUniform combat-dice) 0.9))
-      (move-to *state monster-id (second path-to-player))
-      *state)))
-
 ; ***** create different types of things ***** ;
 
 (defn make-player [entities free-tiles]
@@ -212,9 +167,8 @@
                 :stats {:hp [10 10]
                         :xp 2}
                 :inventory []
-                :fns {:encounter #'combat
-                      :passable (fn [*state _player-id _player]
-                                  (partial player-passable-fn *state))}}]
+                :fns {:encounter :combat
+                      :passable :player-passable-wrapper}}]
     [(assoc entities :player player)
      (dissoc free-tiles pos)]))
 
@@ -223,7 +177,7 @@
         shrine (merge shrine-template
                       {:pos pos
                        :layer :occupy
-                       :fns {:encounter #'finish-game}})]
+                       :fns {:encounter :finish-game}})]
     [(assoc entities :shrine shrine)
      (dissoc free-tiles pos)]))
 
@@ -276,9 +230,9 @@
                   (nth monster-table monster-index)
                   {:pos pos
                    :layer :occupy
-                   :fns {:encounter #'combat
-                         :update #'chase-player
-                         :passable #'make-monster-passable-fn}})]
+                   :fns {:encounter :combat
+                         :update :chase-player
+                         :passable :make-monster-passable-fn}})]
     [(assoc entities (make-id) monster)
      (dissoc free-tiles pos)]))
 
@@ -494,9 +448,11 @@
 (defn main! []
   (let [url (js/URL. (aget js/document "location" "href"))
         q (aget url "search")
-        seed (if (seq q) (last (.split q "?")) (date-token))]
-    (log "seed" seed)
+        seed (if (seq q) (last (.split q "?")) (date-token))
+        existing-seed (:seed @state)]
+    (log "existing-seed" existing-seed)
     (seedrandom (str "Rogule-" seed) #js {:global true})
-    (reset! state (make-level initial-state seed size)))
+    (when (not= existing-seed seed)
+      (reset! state (make-level initial-state seed size))))
   (.addEventListener js/window "keydown" #(key-handler %))
   (start))

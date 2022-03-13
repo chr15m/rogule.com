@@ -87,8 +87,7 @@
        :floor-tiles (merge room-tiles room-wall-tiles corridor-tiles door-tiles)
        :rooms rooms
        :corridors corridors
-       :size [(aget digger "_width") (aget digger "_height")]
-       :digger digger})))
+       :size [(aget digger "_width") (aget digger "_height")]})))
 
 (defn room-center [room]
   [(int (/ (+ (:_x2 room)
@@ -112,3 +111,8 @@
         path (atom [])]
     (.compute p x2 y2 (fn [x y] (swap! path conj [x y])))
     (-> @path reverse vec)))
+
+(defn entities-by-pos [entities]
+  (reduce (fn [es [id e]] (assoc es (conj (:pos e) (:layer e)) (assoc e :id id))) {} entities))
+
+(def entities-by-pos-mem (memoize entities-by-pos))

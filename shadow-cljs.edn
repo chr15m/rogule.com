@@ -1,5 +1,6 @@
 {:source-paths ["src" "node_modules/sitefox/src"]
  :dependencies [[reagent "1.0.0-alpha2"]
+                [alandipert/storage-atom "2.0.1"]
                 [applied-science/js-interop "0.2.7"]
                 [funcool/promesa "6.0.2"]]
  :builds {:server {:target :node-script
