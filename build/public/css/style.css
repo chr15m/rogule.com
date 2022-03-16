@@ -80,7 +80,7 @@ button#help {
   left: 8px;
 }
 
-.page a {
+a {
   color: grey;
   font-size: 0.75em;
 }
@@ -236,7 +236,7 @@ span.xp {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 400px;
+  max-width: 600px;
   width: 100%;
   text-align: center;
 }
