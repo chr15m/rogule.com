@@ -426,7 +426,7 @@
      [:div (concat [] (make-share-string tile-mem [:br] @state))]
      [component-countdown]
      [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
-     [:p [:a.
+     [:p [:a
           {:href "https://twitter.com/search?q=rogule%202022&src=spelling_expansion_revert_click&f=live"
            :target "_BLANK"}
           "see other player scores"]]]))
