@@ -1,6 +1,13 @@
 STATIC=public/*.html public/css public/*.png # public/images public/assets
+BRANCH=$(shell git branch | grep '^*' | colrm 1 2)
+ZIPNAME=rogule
 
 all: build build/server.js
+
+$(ZIPNAME).zip: build
+	ln -s build/public $(ZIPNAME)
+	zip $@ `git ls-tree -r $(BRANCH) --name-only build/public | sed -e 's/build\/public/$(ZIPNAME)/'`
+	rm $(ZIPNAME)
 
 build/server.js: src/**/*.cljs shadow-cljs.edn node_modules
 	npx shadow-cljs release server --debug
@@ -14,7 +21,6 @@ build: src/**/* $(STATIC)
 node_modules: package.json
 	npm i
 	touch node_modules
-	rsync -avz node_modules/twemoji-emojis/vendor/ public/twemojis
 
 .PHONY: watch watcher server repl clean
 
