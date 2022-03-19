@@ -4,12 +4,9 @@
     [reagent.core :as r]
     [reagent.dom :as rdom]
     [rogule.emoji :refer [tile alt-from-codes select-me codes-to-img-mem]]
-    [rogule.twemojis :refer [name-to-key]])
-  #_ (:require-macros
-       [rogule.loader :refer [get-twemojis]]))
+    [rogule.twemojis :refer [name-to-key]]))
 
-; (def twemojis-clj (get-twemojis))
-(def twemojis (js/JSON.parse (rc/inline "emojis.json")))
+(def twemojis (js/JSON.parse (rc/inline "emoji.json")))
 
 (def twemojis-url (if (not= (.indexOf (aget js/document "location" "href") "localhost") -1)
                     "/twemoji/svg/"  
