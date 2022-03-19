@@ -32,7 +32,6 @@
                        :title (or tile-name (get sprite "name"))
                        :alt (when (get sprite "codes") (alt-from-codes (get sprite "codes")))
                        :class animation
-                       :width "32px"
                        :src (if (or (= (.indexOf src "/") 0)
                                     (= (.indexOf src "http") 0))
                               (str src ".svg")

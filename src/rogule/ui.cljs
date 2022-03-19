@@ -321,12 +321,12 @@
    [:ul
     (for [i (range (count inventory))
           :let [e (nth inventory i)]]
-      [:li.pop {:key i} (tile-mem (:sprite e) (:name e) {:width "32px"})])]])
+      [:li.pop {:key i} (tile-mem (:sprite e) (:name e))])]])
 
 (defn component-health-bar [entity]
   [:div
    (tile-mem (:sprite entity))
-   [:span.xp (-> entity :stats :xp)]
+   [:span.xp [:span (-> entity :stats :xp)]]
    (let [stats (:stats entity)
          hp (-> stats :hp first)]
      (for [i (range (-> stats :hp second))]
@@ -364,7 +364,6 @@
         player-pos (:pos player)
         player-inventory (:inventory player)
         combatants (:combatants @state)]
-    (log "entities" entities)
     [:span#game
      [:div {:ref #(install-arrow-key-handler state %)}
       (for [y (range (- (second player-pos) visible-dist)

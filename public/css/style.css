@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap');
 
+:root {
+  --tile-width: 32px;
+}
+
+@media only screen and (max-device-width: 600px) {
+  :root {
+    --tile-width: 16px;
+    font-size: 0.75em;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -20,6 +31,9 @@ body {
   font-weight: bold;
   font-size: 2em;
   color: #31373D;
+}
+
+@media only screen and (max-device-width: 600px) {
 }
 
 p {
@@ -130,13 +144,13 @@ h1.splash {
 }
 
 div.row {
-  height: 32px;
+  height: var(--tile-width);
 }
 
 span.grid {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: var(--tile-width);
+  height: var(--tile-width);
 }
 
 span.grid > * {
@@ -147,11 +161,12 @@ span.grid > * {
 }
 
 img.tile {
+  width: var(--tile-width);
 }
 
 span.stat {
   font-size: 0.5em;
-  top: -16px;
+  top: -1em;
   position: absolute;
   color: #333;
   text-shadow: 0px 0px 3px white;
@@ -159,12 +174,14 @@ span.stat {
 }
 
 span.xp {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 32px;
-  height: 32px;
+  display: inline-block;
+  width: var(--tile-width);
+  height: var(--tile-width);
   vertical-align: top;
+  font-size: 0.75em;
+  text-align: center;
+  position: relative;
+  top: 0.15em;
 }
 
 #health-bars {
@@ -199,7 +216,7 @@ span.xp {
 }
 
 #inventory li + li {
-  margin-left: 16px;
+  margin-left: 0.25em;
 }
 
 .modal {
