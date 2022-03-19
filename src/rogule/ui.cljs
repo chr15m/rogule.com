@@ -300,7 +300,7 @@
    (for [layer [:floor :occupy]]
      (let [entity (get entities [x y layer])]
        (when entity
-         [:span
+         [:span {:key (:id entity)}
           (tile-mem (:sprite entity) (:name entity) {:opacity opacity})
           (when (and (:stats entity) (not (:dead entity)) (not= (:id entity) :player))
             [:span.stat (-> entity :stats :xp)])])))])
@@ -308,8 +308,9 @@
 (defn component-inventory [inventory]
   [:div#inventory
    [:ul
-    (for [e inventory]
-      [:li.pop (tile-mem (:sprite e) (:name e) {:width "32px"})])]])
+    (for [i (range (count inventory))
+          :let [e (nth inventory i)]]
+      [:li.pop {:key i} (tile-mem (:sprite e) (:name e) {:width "32px"})])]])
 
 (defn component-health-bar [entity]
   [:div
@@ -319,8 +320,8 @@
          hp (-> stats :hp first)]
      (for [i (range (-> stats :hp second))]
        (if (> i hp)
-         (tile-mem (load-sprite :white-large-square) nil {:class "pop"})
-         (tile-mem (load-sprite :green-square) nil {:class "pop"}))))])
+         (tile-mem (load-sprite :white-large-square) nil {:key i :class "pop"})
+         (tile-mem (load-sprite :green-square) nil {:key i :class "pop"}))))])
 
 (defn component-health-bars [player combatants]
   [:div#health-bars
