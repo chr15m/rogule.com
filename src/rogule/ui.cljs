@@ -9,7 +9,7 @@
     [rogule.emoji :refer [tile-mem emoj]]
     [rogule.map :refer [make-digger-map distance-sq room-center
                         tiles-for-room find-path entities-by-pos-mem]]
-    [rogule.engine :refer [install-arrow-key-handler trigger-key
+    [rogule.engine :refer [install-arrow-key-handler trigger-key remove-entity
                            get-random-entity-by-value make-id can-pass-tile]]
     ["rot-js" :as ROT]
     ["seedrandom" :as seedrandom])
@@ -126,6 +126,11 @@
     :stats {:xp 4 :hp [12 12]}
     :name "the t-rex"}])
 
+(def smoke-juice-template
+  {:sprite (load-sprite :cloud)
+   :name "smoke"
+   :animation :grow-and-fade})
+
 ; ***** utility functions ***** ;
 
 (defn count-entities [entities k v]
@@ -208,7 +213,11 @@
                 (rand-nth item-covers)
                 {:pos pos
                  :layer :floor
-                 :drop item})]
+                 :drop item
+                 :juice (assoc smoke-juice-template 
+                               :id (make-id)
+                               :pos pos
+                               :layer :between)})]
     [(assoc entities (make-id) cover)
      (dissoc free-tiles pos)]))
 
@@ -297,11 +306,13 @@
        (= (get floor-tiles [x y]) :corridor)
        (tile-mem (load-sprite :brown-square) "corridor")
        :else nil))
-   (for [layer [:floor :occupy]]
-     (let [entity (get entities [x y layer])]
+   (for [layer [:floor :between :occupy :above]
+         entity (get entities [x y layer])]
+     (let [animation (:animation entity)
+           animation-callback (when animation (fn [] (log "END" (:name entity)) (swap! state remove-entity (:id entity))))]
        (when entity
          [:span {:key (:id entity)}
-          (tile-mem (:sprite entity) (:name entity) {:opacity opacity})
+          (tile-mem (:sprite entity) (:name entity) {:opacity opacity} animation animation-callback)
           (when (and (:stats entity) (not (:dead entity)) (not= (:id entity) :player))
             [:span.stat (-> entity :stats :xp)])])))])
 
@@ -353,6 +364,7 @@
         player-pos (:pos player)
         player-inventory (:inventory player)
         combatants (:combatants @state)]
+    (log "entities" entities)
     [:span#game
      [:div {:ref #(install-arrow-key-handler state %)}
       (for [y (range (- (second player-pos) visible-dist)

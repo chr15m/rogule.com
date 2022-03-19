@@ -113,6 +113,8 @@
     (-> @path reverse vec)))
 
 (defn entities-by-pos [entities]
-  (reduce (fn [es [id e]] (assoc es (conj (:pos e) (:layer e)) (assoc e :id id))) {} entities))
+  (reduce (fn [es [id e]]
+            (update-in es [(conj (:pos e) (:layer e))] conj (assoc e :id id)))
+          {} entities))
 
 (def entities-by-pos-mem (memoize entities-by-pos))

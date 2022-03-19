@@ -162,6 +162,7 @@
       [false *state]
       [true (-> *state
                 (remove-entity item-id)
+                (add-entity (:juice item))
                 (add-entity (:drop item)))])))
 
 (defn combat [*state their-id my-id]
@@ -170,6 +171,7 @@
         me (get-in *state [:entities my-id])
         their-xp (-> them :stats :xp)
         my-hp (-> me :stats :hp first)
+        my-pos (-> me :pos)
         ; flip a coin for every xp and compute the boolean
         hits (map (fn [_] (coin-flip)) (range their-xp))
         hp-reduction (-> hits join (js/parseInt 2))
@@ -191,7 +193,18 @@
                  (add-message *state (str (:name them) " killed " (:name me)))
                  (-> *state
                      (add-to-combat-list their-id (get-in *state [:entities their-id]))
-                     (add-to-combat-list my-id (get-in *state [:entities my-id]))))]
+                     (add-to-combat-list my-id (get-in *state [:entities my-id]))))
+        *state (if (> hp-reduction 0)
+                 (do
+                   (log "adding collision entity")
+                   (add-entity *state
+                               {:id (make-id)
+                                :sprite (load-sprite :collision)
+                                :name "collision"
+                                :animation :grow-and-fade
+                                :pos my-pos
+                                :layer :above}))
+                 *state)]
     (log "combat" (:name them) "hit" (:name me) hits hp-reduction " hp:" my-hp updated-hp)
     [true
      (if (= updated-hp 0)
@@ -230,7 +243,6 @@
         (nil? (get entities-to-avoid [x y :occupy]))))))
 
 (defn chase-player [{:keys [entities] :as *state} monster-id monster]
-  (log "update" (:name monster) monster-id)
   (let [player (:player entities)
         passable-fn (make-monster-passable-fn *state monster-id monster)
         path-to-player (when player
