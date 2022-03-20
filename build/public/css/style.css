@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap');
 
+:root {
+  --tile-width: 32px;
+}
+
+@media only screen and (max-device-width: 600px) {
+  :root {
+    --tile-width: 16px;
+    font-size: 0.75em;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -20,6 +31,12 @@ body {
   font-weight: bold;
   font-size: 2em;
   color: #31373D;
+}
+
+@media only screen and (max-device-width: 600px) {
+  div.row {
+    transform: translateY(-3em);
+  }
 }
 
 p {
@@ -44,7 +61,7 @@ button, .button {
 
 button:active, .button:active {
   border-bottom: 2px solid #4D9029;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   transform: translateY(4px);
 }
 
@@ -58,6 +75,14 @@ button.key:active {
   border-bottom: 2px solid #AAB8C2;
 }
 
+button.key svg {
+  width: 1em;
+  height: 1em;
+}
+
+button.key svg path {
+  fill: #555;
+}
 
 /***** specific styles *****/
 
@@ -130,13 +155,13 @@ h1.splash {
 }
 
 div.row {
-  height: 32px;
+  height: var(--tile-width);
 }
 
 span.grid {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: var(--tile-width);
+  height: var(--tile-width);
 }
 
 span.grid > * {
@@ -147,11 +172,12 @@ span.grid > * {
 }
 
 img.tile {
+  width: var(--tile-width);
 }
 
 span.stat {
   font-size: 0.5em;
-  top: -16px;
+  top: -1em;
   position: absolute;
   color: #333;
   text-shadow: 0px 0px 3px white;
@@ -159,12 +185,14 @@ span.stat {
 }
 
 span.xp {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 32px;
-  height: 32px;
+  display: inline-block;
+  width: var(--tile-width);
+  height: var(--tile-width);
   vertical-align: top;
+  font-size: 0.75em;
+  text-align: center;
+  position: relative;
+  top: 0.15em;
 }
 
 #health-bars {
@@ -199,7 +227,32 @@ span.xp {
 }
 
 #inventory li + li {
-  margin-left: 16px;
+  margin-left: 0.25em;
+}
+
+#arrow-buttons {
+  position: absolute;
+  bottom: 1.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  right: 0.5em;
+}
+
+#arrow-buttons > div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#arrow-buttons button span {
+  vertical-align: sub;
+}
+
+#arrow-buttons button svg {
+  vertical-align: text-top;
 }
 
 .modal {
@@ -254,6 +307,21 @@ span.xp {
   }
   to {
     transform: scale(1);
+  }
+}
+
+.grow-and-fade {
+  animation: grow-and-fade 1s forwards;
+}
+
+@keyframes grow-and-fade {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
   }
 }
 
