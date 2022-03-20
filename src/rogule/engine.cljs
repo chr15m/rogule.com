@@ -272,10 +272,10 @@
 
 ; ***** event handling ***** ;
 
-(defn trigger-key [key-code]
+(defn trigger-key [key-code & [key-event]]
   (.dispatchEvent js/window
                   (js/KeyboardEvent.
-                    "keydown"
+                    (or key-event "keydown")
                     #js {:keyCode key-code})))
 
 (defn process-arrow-key! [state ev]

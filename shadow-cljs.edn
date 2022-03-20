@@ -1,4 +1,4 @@
-{:source-paths ["src" "node_modules/sitefox/src" "node_modules/emoji.json"]
+{:source-paths ["src" "node_modules/sitefox/src" "node_modules/emoji.json" "node_modules/font-awesome-svg-png/black/svg/"]
  :dependencies [[reagent "1.0.0-alpha2"]
                 [alandipert/storage-atom "2.0.1"]
                 [applied-science/js-interop "0.2.7"]

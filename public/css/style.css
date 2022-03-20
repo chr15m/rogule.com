@@ -34,6 +34,9 @@ body {
 }
 
 @media only screen and (max-device-width: 600px) {
+  div.row {
+    transform: translateY(-3em);
+  }
 }
 
 p {
@@ -58,7 +61,7 @@ button, .button {
 
 button:active, .button:active {
   border-bottom: 2px solid #4D9029;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   transform: translateY(4px);
 }
 
@@ -72,6 +75,14 @@ button.key:active {
   border-bottom: 2px solid #AAB8C2;
 }
 
+button.key svg {
+  width: 1em;
+  height: 1em;
+}
+
+button.key svg path {
+  fill: #555;
+}
 
 /***** specific styles *****/
 
@@ -217,6 +228,31 @@ span.xp {
 
 #inventory li + li {
   margin-left: 0.25em;
+}
+
+#arrow-buttons {
+  position: absolute;
+  bottom: 1.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  right: 0.5em;
+}
+
+#arrow-buttons > div {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#arrow-buttons button span {
+  vertical-align: sub;
+}
+
+#arrow-buttons button svg {
+  vertical-align: text-top;
 }
 
 .modal {

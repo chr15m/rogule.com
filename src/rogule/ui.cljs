@@ -4,6 +4,7 @@
     [clojure.string :refer [join]]
     [reagent.core :as r]
     [reagent.dom :as rdom]
+    [shadow.resource :as rc]
     [alandipert.storage-atom :refer [local-storage]]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile-mem emoj]]
@@ -356,6 +357,22 @@
 (defn component-messages [message]
   [:div.message message])
 
+(defn component-arrow [key-code sprite]
+  [:button.key {:on-mouse-down #(trigger-key key-code)
+                :on-mouse-up #(trigger-key key-code "keyup")}
+   [:span {:ref (fn [el] (when el (aset el "innerHTML" sprite)))}]])
+
+(defn component-arrow-buttons []
+  [:div#arrow-buttons
+   [:div
+    [component-arrow 38 (rc/inline "arrow-up.svg")]]
+   [:div
+    [component-arrow 37 (rc/inline "arrow-left.svg")]
+    [component-arrow 190 (rc/inline "circle.svg")]
+    [component-arrow 39 (rc/inline "arrow-right.svg")]]
+   [:div
+    [component-arrow 40 (rc/inline "arrow-down.svg")]]])
+
 (defn component-game [state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
@@ -378,6 +395,7 @@
                            :else 1)]
              (component-cell floor-tiles entities x y opacity)))])]
      (component-health-bars-mem player combatants)
+     [component-arrow-buttons]
      [component-inventory player-inventory]
      [component-help (= (:modal @state) :help)]
      ;[component-messages (-> @state :message :text)]
