@@ -481,6 +481,11 @@
       27 (swap! state dissoc :modal)
       nil)))
 
+(defn prevent-zoom []
+  (.addEventListener js/document "gesturestart"
+                     (fn [ev]
+                       (.preventDefault ev))))
+
 (defn start {:dev/after-load true} []
   (rdom/render [component-main state]
                (js/document.getElementById "app")))
@@ -495,4 +500,5 @@
     (when (not= existing-seed seed)
       (reset! state (make-level initial-state seed size))))
   (.addEventListener js/window "keydown" #(key-handler %))
+  (prevent-zoom)
   (start))
