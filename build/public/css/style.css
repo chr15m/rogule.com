@@ -31,6 +31,7 @@ body {
   font-weight: bold;
   font-size: 2em;
   color: #31373D;
+  touch-action: pan-y;
 }
 
 @media only screen and (max-device-width: 600px) {
