@@ -406,11 +406,15 @@
     (js/navigator.clipboard.writeText txt)
     (.then (fn [] (js/alert "copied results to clipboard")))))
 
-(defn emoj-bar [emoj-fn inventory counts k blank-sprite sprite]
-  (for [x (range (k counts))]
-        (if (> x (count-entities inventory :name (name k)))
+(defn emoj-bar [emoj-fn inventory counts k blank-sprite sprite break]
+  (let [c (count-entities inventory :name (name k))]
+    (concat
+      (for [x (range (k counts))]
+        (if (> x c)
           (emoj-fn blank-sprite)
-          (emoj-fn sprite))))
+          (emoj-fn sprite)))
+      (when (> c 0)
+        [break]))))
 
 (defn make-share-string [emoj-fn break *state]
   (let [{:keys [outcome entities moves counts seed]} *state
@@ -437,9 +441,11 @@
       (for [entity (reverse kills)]
         (emoj-fn (:sprite entity)))
       [break]
-      (emoj-bar emoj-fn inventory counts :chestnut blank-sprite (load-sprite :chestnut)) [break]
-      (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom)) [break]
-      (emoj-bar emoj-fn inventory counts :gem-stone blank-sprite (load-sprite :gem-stone)))))
+      (emoj-bar emoj-fn inventory counts :chestnut blank-sprite (load-sprite :chestnut) break)
+      (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom) break)
+      (emoj-bar emoj-fn inventory counts :gem-stone blank-sprite (load-sprite :gem-stone) break)
+      (when (= break "\n")
+        ["rogule.com"]))))
 
 (defn component-countdown []
   (let [n (r/atom nil)]
