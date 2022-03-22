@@ -4,6 +4,9 @@ ZIPNAME=rogule
 
 all: build build/server.js
 
+cloc:
+	git cloc --exclude-ext=js
+
 $(ZIPNAME).zip: build
 	ln -s build/public $(ZIPNAME)
 	zip $@ `git ls-tree -r $(BRANCH) --name-only build/public | sed -e 's/build\/public/$(ZIPNAME)/'`
