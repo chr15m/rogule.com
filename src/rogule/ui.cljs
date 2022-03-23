@@ -27,6 +27,8 @@
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
 
+(print "chestnut" (load-sprite :chestnut))
+
 (def forage-items
   [{:name "chestnut"
     :sprite (load-sprite :chestnut)
@@ -57,26 +59,26 @@
     :fns {:encounter :uncover-item}
     :name "wood block"}])
 
-(def indoor-scenery
-  [{:sprite (load-sprite :fountain)
-    :name "fountain"}
-   {:sprite (load-sprite :potted-plant)
-    :name "pot plant"}
-   {:sprite (load-sprite :moai)
-    :name "statue"}])
+#_ (def indoor-scenery
+     [{:sprite (load-sprite :fountain)
+       :name "fountain"}
+      {:sprite (load-sprite :potted-plant)
+       :name "pot plant"}
+      {:sprite (load-sprite :moai)
+       :name "statue"}])
 
 (def shrine-template {:sprite (load-sprite :shinto-shrine)
                       :name "shrine"})
 
-(def weapons
-  [{:sprite (load-sprite :dagger)
-    :dmg 1}
-   {:sprite (load-sprite :pick)
-    :dmg 2}
-   {:sprite (load-sprite :axe)
-    :dmg 4}])
+#_ (def weapons
+     [{:sprite (load-sprite :dagger)
+       :dmg 1}
+      {:sprite (load-sprite :pick)
+       :dmg 2}
+      {:sprite (load-sprite :axe)
+       :dmg 4}])
 
-(def shield {:sprite (load-sprite :shield)})
+#_ (def shield {:sprite (load-sprite :shield)})
 
 (def monster-table
   [{:sprite (load-sprite :rat)

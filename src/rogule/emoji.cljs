@@ -27,7 +27,8 @@
                 (.add cl "pop")))))))
 
 (defn tile [sprite & [tile-name extra animation animation-callback]]
-  (let [src (get sprite "src")]
+  (let [src (get sprite "src")
+        content-type (get sprite "content-type")]
     [:img.tile (merge {:ref replay-pop-animation-on-change
                        :title (or tile-name (get sprite "name"))
                        :alt (when (get sprite "codes") (alt-from-codes (get sprite "codes")))
@@ -35,7 +36,7 @@
                        :src (if (or (= (.indexOf src "/") 0)
                                     (= (.indexOf src "http") 0))
                               (str src ".svg")
-                              (str "data:image/svg+xml;base64," src))}
+                              (str "data:" content-type ";base64," src))}
                       (when (and animation animation-callback)
                         {:on-animation-end animation-callback})
                       extra)]))
