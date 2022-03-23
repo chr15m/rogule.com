@@ -1,0 +1,7 @@
+#!/bin/sh
+
+mkdir -p build/analytics
+cat build/logs/*access.log > access.log
+goaccess -f access.log --log-format='%h %^[%d:%t %^] "%r" %s %b "%R" "%u"' --time-format="%H:%M:%S" --date-format="%d/%b/%Y" --ignore-crawlers > ./build/analytics/index.html
+rm access.log
+sleep 10800
