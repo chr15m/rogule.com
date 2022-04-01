@@ -5,13 +5,15 @@
     [promesa.core :as p]
     [sitefox.html :refer [render-into]]
     [sitefox.web :as web]
-    [sitefox.util :refer [env-required]]
+    [sitefox.util :refer [env]]
     [sitefox.tracebacks :refer [install-traceback-emailer]]
     [sitefox.logging :refer [bind-console-to-file]]))
 
 (bind-console-to-file)
 
-(install-traceback-emailer (env-required "ADMIN_EMAIL"))
+(let [admin-email (env "ADMIN_EMAIL")]
+  (when admin-email
+    (install-traceback-emailer admin-email)))
 
 (defonce server (atom nil))
 
