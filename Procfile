@@ -1,6 +1,6 @@
 # wsgi: dotted.module:entry_point
 web: cd build && node server.js
-analytics: ./analytics
+analytics: ./bin/analytics
 # release: make PROD=1
 # static: public
 # cron: */5 * * * * python batch.py
