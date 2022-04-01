@@ -145,8 +145,10 @@
   (.slice (str "0" n) -2))
 
 (defn time-until [date-string]
-  (let [since-epoch (-> date-string (js/Date.))
-        s (js/Math.floor (/ (- since-epoch (js/Date.) (* (.getTimezoneOffset since-epoch) 60 1000 -1)) 1000))
+  (let [now (js/Date.)
+        tz-offset (* (.getTimezoneOffset now) 60 1000 -1)
+        since-epoch (-> date-string (js/Date.) .getTime)
+        s (js/Math.floor (/ (- since-epoch now tz-offset) 1000))
         minutes (zero-pad (mod (js/Math.floor (/ s 60)) 60))
         hours (zero-pad (js/Math.floor (/ s 3600)))
         seconds (zero-pad (mod s 60))]
@@ -158,11 +160,15 @@
          (inc (.getMonth today)) "-"
          (.getDate today))))
 
+(def day-ms (* 1000 60 60 24))
+
 (defn tomorrow []
   (-> (js/Date.)
       (.getTime)
-      (+ (* 1000 60 60 24))
-      date-token))
+      (/ day-ms)
+      int
+      inc
+      (* day-ms)))
 
 ; ***** create different types of things ***** ;
 
