@@ -425,18 +425,21 @@
         [break]))))
 
 (defn make-share-string [emoj-fn break *state]
-  (let [{:keys [outcome entities moves counts seed]} *state
+  (let [{:keys [outcome entities counts seed]} *state
         {:keys [player]} entities
-        {:keys [inventory kills stats]} player
+        {:keys [inventory kills stats killed-by]} player
         death-sprite (load-sprite :skull-and-crossbones)
         blank-sprite (load-sprite :white-large-square)]
     (concat
       ["Rogule " seed break
        (emoj-fn (load-sprite :elf)) " "
-       (:xp stats) " "]
+       (:xp stats) "xp" " "]
 
-      [(if (= outcome :ascended) (emoj-fn (load-sprite :shinto-shrine)) (emoj-fn death-sprite)) " "
-       moves " " (emoj-fn (load-sprite :down-arrow)) " " break]
+      [(if (= outcome :ascended) (emoj-fn (load-sprite :shinto-shrine)) (emoj-fn death-sprite))
+       (when (and (not= outcome :ascended) killed-by) (emoj-fn (:sprite killed-by)))
+       " "
+       ;moves " " (emoj-fn (load-sprite :down-arrow)) " "
+       break]
 
       (let [hp (/ (-> stats :hp first) 2)]
         (for [i (range (/ (-> stats :hp second) 2))]

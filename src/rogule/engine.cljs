@@ -104,6 +104,9 @@
 (defn reset-combat-list [*state]
   (assoc *state :combatants {}))
 
+(defn add-killed-by [*state id entity]
+  (assoc-in *state [:entities id :killed-by] entity))
+
 (defn add-to-combat-list [*state id entity]
   (if (not= id :player)
     (assoc-in *state [:combatants id] entity)
@@ -190,7 +193,9 @@
                      (add-message "You gained xp."))
                  *state)
         *state (if killed
-                 (add-message *state (str (:name them) " killed " (:name me)))
+                 (-> *state
+                   (add-message (str (:name them) " killed " (:name me)))
+                   (add-killed-by my-id (get-in *state [:entities their-id])))
                  (-> *state
                      (add-to-combat-list their-id (get-in *state [:entities their-id]))
                      (add-to-combat-list my-id (get-in *state [:entities my-id]))))
