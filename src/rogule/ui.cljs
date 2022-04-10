@@ -504,8 +504,10 @@
 (defn main! []
   (let [url (js/URL. (aget js/document "location" "href"))
         q (aget url "search")
-        seed (if (seq q) (last (.split q "?")) (date-token))
+        sp (js/URLSearchParams. (.replace q "?" ""))
+        seed (or (first (filter #(= (.get sp %) "") (.keys sp))) (date-token))
         existing-seed (:seed @state)]
+    (log "seed" seed)
     (log "existing-seed" existing-seed)
     (seedrandom (str "Rogule-" seed) #js {:global true})
     (when (not= existing-seed seed)
