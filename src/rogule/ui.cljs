@@ -236,7 +236,7 @@
     [component-tombstone state]
     [component-game state]))
 
-(defn key-handler [ev]
+(defn general-key-handler [ev]
   (let [code (aget ev "keyCode")]
     (print "keyCode" code)
     (case code
@@ -265,6 +265,6 @@
     (seedrandom (str "Rogule-" seed) #js {:global true})
     (when (not= existing-seed seed)
       (reset! state (make-level initial-state seed size))))
-  (.addEventListener js/window "keydown" #(key-handler %))
+  (.addEventListener js/window "keydown" #(general-key-handler %))
   (prevent-zoom)
   (start))
