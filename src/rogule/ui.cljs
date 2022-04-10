@@ -312,8 +312,8 @@
        (tile-mem (load-sprite :white-large-square) "door")
        (= (get floor-tiles [x y]) :wall)
        (tile-mem (load-sprite :black-large-square) "wall")
-       (= (get floor-tiles [x y]) :corridor)
-       (tile-mem (load-sprite :brown-square) "corridor")
+       ;(= (get floor-tiles [x y]) :corridor)
+       ;(tile-mem (load-sprite :brown-square) "corridor")
        :else nil))
    (for [layer [:floor :between :occupy :above]
          entity (get entities [x y layer])]

@@ -78,13 +78,23 @@
                                      (when (not (get room-tiles pos))
                                        {pos :corridor})))
                               (apply concat)
-                              (into {}))]
+                              (into {}))
+          corridor-wall-tiles (apply merge
+                                     (for [x (range w)
+                                           y (range h)]
+                                       (when (and
+                                               (is-adjacent-tile [x y] corridor-tiles)
+                                               (not (get @positions [x y]))
+                                               (not (get room-tiles [x y]))
+                                               (not (get corridor-tiles [x y])))
+                                         {[x y] :wall})))]
       {:tiles {:raw @positions
                :room room-tiles
                :room-wall room-wall-tiles
                :corridor corridor-tiles
+               :corridor-wall corridor-wall-tiles
                :door door-tiles}
-       :floor-tiles (merge room-tiles room-wall-tiles corridor-tiles door-tiles)
+       :floor-tiles (merge room-tiles room-wall-tiles corridor-wall-tiles corridor-tiles door-tiles)
        :rooms rooms
        :corridors corridors
        :size [(aget digger "_width") (aget digger "_height")]})))
