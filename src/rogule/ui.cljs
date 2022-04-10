@@ -227,7 +227,7 @@
      [component-countdown]
      [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
      [:p [:a
-          {:href "https://twitter.com/search?q=rogule%202022&src=spelling_expansion_revert_click&f=live"
+          {:href (str "https://twitter.com/search?q=rogule%20" (-> (js/Date.) .getFullYear) "&src=spelling_expansion_revert_click&f=live")
            :target "_BLANK"}
           "see other player scores"]]]))
 
