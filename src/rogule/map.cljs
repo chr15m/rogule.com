@@ -94,7 +94,7 @@
 (def smoke-juice-template
   {:sprite (load-sprite :cloud)
    :name "smoke"
-   :animation :grow-and-fade})
+   :animation [:grow-and-fade :destroy]})
 
 #_ (def indoor-scenery
      [{:sprite (load-sprite :fountain)

@@ -70,10 +70,10 @@
        :else nil))
    (for [layer [:floor :between :occupy :above]
          entity (get entities [x y layer])]
-     (let [animation (:animation entity)
-           animation-callback (when animation (fn [] (log "END" (:name entity)) (swap! state remove-entity (:id entity))))]
+     (let [[animation disposal frame] (:animation entity)
+           animation-callback (when (= disposal :destroy) (fn [] (swap! state remove-entity (:id entity))))]
        (when entity
-         [:span {:key (:id entity)}
+         [:span {:key [(:id entity) frame]}
           (tile-mem (:sprite entity) (:name entity) {:opacity opacity} animation animation-callback)
           (when (and (:stats entity) (not (:dead entity)) (not= (:id entity) :player))
             [:span.stat (-> entity :stats :xp)])])))])
@@ -142,6 +142,8 @@
         player-pos (:pos player)
         player-inventory (:inventory player)
         combatants (:combatants @state)]
+    (when-let [m (-> @state :message :text)]
+      (print m))
     [:span#game
      [:div {:ref #(install-arrow-key-handler state %)}
       (for [y (range (- (second player-pos) visible-dist)

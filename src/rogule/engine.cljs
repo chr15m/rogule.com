@@ -40,7 +40,9 @@
 
 (defn move-to [*state id new-pos]
   (if new-pos
-    (let [entity (get-in *state [:entities id])
+    (let [move (:moves *state)
+          entity (get-in *state [:entities id])
+          pos (-> entity :pos)
           passable-fn-maker (-> entity :fns :passable)
           passable-fn (when passable-fn-maker ((passable-fn-maker @fn-table) *state id entity))
           passable-tile? (if passable-fn (passable-fn (first new-pos) (second new-pos)) true)
@@ -51,10 +53,20 @@
                                                               (let [[this-item-blocks? *state] ((encounter-fn @fn-table) *state id entity-id)]
                                                                 [(or item-blocks? this-item-blocks?) *state])
                                                               [item-blocks? *state])))
-                                                        [false *state] entities-at-pos)]
-      (if (and passable-tile? (not item-blocks?))
-        (assoc-in state-after-encounters [:entities id :pos] new-pos)
-        state-after-encounters))
+                                                        [false *state] entities-at-pos)
+          relative-move [(- (first new-pos) (first pos))
+                         (- (second new-pos) (second pos))]
+          animation (str "bump-" (get {[-1 0] "left"
+                                       [1 0] "right"
+                                       [0 -1] "up"
+                                       [0 1] "down"} relative-move))]
+      (cond
+        item-blocks?
+        (update-in state-after-encounters [:entities id] assoc :animation [animation nil move] relative-move :moved true)
+        passable-tile?
+        (update-in state-after-encounters [:entities id] assoc :animation nil :pos new-pos :moved true)
+        :else
+        (update-in state-after-encounters [:entities id] assoc :animation nil :moved false)))
     *state))
 
 (defn update-monsters [*state]
@@ -193,7 +205,7 @@
                                {:id (make-id)
                                 :sprite (load-sprite :collision)
                                 :name "collision"
-                                :animation :grow-and-fade
+                                :animation [:grow-and-fade :destroy]
                                 :pos my-pos
                                 :layer :above}))
                  *state)]
@@ -247,6 +259,7 @@
 ; ***** function lookup table (serialization friendly) ***** ;
 
 ; dirty hack
+; TODO: use a multimethod instead
 (reset! fn-table
   {:add-item-to-inventory add-item-to-inventory
    :increase-hp increase-hp
@@ -267,6 +280,7 @@
                     #js {:keyCode key-code})))
 
 (defn process-arrow-key! [state ev]
+  ; NOTE: currently the retrigger is turned off as it felt janky
   ; key down -> if not already pressed, push that key onto queue
   ; after a time out
   ;   if any keys are still down duplicate the end of the queue
@@ -284,15 +298,19 @@
                               (-> @state
                                   (get-in [:entities :player :pos])
                                   (update-in [dir-idx] dir-fn)))]
-                (swap! state #(-> %
-                                  ; TODO: if player move was rejected
-                                  ; don't update monsters
-                                  (reset-combat-list)
-                                  (update-in [:moves] inc)
-                                  (move-to :player new-pos)
-                                  (restore-player-health)
-                                  (update-monsters)
-                                  (expire-messages)))))
+                (swap! state (fn [*state]
+                               (let [player-updated-state
+                                     (-> *state
+                                         (reset-combat-list)
+                                         (update-in [:moves] inc)
+                                         (move-to :player new-pos))
+                                     player-moved (get-in player-updated-state [:entities :player :moved])]
+                                 (if player-moved
+                                   (-> player-updated-state
+                                       (restore-player-health)
+                                       (update-monsters)
+                                       (expire-messages))
+                                   player-updated-state))))))
             (not down?)
             (swap! keymap update-in [:held] (fn [held] (difference (set held) #{code})))))
     ;(js/console.log "keymap" (clj->js @keymap))

@@ -2,6 +2,7 @@
 
 :root {
   --tile-width: 32px;
+  --bump-amount: 0.25;
 }
 
 @media only screen and (max-device-width: 600px) {
@@ -328,6 +329,58 @@ span.xp {
   to {
     transform: scale(3);
     opacity: 0;
+  }
+}
+
+.bump-up {
+  animation: bump-up .25s;
+}
+
+@keyframes bump-up {
+  from {
+    transform: translateY(calc(var(--tile-width) * var(--bump-amount) * -1));
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+
+.bump-left {
+  animation: bump-left .25s;
+}
+
+@keyframes bump-left {
+  from {
+    transform: translateX(calc(var(--tile-width) * var(--bump-amount) * -1));
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
+
+.bump-down {
+  animation: bump-down .25s;
+}
+
+@keyframes bump-down {
+  from {
+    transform: translateY(calc(var(--tile-width) * var(--bump-amount)));
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+
+.bump-right {
+  animation: bump-right .25s;
+}
+
+@keyframes bump-right {
+  from {
+    transform: translateX(calc(var(--tile-width) * var(--bump-amount)));
+  }
+  to {
+    transform: translateX(0px);
   }
 }
 
