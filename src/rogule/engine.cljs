@@ -5,7 +5,7 @@
     [reagent.core :as r]
     [sitefox.ui :refer [log]]
     ["rot-js" :as ROT]
-    [rogule.map :refer [entities-by-pos-mem find-path]])
+    [rogule.map :refer [entities-by-pos-mem find-path make-id can-pass-tile]])
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
 
@@ -33,21 +33,8 @@
 (defonce combat-dice (ROT/RNG.clone))
 (def coin #js [0 1])
 
-(defn make-id []
-  (-> (random-uuid) str (.slice 0 8)))
-
 (defn coin-flip []
   (.getItem combat-dice coin))
-
-(defn get-random-entity-by-value [entity-template-table]
-  (let [weighted-table (->> entity-template-table
-                            (map (fn [i] {(:name i) (/ 1 (:value i))}))
-                            (into {})
-                            clj->js)
-        item-name (ROT/RNG.getWeightedValue weighted-table)]
-    (->> entity-template-table
-         (filter #(= (:name %) item-name))
-         first)))
 
 ; ***** state update ***** ;
 
@@ -223,10 +210,6 @@
        *state)]))
 
 ; ***** player movement functions ***** ;
-
-(defn can-pass-tile [floor-tiles pos allowed-tiles]
-  (let [tile-type (get floor-tiles pos)]
-       (contains? (set allowed-tiles) tile-type)))
 
 (defn player-passable-fn [*state x y]
   (let [floor-tiles (-> *state :map :floor-tiles)]
