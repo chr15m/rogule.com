@@ -227,6 +227,9 @@
   (let [floor-tiles (-> *state :map :floor-tiles)]
     (can-pass-tile floor-tiles [x y] [:room :door :corridor])))
 
+(defn make-player-passable-fn [*state _player-id _player]
+  (partial player-passable-fn *state))
+
 (defn make-monster-passable-fn [*state monster-id _monster]
   (let [floor-tiles (-> *state :map :floor-tiles)
         entities (-> *state :entities)
@@ -267,8 +270,7 @@
    :finish-game finish-game
    :combat combat
    :chase-player chase-player
-   :player-passable-wrapper (fn [*state _player-id _player]
-                                  (partial player-passable-fn *state))
+   :player-passable-wrapper make-player-passable-fn
    :make-monster-passable-fn make-monster-passable-fn})
 
 ; ***** event handling ***** ;
