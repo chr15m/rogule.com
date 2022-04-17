@@ -304,8 +304,9 @@
                                          (reset-combat-list)
                                          (update-in [:moves] inc)
                                          (move-to :player new-pos))
-                                     player-moved (get-in player-updated-state [:entities :player :moved])]
-                                 (if player-moved
+                                     player-moved (get-in player-updated-state [:entities :player :moved])
+                                     game-outcome (get player-updated-state :outcome)]
+                                 (if (and (not game-outcome) player-moved)
                                    (-> player-updated-state
                                        (restore-player-health)
                                        (update-monsters)
