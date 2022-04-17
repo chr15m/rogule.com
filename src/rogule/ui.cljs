@@ -231,7 +231,9 @@
      [:p [:a
           {:href (str "https://twitter.com/search?q=rogule%20" (-> (js/Date.) .getFullYear) "&src=spelling_expansion_revert_click&f=live")
            :target "_BLANK"}
-          "see other player scores"]]]))
+          "see other player scores"]]
+     [:p [:a {:href "https://thepunkcollective.itch.io"
+              :target "_BLANK"} "👾 punk collective 🤘"]]]))
 
 (defn component-main [state]
   (if (:outcome @state)
