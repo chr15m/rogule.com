@@ -126,13 +126,33 @@
   (assoc *state :message {:text message
                           :expires 3}))
 
+(defn update-statistics [*state]
+  (let [outcome (:outcome *state)]
+    (-> *state
+        (update-in [:statistics outcome] inc)
+        (update-in [:statistics :streak]
+                   (fn [streak]
+                     (if (= outcome :died)
+                       0
+                       (inc streak))))
+        (update-in [:statistics]
+                   (fn [statistics]
+                     (if (> (:streak statistics) (:max-streak statistics))
+                       (assoc statistics :max-streak (:streak statistics))
+                       statistics))))))
+
 (defn finish-game [*state _their-id _item-id]
-  [true (assoc *state :outcome :ascended)])
+  [true
+   (-> *state
+       (assoc :outcome :ascended)
+       update-statistics)])
 
 (defn check-for-endgame [*state]
   (let [player (-> *state :entities :player)]
     (if (:dead player)
-      (assoc *state :outcome :died)
+      (-> *state
+          (assoc :outcome :died)
+          update-statistics)
       *state)))
 
 ; ***** item encounter fns ***** ;

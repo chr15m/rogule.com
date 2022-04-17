@@ -225,6 +225,7 @@
 (defn component-tombstone [state]
   (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
     [:div#tombstone.pop
+     ;[:pre (-> (:statistics @state) clj->js (js/JSON.stringify nil 2))]
      [:div (concat [] (make-share-string tile-mem [:br] @state))]
      [component-countdown]
      [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
@@ -268,7 +269,9 @@
     (log "existing-seed" existing-seed)
     (seedrandom (str "Rogule-" seed) #js {:global true})
     (when (not= existing-seed seed)
-      (reset! state (make-level initial-state seed size))))
+      (let [statistics (get @state :statistics)
+            new-game (make-level initial-state seed size)]
+        (reset! state (assoc new-game :statistics statistics)))))
   (.addEventListener js/window "keydown" #(general-key-handler %))
   (prevent-zoom)
   (start))
