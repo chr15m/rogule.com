@@ -35,6 +35,10 @@ body {
   touch-action: pan-y;
 }
 
+footer {
+  text-align: center;
+}
+
 @media only screen and (max-device-width: 600px) {
   div.row {
     transform: translateY(-3em);
