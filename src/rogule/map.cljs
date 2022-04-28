@@ -49,9 +49,9 @@
     :value 2}])
 
 (def item-covers
-  [{:sprite (load-sprite :hole)
+  [{:sprite (load-sprite :potted-plant)
     :fns {:encounter :uncover-item}
-    :name "hole"}
+    :name "potted plant"}
    {:sprite (load-sprite :rock)
     :fns {:encounter :uncover-item}
     :name "rock"}
