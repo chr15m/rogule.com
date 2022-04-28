@@ -241,6 +241,13 @@
     [component-tombstone state]
     [component-game state]))
 
+(defn reset-game! [old-seed seed]
+  (seedrandom (str "Rogule-" seed) #js {:global true})
+  (when (not= old-seed seed)
+    (let [statistics (get @state :statistics)
+          new-game (make-level initial-state seed size)]
+      (reset! state (assoc new-game :statistics statistics)))))
+
 (defn general-key-handler [ev]
   (let [code (aget ev "keyCode")]
     (print "keyCode" code)
@@ -248,6 +255,8 @@
       ;81 (reset! state (make-level initial-state size))
       191 (swap! state update-in [:modal] #(when (not %) :help))
       27 (swap! state dissoc :modal)
+      8 (when (not= (.indexOf (aget js/document "location" "href") "localhost") -1)
+          (reset-game! nil (js/Math.random)))
       nil)))
 
 (defn prevent-zoom []
@@ -267,11 +276,7 @@
         existing-seed (:seed @state)]
     (log "seed" seed)
     (log "existing-seed" existing-seed)
-    (seedrandom (str "Rogule-" seed) #js {:global true})
-    (when (not= existing-seed seed)
-      (let [statistics (get @state :statistics)
-            new-game (make-level initial-state seed size)]
-        (reset! state (assoc new-game :statistics statistics)))))
+    (reset-game! existing-seed seed))
   (.addEventListener js/window "keydown" #(general-key-handler %))
   (prevent-zoom)
   (start))
