@@ -159,12 +159,12 @@
 
 (defn increase-hp [*state their-id item-id]
   (let [hp (get-in *state [:entities their-id :stats :hp])
-        add-hp (< (first hp) (second hp))
-        *state (remove-entity *state item-id)]
+        add-hp (< (first hp) (second hp))]
     [false
      (if add-hp
        (-> *state
            (update-in [:entities their-id :stats :hp 0] (fn [old-hp] (js/Math.min (+ old-hp 3) (second hp))))
+           (remove-entity item-id)
            (add-message "You feel better."))
        (add-message *state "You already have full health."))]))
 
