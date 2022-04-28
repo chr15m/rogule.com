@@ -29,6 +29,23 @@
    {:name "health"
     :sprite (load-sprite :green-heart)
     :fns {:encounter :increase-hp}
+    :value 2}
+
+   #_ {:name "shield"
+    :sprite (load-sprite :shield)
+    :armour 2
+    :fns {:encounter :add-item-to-inventory}
+    :value 1}
+
+   #_ {:name "dagger"
+    :sprite (load-sprite :dagger)
+    :fns {:encounter :add-item-to-inventory}
+    :dmg 1
+    :value 3}
+   #_ {:name "axe"
+    :sprite (load-sprite :axe)
+    :fns {:encounter :add-item-to-inventory}
+    :dmg 3
     :value 2}])
 
 (def item-covers
@@ -103,16 +120,6 @@
        :name "pot plant"}
       {:sprite (load-sprite :moai)
        :name "statue"}])
-
-#_ (def weapons
-     [{:sprite (load-sprite :dagger)
-       :dmg 1}
-      {:sprite (load-sprite :pick)
-       :dmg 2}
-      {:sprite (load-sprite :axe)
-       :dmg 4}])
-
-#_ (def shield {:sprite (load-sprite :shield)})
 
 ; ***** rng fns ***** ;
 
