@@ -49,46 +49,46 @@
     :name "the rat"}
    {:sprite (load-sprite :bat)
     :activation 10
-    :stats {:xp 1 :hp [3 3]}
+    :stats {:xp 2 :hp [3 3]}
     :name "the bat"}
 
    {:sprite (load-sprite :ghost)
     :activation 10
-    :stats {:xp 2 :hp [3 3]}
+    :stats {:xp 3 :hp [3 3]}
     :name "the ghost"}
    {:sprite (load-sprite :boar)
     :activation 15
-    :stats {:xp 2 :hp [4 4]}
+    :stats {:xp 3 :hp [4 4]}
     :name "the boar"}
    {:sprite (load-sprite :wolf)
     :activation 20
-    :stats {:xp 2 :hp [5 5]}
+    :stats {:xp 4 :hp [5 5]}
     :name "the wolf"}
    {:sprite (load-sprite :ogre)
     :activation 10
-    :stats {:xp 2 :hp [7 7]}
+    :stats {:xp 4 :hp [7 7]}
     :name "the ogre"}
 
-   {:sprite (load-sprite :vampire)
-    :activation 15
-    :stats {:xp 3 :hp [8 8]}
-    :name "the vampire"}
    {:sprite (load-sprite :zombie)
     :activation 5
-    :stats {:xp 3 :hp [9 9]}
+    :stats {:xp 5 :hp [9 9]}
     :name "the zombie"}
+   {:sprite (load-sprite :vampire)
+    :activation 15
+    :stats {:xp 6 :hp [8 8]}
+    :name "the vampire"}
    {:sprite (load-sprite :genie)
     :activation 20
-    :stats {:xp 3 :hp [10 10]}
+    :stats {:xp 6 :hp [10 10]}
     :name "the genie"}
 
    {:sprite (load-sprite :dragon)
     :activation 10
-    :stats {:xp 4 :hp [15 15]}
+    :stats {:xp 8 :hp [15 15]}
     :name "the dragon"}
    {:sprite (load-sprite :t-rex)
     :activation 15
-    :stats {:xp 4 :hp [12 12]}
+    :stats {:xp 10 :hp [12 12]}
     :name "the t-rex"}])
 
 (def smoke-juice-template
@@ -282,7 +282,7 @@
                 :layer :occupy
                 :pos pos
                 :stats {:hp [10 10]
-                        :xp 2}
+                        :xp 4}
                 :inventory []
                 :fns {:encounter :combat
                       :passable :player-passable-wrapper}}]

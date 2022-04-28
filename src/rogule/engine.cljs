@@ -194,9 +194,8 @@
         their-xp (-> them :stats :xp)
         my-hp (-> me :stats :hp first)
         my-pos (-> me :pos)
-        ; flip a coin for every xp and compute the boolean
-        hits (map (fn [_] (coin-flip)) (range their-xp))
-        hp-reduction (-> hits join (js/parseInt 2))
+        hit (.getItem combat-dice #js [0 1 1 1 1 1])
+        hp-reduction (* hit (.getItem combat-dice (to-array (range their-xp))))
         updated-hp (js/Math.max 0 (- my-hp hp-reduction))
         hit-miss-msg (if (= hp-reduction 0) "missed" "hit")
         killed (= updated-hp 0)
@@ -206,7 +205,7 @@
                  (update-in *state [:entities their-id :kills] conj (get-in *state [:entities my-id]))
                  *state)
         kills (count (get-in *state [:entities their-id :kills]))
-        *state (if (and killed (= their-id :player) (= (mod kills 3) 0)) ; every 3 kills add XP
+        *state (if (and killed (= their-id :player) (= (mod kills 2) 0)) ; every 2 kills add XP
                  (-> *state
                      (update-in [:entities their-id :stats :xp] inc)
                      (add-message "You gained xp."))
@@ -229,7 +228,7 @@
                                 :pos my-pos
                                 :layer :above}))
                  *state)]
-    (log "combat" (:name them) "hit" (:name me) hits hp-reduction " hp:" my-hp updated-hp)
+    (log "combat" (:name them) "hit" (:name me) hit hp-reduction " hp:" my-hp updated-hp)
     [true
      (if (= updated-hp 0)
        (-> *state ; entity dies
