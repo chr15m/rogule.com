@@ -109,7 +109,9 @@
     [:div.modal
      [:h2 "Rogule"]
      [:p "Use the arrow keys to move."]
-     [:p "Move over items and " (tile-mem (load-sprite :ghost)) " monsters to interact."]
+     [:p "Move onto items and " (tile-mem (load-sprite :ghost)) " monsters to interact."]
+     [:p "The number above each monster's head is the maximum damage they can deal to you."]
+     [:p "Health bars show up at the top of the screen during combat."]
      [:p "Collect all the " (tile-mem (load-sprite :mushroom)) " items."]
      [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend and win the game."]
      [:button#help.key {:on-click #(trigger-key 27)} "esc"]]
