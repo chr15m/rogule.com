@@ -1,7 +1,6 @@
 (ns rogule.engine
   (:require
     [clojure.set :refer [difference]]
-    [clojure.string :refer [join]]
     [reagent.core :as r]
     [sitefox.ui :refer [log]]
     ["rot-js" :as ROT]
