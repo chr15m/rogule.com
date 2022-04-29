@@ -91,8 +91,10 @@
              (fn [stats]
                (let [hp (:hp stats)]
                  (if (< (first hp) (second hp))
-                   (let [hp-inc (inc (:hp-inc stats))]
-                     (if (>= hp-inc rejuvination-rate)
+                   (let [hp-inc (inc (:hp-inc stats))
+                         add (>= hp-inc rejuvination-rate)]
+                     (when add (log "hp increase to" (inc (first hp))))
+                     (if add
                        (-> stats
                            (assoc :hp-inc 0)
                            (update-in [:hp 0] inc))
@@ -186,6 +188,16 @@
                 (add-entity (:juice item))
                 (add-entity (:drop item)))])))
 
+(defn get-weapons-dmg [entity]
+  (or
+    (apply + (map :dmg (:inventory entity)))
+    0))
+
+(defn get-armour-hp [entity]
+  (or
+    (apply + (map :armour (:inventory entity)))
+    0))
+
 (defn combat [*state their-id my-id]
   ; hit goes them -> me
   (let [them (get-in *state [:entities their-id])
@@ -194,9 +206,13 @@
         my-hp (-> me :stats :hp first)
         my-pos (-> me :pos)
         hit (.getItem combat-dice #js [0 1 1 1 1 1])
-        hp-reduction (* hit (.getItem combat-dice (to-array (range their-xp))))
+        hp-hit (.getItem combat-dice (to-array (range their-xp)))
+        hp-weapons (get-weapons-dmg them)
+        hp-armour (get-armour-hp me)
+        hp-reduction (-> hp-hit (+ hp-weapons) (- hp-armour) (* hit) (js/Math.max 0))
+        ; TODO: animate armour taking a hit
         updated-hp (js/Math.max 0 (- my-hp hp-reduction))
-        hit-miss-msg (if (= hp-reduction 0) "missed" "hit")
+        hit-miss-msg (if (<= hp-reduction 0) "missed" "hit")
         killed (= updated-hp 0)
         *state (assoc-in *state [:entities my-id :stats :hp 0] updated-hp)
         *state (add-message *state (str (:name them) " " hit-miss-msg " " (:name me)))
@@ -211,8 +227,8 @@
                  *state)
         *state (if killed
                  (-> *state
-                   (add-message (str (:name them) " killed " (:name me)))
-                   (add-killed-by my-id (get-in *state [:entities their-id])))
+                     (add-message (str (:name them) " killed " (:name me)))
+                     (add-killed-by my-id (get-in *state [:entities their-id])))
                  (-> *state
                      (add-to-combat-list their-id (get-in *state [:entities their-id]))
                      (add-to-combat-list my-id (get-in *state [:entities my-id]))))
@@ -227,7 +243,10 @@
                                 :pos my-pos
                                 :layer :above}))
                  *state)]
-    (log "combat" (:name them) "hit" (:name me) hit hp-reduction " hp:" my-hp updated-hp)
+    (when (> hit 0)
+      (log "combat" (:name them) "hit" (:name me) hit hp-hit hp-weapons hp-armour hp-reduction " hp:" my-hp updated-hp)
+      (log "hp" "hit:" hp-hit "weapons:" hp-weapons "armour:" hp-armour "reduction:" hp-reduction)
+      (log "hp change:" my-hp updated-hp))
     [true
      (if (= updated-hp 0)
        (-> *state ; entity dies
