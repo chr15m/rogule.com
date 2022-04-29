@@ -31,22 +31,22 @@
     :fns {:encounter :increase-hp}
     :value 2}
 
-   #_ {:name "shield"
+   {:name "shield"
     :sprite (load-sprite :shield)
-    :armour 2
+    :armour 1
     :fns {:encounter :add-item-to-inventory}
-    :value 1}
+    :value 3}
 
-   #_ {:name "dagger"
+   {:name "dagger"
     :sprite (load-sprite :dagger)
     :fns {:encounter :add-item-to-inventory}
     :dmg 1
-    :value 3}
-   #_ {:name "axe"
+    :value 4}
+   {:name "axe"
     :sprite (load-sprite :axe)
     :fns {:encounter :add-item-to-inventory}
     :dmg 3
-    :value 2}])
+    :value 5}])
 
 (def item-covers
   [{:sprite (load-sprite :potted-plant)
