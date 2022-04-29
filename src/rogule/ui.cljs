@@ -92,7 +92,7 @@
    (let [stats (:stats entity)
          hp (-> stats :hp first)]
      (for [i (range (-> stats :hp second))]
-       (if (> i hp)
+       (if (>= i hp)
          (tile-mem (load-sprite :white-large-square) nil {:key i :class "pop"})
          (tile-mem (load-sprite :green-square) nil {:key i :class "pop"}))))])
 
