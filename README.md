@@ -2,7 +2,7 @@ The video game Rogule. <https://rogule.com>
 
 A dungeon a day keeps the Balrog away.
 
-![Rogule GIF](./resources/gifs/monsters2.gif)
+![Rogule GIF](./resources/gifs/april-update.gif)
 
 # Dev
 
