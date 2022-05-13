@@ -79,11 +79,12 @@
             [:span.stat (-> entity :stats :xp)])])))])
 
 (defn component-inventory [inventory]
-  [:div#inventory
-   [:ul
-    (for [i (range (count inventory))
-          :let [e (nth inventory i)]]
-      [:li.pop {:key i} (tile-mem (:sprite e) (:name e))])]])
+  (let [inventory (sort-by (juxt :value :name) inventory)]
+    [:div#inventory
+     [:ul
+      (for [i (range (count inventory))
+            :let [e (nth inventory i)]]
+        [:li.pop {:key i} (tile-mem (:sprite e) (:name e))])]]))
 
 (defn component-health-bar [entity]
   [:div
