@@ -108,7 +108,7 @@
   (if show-help
     [:div.modal
      [:h2 "Rogule"]
-     [:p "Use the arrow keys to move."]
+     [:p "Use the arrow keys to move. Press the " [:button#help.key "."]  " key to rest."]
      [:p "Move onto items and " (tile-mem (load-sprite :ghost)) " monsters to interact."]
      [:p "The number above each monster's head is the maximum damage they can deal to you."]
      [:p "Health bars show up at the top of the screen during combat."]
