@@ -230,6 +230,13 @@
     [:div#tombstone.pop
      ;[:pre (-> (:statistics @state) clj->js (js/JSON.stringify nil 2))]
      [:div (concat [] (make-share-string tile-mem [:br] @state))]
+     (let [stats (:statistics @state)
+           plays (+ (:ascended stats) (:died stats))]
+       [:div#stats
+        [:p (str "Played: " plays)]
+        [:p (str "Wins: " (-> (:ascended stats) (/ plays) (* 100) int) "%")]
+        [:p (str "Streak: " (:streak stats))]
+        [:p (str "Max Streak: " (:max-streak stats))]])
      [component-countdown]
      [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
      [:p [:a
