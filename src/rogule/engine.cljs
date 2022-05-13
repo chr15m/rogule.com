@@ -25,7 +25,7 @@
    74 [1 inc]
    190 []})
 
-(def rejuvination-rate 13)
+(def rejuvination-rate 27)
 
 ; ***** rng fns ***** ;
 
