@@ -305,6 +305,14 @@ span.xp {
   text-align: center;
 }
 
+#tombstone #stats {
+  margin-top: 1em;
+}
+
+#tombstone #stats p {
+  margin: 0px;
+}
+
 /***** juice *****/
 
 .pop {
