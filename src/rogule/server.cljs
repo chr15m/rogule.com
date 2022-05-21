@@ -6,10 +6,8 @@
     [sitefox.html :refer [render-into]]
     [sitefox.web :as web]
     [sitefox.util :refer [env]]
-    [sitefox.tracebacks :refer [install-traceback-emailer]]
-    [sitefox.logging :refer [bind-console-to-file]]))
+    [sitefox.tracebacks :refer [install-traceback-emailer]]))
 
-(bind-console-to-file)
 
 (let [admin-email (env "ADMIN_EMAIL")]
   (when admin-email
