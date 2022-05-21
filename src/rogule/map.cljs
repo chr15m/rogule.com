@@ -47,7 +47,7 @@
    {:name "axe"
     :sprite (load-sprite :axe)
     :fns {:encounter :add-item-to-inventory}
-    :dmg 3
+    :dmg 2
     :value 5}])
 
 (def item-covers
