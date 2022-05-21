@@ -12,6 +12,8 @@
 (def shrine-template {:sprite (load-sprite :shinto-shrine)
                       :name "shrine"})
 
+(def player-xp 2)
+
 (def forage-items
   [{:name "chestnut"
     :sprite (load-sprite :chestnut)
@@ -289,7 +291,7 @@
                 :layer :occupy
                 :pos pos
                 :stats {:hp [10 10]
-                        :xp 4}
+                        :xp player-xp}
                 :inventory []
                 :fns {:encounter :combat
                       :passable :player-passable-wrapper}}]
