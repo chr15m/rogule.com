@@ -27,7 +27,7 @@
     "rot-js": "^2.2.0",
     "rotating-file-stream": "2.1.6",
     "seedrandom": "^3.0.5",
-    "shadow-cljs": "^2.15.12",
+    "shadow-cljs": "^2.18.0",
     "sitefox": "github:chr15m/sitefox",
     "sqlite3": "5.0.2",
     "twemoji-emojis": "^14.1.0"

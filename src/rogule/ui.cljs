@@ -9,6 +9,7 @@
     [rogule.emoji :refer [tile-mem emoj]]
     [rogule.map :refer [distance-sq entities-by-pos-mem count-entities make-level]]
     [rogule.engine :refer [install-arrow-key-handler trigger-key remove-entity]]
+    [rogule.util :refer [time-until tomorrow date-token]]
     ["seedrandom" :as seedrandom])
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
@@ -22,37 +23,6 @@
 (def visible-dist-sq (js/Math.pow visible-dist 2))
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
-
-; ***** utility functions ***** ;
-
-(defn zero-pad [n]
-  (.slice (str "0" n) -2))
-
-(defn time-until [date-string]
-  (let [now (js/Date.)
-        tz-offset (* (.getTimezoneOffset now) 60 1000 -1)
-        since-epoch (-> date-string (js/Date.) .getTime)
-        s (js/Math.floor (/ (- since-epoch now tz-offset) 1000))
-        minutes (zero-pad (mod (js/Math.floor (/ s 60)) 60))
-        hours (zero-pad (js/Math.floor (/ s 3600)))
-        seconds (zero-pad (mod s 60))]
-    [hours minutes seconds]))
-
-(defn date-token [& [d]]
-  (let [today (if d (js/Date. d) (js/Date.))]
-    (str (.getFullYear today) "-"
-         (inc (.getMonth today)) "-"
-         (.getDate today))))
-
-(def day-ms (* 1000 60 60 24))
-
-(defn tomorrow []
-  (-> (js/Date.)
-      (.getTime)
-      (/ day-ms)
-      int
-      inc
-      (* day-ms)))
 
 ; ***** rendering ***** ;
 

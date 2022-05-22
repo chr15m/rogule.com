@@ -33,7 +33,7 @@ server: node_modules
 	@sleep 1 && while [ 1 ]; do DEV=1 node devserver.js; sleep 3; echo "restarting devserver.js"; done
 
 watcher:
-	npx shadow-cljs watch server app
+	npx shadow-cljs watch server app test
 
 watch:
 	make -j2 watcher server

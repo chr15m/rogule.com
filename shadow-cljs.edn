@@ -16,4 +16,8 @@
                           :twemojisearch {:init-fn rogule.twemojisearch/main!
                                           :depends-on #{:shared}}}
                 :devtools {:watch-dir "public"}
-                :release {:output-dir "build/public/js"}}}}
+                :release {:output-dir "build/public/js"}}
+          :test {:target :node-test
+                 :output-to "tests.js"
+                 :ns-regexp "rogule.util$"
+                 :autorun true}}}
