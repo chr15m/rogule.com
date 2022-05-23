@@ -248,11 +248,12 @@
       (log "hp" "hit:" hp-hit "weapons:" hp-weapons "armour:" hp-armour "reduction:" hp-reduction)
       (log "hp change:" my-hp updated-hp))
     [true
-     (if (= updated-hp 0)
+     (if killed
        (-> *state ; entity dies
            (update-in [:entities my-id] assoc
                       :dead true
                       :layer :floor
+                      :animation nil
                       :sprite (load-sprite :skull-and-crossbones))
            (update-in [:entities my-id :fns] dissoc :update :encounter)
            (check-for-endgame))
