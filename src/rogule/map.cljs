@@ -348,10 +348,19 @@
                            (js/Math.min (+ monster-difficulty-index 2) max-index) 1
                            (js/Math.max (- monster-difficulty-index 2) min-index) 1}
         monster-index (js/parseInt (ROT/RNG.getWeightedValue (clj->js monster-sub-table)))
+        item-template (get-random-entity-by-value forage-items)
+        item (when
+               (> (js/Math.random) 0.5)
+               (merge
+                 item-template
+                 {:pos pos
+                  :id (make-id)
+                  :layer :floor}))
         monster (merge
                   (nth monster-table monster-index)
                   {:pos pos
                    :layer :occupy
+                   :drop item
                    :fns {:encounter :combat
                          :update :chase-player
                          :passable :make-monster-passable-fn}})]
@@ -392,7 +401,7 @@
 
 (defn make-level [*state seed size]
   (let [m (make-digger-map (js/Math.random) size size)
-        entities (make-entities m 20 5)
+        entities (make-entities m 15 5)
         counts (into {} (for [t [:mushroom :chestnut :gem-stone]]
                           {t (count-entities (vals entities) :name (name t))}))]
     (log "ents" (vals entities))

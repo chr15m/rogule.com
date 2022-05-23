@@ -41,7 +41,7 @@
   (if new-pos
     (let [move (:moves *state)
           entity (get-in *state [:entities id])
-          pos (-> entity :pos)
+          pos (:pos entity)
           passable-fn-maker (-> entity :fns :passable)
           passable-fn (when passable-fn-maker ((passable-fn-maker @fn-table) *state id entity))
           passable-tile? (if passable-fn (passable-fn (first new-pos) (second new-pos)) true)
@@ -61,9 +61,11 @@
                                        [0 1] "down"} relative-move))]
       (cond
         item-blocks?
-        (update-in state-after-encounters [:entities id] assoc :animation [animation nil move] relative-move :moved true)
+        (update-in state-after-encounters [:entities id] assoc :animation [animation nil move] :moved true)
         passable-tile?
-        (update-in state-after-encounters [:entities id] assoc :animation nil :pos new-pos :moved true)
+        (-> state-after-encounters
+            (update-in [:entities id] assoc :animation nil :pos new-pos :moved true)
+            (update-in [:entities id :drop] #(when % (assoc % :pos new-pos))))
         :else
         (update-in state-after-encounters [:entities id] assoc :animation nil :moved false)))
     *state))
@@ -255,6 +257,7 @@
                       :layer :floor
                       :animation nil
                       :sprite (load-sprite :skull-and-crossbones))
+           (add-entity (:drop me))
            (update-in [:entities my-id :fns] dissoc :update :encounter)
            (check-for-endgame))
        *state)]))
