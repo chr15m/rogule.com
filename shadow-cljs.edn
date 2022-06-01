@@ -19,5 +19,5 @@
                 :release {:output-dir "build/public/js"}}
           :test {:target :node-test
                  :output-to "tests.js"
-                 :ns-regexp "rogule.util$"
+                 :ns-regexp "(rogule.server|rogule.util)$"
                  :autorun true}}}
