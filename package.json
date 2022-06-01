@@ -12,6 +12,7 @@
     "emoji.json": "^13.1.0",
     "express": "4.17.3",
     "express-session": "1.17.2",
+    "express-slow-down": "^1.4.0",
     "font-awesome-svg-png": "^1.2.2",
     "html-to-text": "8.1.0",
     "js-markov": "^3.0.3",
