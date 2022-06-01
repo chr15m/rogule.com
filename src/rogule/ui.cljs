@@ -14,6 +14,8 @@
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
 
+(log "main loaded")
+
 (def initial-state {})
 
 (defonce state (local-storage (r/atom initial-state) :game-state))
@@ -199,7 +201,8 @@
   (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
     [:div#tombstone.pop
      ;[:pre (-> (:statistics @state) clj->js (js/JSON.stringify nil 2))]
-     [:div (concat [] (make-share-string tile-mem [:br] @state))]
+     [:div (concat [] (map-indexed (fn [idx i] [:span {:key idx} i])
+                                   (make-share-string tile-mem [:br] @state)))]
      (let [stats (:statistics @state)
            plays (+ (:ascended stats) (:died stats))]
        [:div#stats
