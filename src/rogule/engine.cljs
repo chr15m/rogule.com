@@ -4,7 +4,8 @@
     [reagent.core :as r]
     [sitefox.ui :refer [log]]
     ["rot-js" :as ROT]
-    [rogule.map :refer [entities-by-pos-mem find-path make-id can-pass-tile]])
+    [rogule.map :refer [entities-by-pos-mem find-path make-id can-pass-tile]]
+    [rogule.util :refer [share-game-log]])
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
 
@@ -34,6 +35,19 @@
 
 (defn coin-flip []
   (.getItem combat-dice coin))
+
+; ***** game log serialization ***** ;
+
+(defn serialize-item [item]
+  (select-keys item [:name :value :pos :layer :armour :dmg]))
+
+(defn add-game-log [*state entry]
+  (log "log:" entry)
+  (update-in *state [:game-log] conj (assoc entry :timestamp (-> (js/Date.) .getTime))))
+
+(defn post-game-log! [*state]
+  (share-game-log (:game-log *state))
+  *state)
 
 ; ***** state update ***** ;
 
@@ -130,32 +144,41 @@
                           :expires 3}))
 
 (defn update-statistics [*state]
-  (let [outcome (:outcome *state)]
-    (-> *state
-        (update-in [:statistics outcome] inc)
-        (update-in [:statistics :streak]
-                   (fn [streak]
-                     (if (= outcome :died)
-                       0
-                       (inc streak))))
-        (update-in [:statistics]
-                   (fn [statistics]
-                     (if (> (:streak statistics) (:max-streak statistics))
-                       (assoc statistics :max-streak (:streak statistics))
-                       statistics))))))
+  (let [outcome (:outcome *state)
+        *state (-> *state
+                   (update-in [:statistics outcome] inc)
+                   (update-in [:statistics :streak]
+                              (fn [streak]
+                                (if (= outcome :died)
+                                  0
+                                  (inc streak))))
+                   (update-in [:statistics]
+                              (fn [statistics]
+                                (if (> (:streak statistics) (:max-streak statistics))
+                                  (assoc statistics :max-streak (:streak statistics))
+                                  statistics))))
+        player (get-in *state [:entities :player])]
+    (add-game-log *state {:type :stats
+                          :stats (:statistics *state)
+                          :moves (:moves *state)
+                          :outcome outcome
+                          :player {:stats (:stats player)
+                                   :inventory (map serialize-item (:inventory player))}})))
 
 (defn finish-game [*state _their-id _item-id]
   [true
    (-> *state
        (assoc :outcome :ascended)
-       update-statistics)])
+       update-statistics
+       post-game-log!)])
 
 (defn check-for-endgame [*state]
   (let [player (-> *state :entities :player)]
     (if (:dead player)
       (-> *state
           (assoc :outcome :died)
-          update-statistics)
+          update-statistics
+          post-game-log!)
       *state)))
 
 ; ***** item encounter fns ***** ;
@@ -178,6 +201,7 @@
       [false (-> *state
                  (add-to-inventory their-id item-id item)
                  (remove-entity item-id)
+                 (add-game-log {:type :item :item (serialize-item item)})
                  (add-message (str "you found the " (:name item))))]
       [false *state])))
 
@@ -244,7 +268,14 @@
                                 :animation [:grow-and-fade :destroy]
                                 :pos my-pos
                                 :layer :above}))
-                 *state)]
+                 *state)
+        *state (add-game-log *state {:type :combat
+                                     :from (select-keys them [:name :pos :stats :layer :activation])
+                                     :to (select-keys me [:name :pos :stats :layer :activation])
+                                     :battle {:hp updated-hp
+                                              :hit hit
+                                              :hp-reduction hp-reduction
+                                              :killed killed}})]
     (when (> hit 0)
       (log "combat" (:name them) "hit" (:name me) hit hp-hit hp-weapons hp-armour hp-reduction " hp:" my-hp updated-hp)
       (log "hp" "hit:" hp-hit "weapons:" hp-weapons "armour:" hp-armour "reduction:" hp-reduction)

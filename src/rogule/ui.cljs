@@ -20,6 +20,8 @@
 
 (defonce state (local-storage (r/atom initial-state) :game-state))
 
+(log (:game-log @state))
+
 (def size 32)
 (def visible-dist 9)
 (def visible-dist-sq (js/Math.pow visible-dist 2))
@@ -229,8 +231,11 @@
   (seedrandom (str "Rogule-" seed) #js {:global true})
   (when (not= old-seed seed)
     (let [statistics (get @state :statistics)
-          new-game (make-level initial-state seed size)]
-      (reset! state (assoc new-game :statistics statistics)))))
+          new-game-state (-> (make-level initial-state seed size)
+                             (assoc :game-log [{:type :start
+                                                :seed seed
+                                                :timestamp (-> (js/Date.) .getTime)}]))]
+      (reset! state (assoc new-game-state :statistics statistics)))))
 
 (defn general-key-handler [ev]
   (let [code (aget ev "keyCode")]
