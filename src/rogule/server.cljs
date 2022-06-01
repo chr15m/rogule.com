@@ -3,11 +3,12 @@
     ["fs" :as fs]
     [applied-science.js-interop :as j]
     [promesa.core :as p]
+    ;[clojure.test :refer-macros [is]]
     [sitefox.web :as web]
     [sitefox.util :refer [env]]
     [sitefox.tracebacks :refer [install-traceback-emailer]]
     [sitefox.db :refer [kv]]
-    [sitefox.deps :refer [body-parser csrf]]
+    [sitefox.auth :refer [make-hmac-token]]
     ["express-slow-down" :as slow]))
 
 (let [admin-email (env "ADMIN_EMAIL")]
@@ -22,21 +23,27 @@
 
 (def template (fs/readFileSync "public/index.html"))
 
-(defn store-game-record [req res]
-  (p/let [_games (kv "game-records")
+(defn store-game-record
+  [req res]
+  (p/let [game-records (kv "game-records")
           game-data (j/get req :body)
           date (-> (js/Date.) .toISOString (.split "T") first)
           id (-> (random-uuid) .toString (.split "-") first)
+          ip (or (j/get-in req [:header :x-forwarded-for])
+                 (j/get-in req [:connection :remoteAddress]))
+          ua (j/get req :useragent)
           k (str date ":" id)
           size (count (js/JSON.stringify game-data))
-          size-limit 20000]
-    ;(.set games k game-data)
-    (js/console.log k game-data size)
+          size-limit 100000
+          game-data (j/assoc-in! game-data [0 :client-id] (make-hmac-token (str "rogule-client-id:" ip ":" ua) 8))]
+    ;(js/console.log "store-game-record" k game-data size)
     (if (> size size-limit)
       (-> res
           (.status 403)
           (.send "Forbidden"))
-      (.json res game-data))))
+      (do
+        (.set game-records k game-data)
+        (.json res game-data)))))
 
 (defn setup-routes [app]
   (web/reset-routes app)
