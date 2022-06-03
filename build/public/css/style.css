@@ -125,6 +125,10 @@ a {
   text-align: center;
 }
 
+.page.admin li {
+  font-size: 0.75em;
+}
+
 /***** game styles *****/
 
 body.game {
