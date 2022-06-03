@@ -29,14 +29,16 @@
           game-data (j/get req :body)
           date (-> (js/Date.) .toISOString (.split "T") first)
           id (-> (random-uuid) .toString (.split "-") first)
-          ip (or (j/get-in req [:header :x-forwarded-for])
+          ip (or (j/get-in req [:headers :x-forwarded-for])
                  (j/get-in req [:connection :remoteAddress]))
-          ua (j/get req :useragent)
+          ua (j/get-in req [:headers :user-agent])
           k (str date ":" id)
           size (count (js/JSON.stringify game-data))
           size-limit 100000
-          game-data (j/assoc-in! game-data [0 :client-id] (make-hmac-token (str "rogule-client-id:" ip ":" ua) 8))]
+          client-id (make-hmac-token (str "rogule-client-id:" ip ":" ua) 8)
+          game-data (j/assoc-in! game-data [0 :client-id] client-id)]
     ;(js/console.log "store-game-record" k game-data size)
+    ;(js/console.log "store-game-record" ip ua client-id)
     (if (> size size-limit)
       (-> res
           (.status 403)
