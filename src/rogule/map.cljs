@@ -43,12 +43,12 @@
     :sprite (load-sprite :dagger)
     :fns {:encounter :add-item-to-inventory}
     :dmg 1
-    :value 4}
+    :value 3}
    {:name "axe"
     :sprite (load-sprite :axe)
     :fns {:encounter :add-item-to-inventory}
     :dmg 2
-    :value 5}])
+    :value 4}])
 
 (def item-covers
   [{:sprite (load-sprite :potted-plant)
