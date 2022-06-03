@@ -12,7 +12,6 @@
     [sitefox.html :refer [render-into parse $]]
     [sitefox.ui :refer [log]]
     [rogule.util :refer [date-token zero-pad]]
-    [rogule.twemojis :refer [name-to-key]]
     ["express-slow-down" :as slow]
     ["express-basic-auth" :as basic-auth]))
 
