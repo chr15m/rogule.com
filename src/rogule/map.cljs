@@ -12,7 +12,7 @@
 (def shrine-template {:sprite (load-sprite :shinto-shrine)
                       :name "shrine"})
 
-(def player-xp 2)
+(def player-xp 3)
 
 (def forage-items
   [{:name "chestnut"
