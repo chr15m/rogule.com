@@ -19,11 +19,11 @@
         seconds (zero-pad (mod s 60))]
     [hours minutes seconds]))
 
-(defn date-token [& [d]]
+(defn date-token [& [d pad]]
   (let [today (if d (js/Date. d) (js/Date.))]
     (str (.getFullYear today) "-"
-         (inc (.getMonth today)) "-"
-         (.getDate today))))
+         ((if pad zero-pad identity) (inc (.getMonth today))) "-"
+         ((if pad zero-pad identity) (.getDate today)))))
 
 (defn iso [d]
   (-> d
