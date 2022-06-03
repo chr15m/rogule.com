@@ -41,6 +41,11 @@
 (defn serialize-item [item]
   (select-keys item [:name :value :pos :layer :armour :dmg]))
 
+(defn serialize-character [who]
+  (assoc
+    (select-keys who [:name :pos :stats :layer :activation])
+    :emoji (-> who :sprite (get "name"))))
+
 (defn add-game-log [*state entry]
   (log "log:" entry)
   (update-in *state [:game-log] conj (assoc entry :timestamp (-> (js/Date.) .getTime))))
@@ -270,8 +275,8 @@
                                 :layer :above}))
                  *state)
         *state (add-game-log *state {:type :combat
-                                     :from (select-keys them [:name :pos :stats :layer :activation])
-                                     :to (select-keys me [:name :pos :stats :layer :activation])
+                                     :from (serialize-character them)
+                                     :to (serialize-character me)
                                      :battle {:hp updated-hp
                                               :hit hit
                                               :hp-reduction hp-reduction
