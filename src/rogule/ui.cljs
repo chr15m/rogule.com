@@ -7,7 +7,8 @@
     [alandipert.storage-atom :refer [local-storage]]
     [sitefox.ui :refer [log]]
     [rogule.emoji :refer [tile-mem emoj]]
-    [rogule.map :refer [distance-sq entities-by-pos-mem count-entities make-level]]
+    [rogule.map :refer [distance-sq entities-by-pos-mem count-entities]]
+    [rogule.generator :refer [make-level]]
     [rogule.engine :refer [install-arrow-key-handler trigger-key remove-entity]]
     [rogule.util :refer [time-until tomorrow date-token]]
     ["seedrandom" :as seedrandom])
