@@ -29,9 +29,16 @@
     :value 8}
 
    {:name "health"
-    :sprite (load-sprite :green-heart)
+    :sprite (load-sprite :tumbler-glass)
+    :modal-sprites [(load-sprite :green-heart)]
     :fns {:encounter :increase-hp}
     :value 2}
+
+   {:name "extra-health"
+    :sprite (load-sprite :tumbler-glass)
+    :modal-sprites [(load-sprite :green-heart) (load-sprite :green-heart)]
+    :fns {:encounter :increase-hp}
+    :value 5}
 
    {:name "shield"
     :sprite (load-sprite :shield)

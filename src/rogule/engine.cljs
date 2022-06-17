@@ -136,6 +136,12 @@
 (defn add-to-inventory [*state id item-id entity]
   (update-in *state [:entities id :inventory] conj (assoc entity :id item-id)))
 
+(defn show-modal-sprites [*state entity-id]
+  (let [entity (get-in *state [:entities entity-id])
+        modal-sprites (or (:modal-sprites entity) [(:sprite entity)])]
+    (when modal-sprites
+      (assoc *state :event-modal {:id (make-id) :sprites modal-sprites}))))
+
 (defn remove-entity [*state id]
   (update-in *state [:entities] dissoc id))
 
@@ -195,6 +201,7 @@
      (if add-hp
        (-> *state
            (update-in [:entities their-id :stats :hp 0] (fn [old-hp] (js/Math.min (+ old-hp 3) (second hp))))
+           ;(show-modal-sprites item-id)
            (remove-entity item-id)
            (add-message "You feel better."))
        (add-message *state "You already have full health."))]))
@@ -205,6 +212,7 @@
     (if (:inventory them)
       [false (-> *state
                  (add-to-inventory their-id item-id item)
+                 ;(show-modal-sprites item-id)
                  (remove-entity item-id)
                  (add-game-log {:type :item :item (serialize-item item)})
                  (add-message (str "you found the " (:name item))))]

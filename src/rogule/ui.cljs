@@ -111,6 +111,11 @@
    [:div
     [component-arrow 40 (rc/inline "arrow-down.svg")]]])
 
+(defn component-event-modal [{:keys [id sprites]}]
+  [:div#event-modal {:key id}
+   (for [s sprites]
+     (tile-mem s "door"))])
+
 (defn component-game [state]
   (let [game-map (:map @state)
         floor-tiles (:floor-tiles game-map)
@@ -118,7 +123,8 @@
         player (-> @state :entities :player)
         player-pos (:pos player)
         player-inventory (:inventory player)
-        combatants (:combatants @state)]
+        combatants (:combatants @state)
+        event-modal (:event-modal @state)]
     (when-let [m (-> @state :message :text)]
       (print m))
     [:span#game
@@ -134,6 +140,8 @@
                            (> dist clear-dist-sq) 0.75
                            :else 1)]
              (component-cell floor-tiles entities x y opacity)))])]
+     (when event-modal
+       [component-event-modal event-modal])
      (component-health-bars-mem player combatants)
      [component-arrow-buttons]
      [component-inventory player-inventory]

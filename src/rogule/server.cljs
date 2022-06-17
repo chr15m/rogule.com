@@ -108,6 +108,7 @@
              (with-meta [component-playthrough play] {:key p})))]]))])
 
 (defn admin-page
+  ; TODO: compute the win rate across 30 days of games
   [req res]
   (p/let [now (-> (js/Date.) .getTime)
           day (* 1000 60 60 24)
