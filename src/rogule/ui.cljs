@@ -75,8 +75,9 @@
 (defn component-health-bars [player combatants]
   [:div#health-bars
    [component-health-bar player]
-   (for [[_id entity] combatants]
-     (let [stats (:stats entity)] [component-health-bar entity stats]))])
+   (for [[id entity] combatants]
+     [:span {:key id}
+      (let [stats (:stats entity)] [component-health-bar entity stats])])])
 
 (def component-health-bars-mem (memoize component-health-bars))
 
