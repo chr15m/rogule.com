@@ -12,8 +12,6 @@
 (log "rogule.engine loaded")
 
 (defonce keymap (r/atom {}))
-; dirty hack to avoid functions in serialized state
-(def fn-table (atom {}))
 
 (def key-dir-map
   {37 [0 dec]
@@ -27,6 +25,9 @@
    190 []})
 
 (def rejuvination-rate 100)
+
+; see the bottom of the file
+(declare lookup-fn)
 
 ; ***** rng fns ***** ;
 
@@ -61,14 +62,14 @@
     (let [move (:moves *state)
           entity (get-in *state [:entities id])
           pos (:pos entity)
-          passable-fn-maker (-> entity :fns :passable)
-          passable-fn (when passable-fn-maker ((passable-fn-maker @fn-table) *state id entity))
+          passable-fn-maker (lookup-fn (-> entity :fns :passable))
+          passable-fn (when passable-fn-maker (passable-fn-maker *state id entity))
           passable-tile? (if passable-fn (passable-fn (first new-pos) (second new-pos)) true)
           entities-at-pos (filter (fn [[_id entity]] (= (:pos entity) new-pos)) (:entities *state))
           [item-blocks? state-after-encounters] (reduce (fn [[item-blocks? *state] [entity-id e]]
-                                                          (let [encounter-fn (-> e :fns :encounter)]
+                                                          (let [encounter-fn (lookup-fn (-> e :fns :encounter))]
                                                             (if encounter-fn
-                                                              (let [[this-item-blocks? *state] ((encounter-fn @fn-table) *state id entity-id)]
+                                                              (let [[this-item-blocks? *state] (encounter-fn *state id entity-id)]
                                                                 [(or item-blocks? this-item-blocks?) *state])
                                                               [item-blocks? *state])))
                                                         [false *state] entities-at-pos)
@@ -95,7 +96,7 @@
       (filter (fn [[_id entity]] (-> entity :fns :update)))
       (reduce
         (fn [*state [id entity]]
-          (let [update-fn ((-> entity :fns :update) @fn-table)]
+          (let [update-fn (lookup-fn (-> entity :fns :update))]
             (update-fn *state id entity)))
         *state)))
 
@@ -344,20 +345,6 @@
       (move-to *state monster-id (second path-to-player))
       *state)))
 
-; ***** function lookup table (serialization friendly) ***** ;
-
-; dirty hack
-; TODO: use a multimethod instead
-(reset! fn-table
-  {:add-item-to-inventory add-item-to-inventory
-   :increase-hp increase-hp
-   :uncover-item uncover-item
-   :finish-game finish-game
-   :combat combat
-   :chase-player chase-player
-   :player-passable-wrapper make-player-passable-fn
-   :make-monster-passable-fn make-monster-passable-fn})
-
 ; ***** event handling ***** ;
 
 (defn trigger-key [key-code & [key-event]]
@@ -414,3 +401,13 @@
       (.removeEventListener js/window "keydown" arrow-handler-fn)
       (.removeEventListener js/window "keyup" arrow-handler-fn)
       (js-delete js/window "_game-key-handler"))))
+
+; ***** function table lookup hack ***** ;
+; this is preserve the property of the game state being EDN serializable
+; so the :update :encounter and :passable function references must be
+; stored in entities as 'symbol rather than a function reference
+; and this function allows us to look up the function from the symbol
+
+(defn lookup-fn [fname]
+  (when fname
+    (get (ns-interns 'rogule.engine) (symbol fname))))

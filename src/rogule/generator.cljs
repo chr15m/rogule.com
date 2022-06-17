@@ -16,6 +16,8 @@
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
 
+(log "rogule.generator loaded")
+
 ; ***** tables ***** ;
 
 (def shrine-template {:sprite (load-sprite :shinto-shrine)
@@ -214,7 +216,7 @@
                         :xp player-xp}
                 :inventory []
                 :fns {:encounter :combat
-                      :passable :player-passable-wrapper}}]
+                      :passable :make-player-passable-fn}}]
     [(assoc entities :player player)
      (dissoc free-tiles pos)]))
 
