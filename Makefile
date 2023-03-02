@@ -15,14 +15,14 @@ $(ZIPNAME).zip: build
 build/server.js: src/**/*.cljs shadow-cljs.edn node_modules
 	npx shadow-cljs release server --debug
 
-build: src/**/* $(STATIC)
+build: src/**/* $(STATIC) node_modules
 	mkdir -p build/public
 	cp -LR --preserve=all $(STATIC) build/public
 	npx shadow-cljs release app
 	touch build
 
 node_modules: package.json
-	npm i
+	pnpm i --shamefully-hoist
 	touch node_modules
 
 .PHONY: watch watcher server repl clean
