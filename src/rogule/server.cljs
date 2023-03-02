@@ -6,7 +6,7 @@
     ;[clojure.test :refer-macros [is]]
     [sitefox.web :as web]
     [sitefox.util :refer [env env-required]]
-    [sitefox.tracebacks :refer [install-traceback-emailer]]
+    [sitefox.tracebacks :refer [install-traceback-handler]]
     [sitefox.db :refer [kv ls]]
     [sitefox.auth :refer [make-hmac-token]]
     [sitefox.html :refer [render-into parse $]]
@@ -19,7 +19,7 @@
 
 (let [admin-email (env "ADMIN_EMAIL")]
   (when admin-email
-    (install-traceback-emailer admin-email)))
+    (install-traceback-handler admin-email)))
 
 (def admin-password (env-required "ADMIN_PASSWORD"))
 
