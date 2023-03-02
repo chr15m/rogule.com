@@ -4,6 +4,7 @@ devserver.js
 logs
 node_modules
 .cache
+workspace
 public/js
 public/twemojis
 database.sqlite
