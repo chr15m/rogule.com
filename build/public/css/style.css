@@ -216,6 +216,37 @@ span.xp {
   position: absolute;
 }
 
+#event-modal {
+  padding: 1em;
+  border: 2px solid #AAB8C2;
+  background-color: #D4E1EA;
+  border-radius: 6px;
+  position: absolute;
+  top: 100px;
+  box-shadow: 0px 0px 20px #888;
+  animation: modal-off 1.5s forwards;
+}
+
+#event-modal img.tile {
+  width: calc(var(--tile-width) * 3);
+}
+
+@keyframes modal-off {
+  0% {
+    display: block;
+    opacity: 1;
+  }
+  75% {
+    display: block;
+    opacity: 1;
+  }
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
+
 #score {
   position: absolute;
   bottom: 128px;
