@@ -169,7 +169,7 @@
         [break]))))
 
 (defn make-share-string [emoj-fn break *state]
-  (let [{:keys [outcome entities counts seed]} *state
+  (let [{:keys [outcome entities counts seed moves statistics]} *state
         {:keys [player]} entities
         {:keys [inventory kills stats killed-by]} player
         death-sprite (load-sprite :skull-and-crossbones)
@@ -182,8 +182,11 @@
       [(if (= outcome :ascended) (emoj-fn (load-sprite :shinto-shrine)) (emoj-fn death-sprite))
        (when (and (not= outcome :ascended) killed-by) (emoj-fn (:sprite killed-by)))
        " "
-       ;moves " " (emoj-fn (load-sprite :down-arrow)) " "
+       moves " " (emoj-fn (load-sprite :footprints)) " "
        break]
+
+      ["streak: " (:streak statistics)]
+      [break]
 
       (let [hp (/ (-> stats :hp first) 2)]
         (for [i (range (/ (-> stats :hp second) 2))]
@@ -217,6 +220,7 @@
      ;[:pre (-> (:statistics @state) clj->js (js/JSON.stringify nil 2))]
      [:div (concat [] (map-indexed (fn [idx i] [:span {:key idx} i])
                                    (make-share-string tile-mem [:br] @state)))]
+     [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
      (let [stats (:statistics @state)
            plays (+ (:ascended stats) (:died stats))]
        [:div#stats
@@ -225,7 +229,6 @@
         [:p (str "Streak: " (:streak stats))]
         [:p (str "Max Streak: " (:max-streak stats))]])
      [component-countdown]
-     [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
      [:p [:a
           {:href (str "https://twitter.com/search?q=rogule%20" (-> (js/Date.) .getFullYear) "&src=spelling_expansion_revert_click&f=live")
            :target "_BLANK"}
