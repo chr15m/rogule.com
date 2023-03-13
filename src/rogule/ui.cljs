@@ -211,7 +211,7 @@
     (fn []
       (let [until (time-until (tomorrow))]
         [:p {:nothing @n}
-         "next rogule" [:br]
+         "Next rogule" [:br]
          (join ":" until)]))))
 
 (defn component-tombstone [state]
@@ -224,15 +224,15 @@
      (let [stats (:statistics @state)
            plays (+ (:ascended stats) (:died stats))]
        [:div#stats
-        [:p (str "Played: " plays)]
-        [:p (str "Wins: " (-> (:ascended stats) (/ plays) (* 100) int) "%")]
+        [:p "Plays: " plays]
+        [:p "Wins: " (-> (:ascended stats) (/ plays) (* 100) int) "%"]
         [:p (str "Streak: " (:streak stats))]
-        [:p (str "Max Streak: " (:max-streak stats))]])
+        [:p (str "Longest: " (:max-streak stats))]])
      [component-countdown]
      [:p [:a
           {:href (str "https://twitter.com/search?q=rogule%20" (-> (js/Date.) .getFullYear) "&src=spelling_expansion_revert_click&f=live")
            :target "_BLANK"}
-          "see other player scores"]]
+          "See other player scores"]]
      [:p [:a {:href "https://patreon.com/chr15m" :target "_blank" :class "donation-patreon"}
           [:svg {:viewBox "0 0 569 546"
                  :xmlns "http://www.w3.org/2000/svg"}
@@ -245,7 +245,7 @@
                     :x 0
                     :y 0}]]]
           [:span.patreon-extended-message "Support on "] "Patreon " (emoj (load-sprite :folded-hands))]]
-     [:p [:a {:href "mailto:chris@rogule.com"} "send feedback"]]]))
+     [:p [:a {:href "mailto:chris@rogule.com"} "Send feedback"]]]))
 
 (defn component-main [state]
   (if (:outcome @state)
