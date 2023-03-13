@@ -348,6 +348,25 @@ span.xp {
   margin: 0px;
 }
 
+.donation-patreon {
+  background-color: #ff424d;
+  border-radius: 100px;
+  color: white;
+  padding: 8px 20px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.donation-patreon svg {
+  height: 1rem;
+  width: 1rem;
+  vertical-align: sub;
+  stroke-width: 1.2px;
+  fill: white;
+  margin-right: 8px;
+  padding-bottom: 1px;
+}
+
 /***** juice *****/
 
 .pop {

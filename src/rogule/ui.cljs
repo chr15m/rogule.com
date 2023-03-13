@@ -233,6 +233,18 @@
           {:href (str "https://twitter.com/search?q=rogule%20" (-> (js/Date.) .getFullYear) "&src=spelling_expansion_revert_click&f=live")
            :target "_BLANK"}
           "see other player scores"]]
+     [:p [:a {:href "https://patreon.com/chr15m" :target "_blank" :class "donation-patreon"}
+          [:svg {:viewBox "0 0 569 546"
+                 :xmlns "http://www.w3.org/2000/svg"}
+           [:g
+            [:circle {:cx 362.589996
+                      :cy 204.589996
+                      :r 204.589996}]
+            [:rect {:height 545.799988
+                    :width 100
+                    :x 0
+                    :y 0}]]]
+          [:span.patreon-extended-message "Support on "] "Patreon " (emoj (load-sprite :folded-hands))]]
      [:p [:a {:href "mailto:chris@rogule.com"} "send feedback"]]]))
 
 (defn component-main [state]
