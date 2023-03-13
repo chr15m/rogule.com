@@ -102,10 +102,10 @@
          ") "
          (compute-win-percent plays) "% wins ~"
          (to-minutes (compute-median-play-time plays))]
-        [:ul
-         (for [p (range (count plays))]
-           (let [play (nth plays p)]
-             (with-meta [component-playthrough play] {:key p})))]]))])
+        #_ [:ul
+            (for [p (range (count plays))]
+              (let [play (nth plays p)]
+                (with-meta [component-playthrough play] {:key p})))]]))])
 
 (defn admin-page
   ; TODO: compute the win rate across 30 days of games
