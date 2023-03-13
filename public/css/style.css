@@ -331,12 +331,13 @@ span.xp {
   border-radius: 6px;
   border: 1px solid #CCD6DD;
   padding: 1em;
+  margin: 1em;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   max-width: 600px;
-  width: 100%;
+  width: 95%;
   text-align: center;
 }
 
