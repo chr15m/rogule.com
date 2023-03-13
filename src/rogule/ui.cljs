@@ -203,7 +203,7 @@
       (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom) break)
       (emoj-bar emoj-fn inventory counts :gem-stone blank-sprite (load-sprite :gem-stone) break)
       (when (= break "\n")
-        [break "rogule.com"]))))
+        [break "https://rogule.com"]))))
 
 (defn component-countdown []
   (let [n (r/atom nil)]
