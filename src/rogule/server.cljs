@@ -88,6 +88,7 @@
   [_req past-seven-dates data]
   [:div
    [:link {:rel "stylesheet" :href "https://cdn.jsdelivr.net/gh/SebastianAigner/twemoji-amazing@1.0.0/twemoji-amazing.css"}]
+   [:a {:href "/analytics/"} "Analytics"]
    [:h1 "Rogule Admin"]
    (for [d (range (count past-seven-dates))]
      (let [date (nth past-seven-dates d)
