@@ -349,6 +349,11 @@ span.xp {
   margin: 0px;
 }
 
+.donations > * {
+  display: block;
+  margin: 0.25em;
+}
+
 .donation-patreon {
   background-color: #ff424d;
   border-radius: 100px;
