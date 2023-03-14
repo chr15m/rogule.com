@@ -1,7 +1,11 @@
 #!/bin/sh
 
-mkdir -p build/public/analytics
-cat build/logs/*access.log > access.log
-goaccess -f access.log --log-format='%h %^[%d:%t %^] "%r" %s %b "%R" "%u"' --time-format="%H:%M:%S" --date-format="%d/%b/%Y" --ignore-crawlers > ./build/public/analytics/index.html
-rm access.log
+IN=build/logs/
+OUT=build/public/analytics
+GODB=build/public/analytics/goaccess-db
+mkdir -p ${OUT}
+mkdir -p ${GODB}
+goaccess -f ${IN}/access.log --log-format=COMBINED --time-format="%H:%M:%S" --date-format="%d/%b/%Y" --ignore-crawlers --persist --restore --db-path ${GODB} > ${OUT}/index.html
+# Requests since one month ago
+sed -n '/'$(date '+%d\/%b\/%Y' -d '1 month ago')'/,$ p' ${IN}/*access.log | goaccess --log-format=COMBINED --time-format="%H:%M:%S" --ignore-crawlers > ${OUT}/month.html
 sleep 10800
