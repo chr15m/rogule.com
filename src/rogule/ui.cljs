@@ -210,9 +210,13 @@
     (js/setInterval #(swap! n inc) 100)
     (fn []
       (let [until (time-until (tomorrow))]
-        [:p {:nothing @n}
-         "Next rogule" [:br]
-         (join ":" until)]))))
+        (if (= ["00" "00" "00"] until)
+          [:a {:href (str "/game.html")
+               :class "button"}
+           "Play next rogule"]
+          [:p {:nothing @n}
+           "Next rogule" [:br]
+           (join ":" until)])))))
 
 (defn component-tombstone [state]
   (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
