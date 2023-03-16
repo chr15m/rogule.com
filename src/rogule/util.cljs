@@ -8,7 +8,24 @@
 (def day-ms (* 1000 60 60 24))
 
 (defn zero-pad [n]
-  (.slice (str "0" n) -2))
+  {:test
+   (fn []
+     ; positive number
+     (is (= (zero-pad 3)
+            "03"))
+     (is (= (zero-pad 03)
+            "03"))
+     (is (= (zero-pad 13)
+            "13"))
+     ; negative number
+     (is (= (zero-pad -3)
+            "-03"))
+     (is (= (zero-pad -03)
+            "-03"))
+     (is (= (zero-pad -13)
+            "-13")))}
+  (let [prefix (when (neg? n) "-")]
+    (str prefix (.slice (str "0" (abs n)) -2))))
 
 (defn time-until [date-string & [now]]
   (let [now (if now (js/Date. now) (js/Date.))
