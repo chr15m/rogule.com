@@ -209,8 +209,11 @@
   (let [n (r/atom nil)]
     (js/setInterval #(swap! n inc) 100)
     (fn []
-      (let [until (time-until (tomorrow))]
-        (if (= ["00" "00" "00"] until)
+      (let [until (time-until (tomorrow (:seed @state)))
+            past-tomorrow (->> until
+                               (map js/parseInt)
+                               (some neg?))]
+        (if past-tomorrow
           [:a {:href (str "/game.html")
                :class "button"}
            "Play next rogule"]
