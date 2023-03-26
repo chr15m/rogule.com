@@ -214,9 +214,9 @@
                                (map js/parseInt)
                                (some neg?))]
         (if past-tomorrow
-          [:a {:href (str "/game.html")
-               :class "button"}
-           "Play next rogule"]
+          [:p
+           [:button {:on-click #(-> js/window .-location .reload)}
+            "Play next rogule"]]
           [:p {:nothing @n}
            "Next rogule" [:br]
            (join ":" until)])))))
