@@ -175,7 +175,7 @@
         death-sprite (load-sprite :skull-and-crossbones)
         blank-sprite (load-sprite :white-large-square)]
     (concat
-      ["Rogule " seed break
+      ["#Rogule " seed break
        (emoj-fn (load-sprite :elf)) " "
        (:xp stats) "xp" " "]
 
