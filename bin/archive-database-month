@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ "$1" = "" ]
+then
+  echo "Usage: `basename $0` YYYY-M"
+else
+  sqlite3 database.sqlite ".schema" | sqlite3 database-$1.sqlite
+  sqlite3 database.sqlite << EOF
+  ATTACH DATABASE "database-$1.sqlite" AS archive;
+  INSERT INTO archive.keyv
+    SELECT * FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+EOF
+fi
