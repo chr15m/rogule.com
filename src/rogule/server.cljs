@@ -7,7 +7,7 @@
     [sitefox.web :as web]
     [sitefox.util :refer [env env-required]]
     [sitefox.tracebacks :refer [install-traceback-handler]]
-    [sitefox.db :refer [kv ls]]
+    [sitefox.db :refer [kv ls client]]
     [sitefox.auth :refer [make-hmac-token]]
     [sitefox.html :refer [render-into parse $]]
     [sitefox.ui :refer [log]]
@@ -156,7 +156,10 @@
     (web/static-folder app "/" "public")))
 
 (defn main! []
-  (p/let [[app host port] (web/start)]
+  (p/let [[app host port] (web/start)
+          c (client)
+          wal-mode (.query c "PRAGMA journal_mode=WAL;")]
+    (js/console.log "WAL MODE" wal-mode)
     (reset! server app)
     (setup-routes app)
     (println "Serving on" (str "http://" host ":" port))))
