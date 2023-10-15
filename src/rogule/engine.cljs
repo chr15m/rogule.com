@@ -88,7 +88,8 @@
             (update-in [:entities id :drop] #(when % (assoc % :pos new-pos))))
         :else
         (update-in state-after-encounters [:entities id] assoc :animation nil :moved false)))
-    *state))
+    ; no direction so rest is assumed and rest implies a type of "move"
+    (update-in *state [:entities id] assoc :moved true)))
 
 (defn update-monsters [*state]
   (->> *state
