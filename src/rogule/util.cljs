@@ -90,4 +90,4 @@
                                     :XSRF-Token (csrf-token)}
                           :body (js/JSON.stringify (clj->js log))}))
       (.then (fn [res] (when (aget res "ok") (.json res))))
-      (.then (fn [json] (log "shared game record:" json)))))
+      (.then (fn [json] (js/console.log "shared game record:" json)))))
