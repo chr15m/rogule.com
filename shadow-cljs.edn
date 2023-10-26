@@ -2,7 +2,8 @@
  :dependencies [[reagent "1.0.0-alpha2"]
                 [alandipert/storage-atom "2.0.1"]
                 [applied-science/js-interop "0.2.7"]
-                [funcool/promesa "6.0.2"]]
+                [funcool/promesa "6.0.2"]
+                [binaryage/devtools "1.0.7"]]
  :builds {:server {:target :node-script
                    :output-to "devserver.js"
                    :main rogule.server/main!
