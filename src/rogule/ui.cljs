@@ -162,7 +162,7 @@
   (let [c (count-entities inventory :name (name k))]
     (concat
       (for [x (range (k counts))]
-        (if (> x c)
+        (if (>= x c)
           (emoj-fn blank-sprite)
           (emoj-fn sprite)))
       (when (> c 0)
