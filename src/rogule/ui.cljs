@@ -256,7 +256,12 @@
       [:a {:href "https://ko-fi.com/chr15m" :target "_blank"}
        [:span {:ref (fn [el] (when el (aset el "innerHTML" (rc/inline "ko-fi.svg"))))}]]
       (emoj (load-sprite :folded-hands))]
-     [:p [:a {:href "mailto:chris@rogule.com"} "Send feedback"]]]))
+     [:p [:a {:href "mailto:chris@rogule.com"} "Send feedback"]]
+     [:div.js__stats
+      [:ul.stats 
+        [:li.stats__item [:button.key.stats__action.stats__action--backup.js__stats-action-backup [:span.stats__action-label "Backup stats"]]]
+        [:li.stats__item [:button.key.stats__action.stats__action--import.js__stats-action-import [:span.stats__action-label "Import stats"]]]]
+      [:input {:class "hidden js__app-upload-stats" :type "file" :name "upload-file" :id "upload-file" :tabIndex "-1" :aria-hidden "true"}]]]))
 
 (defn component-main [state]
   (if (:outcome @state)

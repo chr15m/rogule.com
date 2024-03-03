@@ -9,6 +9,7 @@
                    :main rogule.server/main!
                    :release {:output-to "build/server.js"}}
           :app {:target :browser
+                :build-hooks [(shadow.html/copy-file "build/public/js/stats.js" "public/js/stats.js")]
                 :output-dir "public/js"
                 :asset-path "/js"
                 :modules {:shared {:entries []}
