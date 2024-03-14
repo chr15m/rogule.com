@@ -1,7 +1,7 @@
 (ns rogule.util
   (:require
     [sitefox.ui :refer [log csrf-token]]
-    [clojure.test :refer-macros [is]]))  
+    [clojure.test :refer-macros [is]]))
 
 (log "util loaded")
 
@@ -47,6 +47,23 @@
       (js/Date.)
       (.toISOString)))
 
+(defn parse-date
+  {:test
+   (fn []
+       (is (= (iso (parse-date "2020-04-13T13:00:00.000+08:00"))
+              "2020-04-13T05:00:00.000Z"))
+       (is (= (iso (parse-date "2020-4-13"))
+              (iso (js/Date. 2020 3 13))))
+   )
+  }
+  [d]
+  (if-some [
+       [whole-match year month day]
+       (re-matches #"^(\d{4})-(\d{1,2})-(\d{1,2})$" d)]
+       (js/Date. year (dec month) day)
+       (js/Date. d))
+)
+
 (defn tomorrow
   {:test
    (fn []
@@ -68,9 +85,11 @@
      (is (= (iso (tomorrow "2020-04-13T23:00:00.000-07:00" +420))
             "2020-04-14T07:00:00.000Z"))
      (is (= (iso (tomorrow "2020-04-13T14:50:00.000-07:00" +420))
-            "2020-04-14T07:00:00.000Z")))}
+            "2020-04-14T07:00:00.000Z"))
+     (is (= (iso (tomorrow "2020-04-13"))
+            (iso (js/Date. 2020 3 14)))))}
   [& [now tz-offset]]
-  (let [now (if now (js/Date. now) (js/Date.))
+  (let [now (if now (parse-date now) (js/Date.))
         tz-offset (* (or tz-offset (.getTimezoneOffset now)) 60 1000 -1)]
     (-> now
         (.getTime)
