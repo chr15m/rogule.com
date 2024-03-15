@@ -50,19 +50,15 @@
 (defn parse-date
   {:test
    (fn []
-       (is (= (iso (parse-date "2020-04-13T13:00:00.000+08:00"))
-              "2020-04-13T05:00:00.000Z"))
-       (is (= (iso (parse-date "2020-4-13"))
-              (iso (js/Date. 2020 3 13))))
-   )
-  }
+     (is (= (iso (parse-date "2020-04-13T13:00:00.000+08:00"))
+            "2020-04-13T05:00:00.000Z"))
+     (is (= (iso (parse-date "2020-4-13"))
+            (iso (js/Date. 2020 3 13)))))}
   [d]
-  (if-some [
-       [whole-match year month day]
-       (re-matches #"^(\d{4})-(\d{1,2})-(\d{1,2})$" d)]
-       (js/Date. year (dec month) day)
-       (js/Date. d))
-)
+  (if-some [[_whole-match year month day]
+            (re-matches #"^(\d{4})-(\d{1,2})-(\d{1,2})$" d)]
+    (js/Date. year (dec month) day)
+    (js/Date. d)))
 
 (defn tomorrow
   {:test
