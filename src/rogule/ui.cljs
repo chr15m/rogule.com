@@ -282,7 +282,9 @@
            :target "_BLANK"}
           [icon (rc/inline "icons/outline/brand-threads.svg")]]])]
      [component-game-ad]
-     [:p [:a {:href "mailto:chris@rogule.com"} "Send feedback"]]]))
+     [:p.feedback
+      [:a {:href "mailto:chris@rogule.com"}
+       (emoj (load-sprite :incoming-envelope)) " Send feedback"]]]))
 
 (defn component-main [state]
   (if (:outcome @state)

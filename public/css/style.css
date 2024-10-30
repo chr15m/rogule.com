@@ -394,6 +394,14 @@ span.xp {
   margin: 0.5em;
 }
 
+.feedback {
+  font-size: 0.75em;
+}
+
+.feedback a {
+  text-decoration: none;
+}
+
 .donations > * {
   display: block;
   margin: 0.25em;
