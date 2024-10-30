@@ -163,10 +163,19 @@
      ;[component-messages (-> @state :message :text)]
      ]))
 
-(defn copy-text [txt]
-  (->
-    (js/navigator.clipboard.writeText txt)
-    (.then (fn [] (js/alert "copied results to clipboard")))))
+(defn copy-text [txt ev]
+  (let [el (aget ev "target")
+        button-text (aget el "textContent")]
+    (->
+      (js/navigator.clipboard.writeText txt)
+      (.then (fn []
+               (.setAttribute el "disabled" true)
+               (aset el "textContent" "Copied!")
+               (js/setTimeout
+                 (fn []
+                   (.removeAttribute el "disabled")
+                   (aset el "textContent" button-text))
+                 1000))))))
 
 (defn emoj-bar [emoj-fn inventory counts k blank-sprite sprite break]
   (let [c (count-entities inventory :name (name k))]
@@ -247,11 +256,12 @@
 (defn component-tombstone [state]
   (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
     [:<>
+     [:h3 "Fin."]
      [:div.tombstone.pop
       ;[:pre (-> (:statistics @state) clj->js (js/JSON.stringify nil 2))]
       [:div (concat [] (map-indexed (fn [idx i] [:span {:key idx} i])
                                     (make-share-string tile-mem [:br] @state)))]
-      [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
+      [:button {:autoFocus true :on-click #(copy-text text-share-string %)} "share"]
       [:hr]
       (let [stats (:statistics @state)
             plays (+ (:ascended stats) (:died stats))]
