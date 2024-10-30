@@ -199,8 +199,8 @@
       (for [entity (reverse kills)]
         (emoj-fn (:sprite entity)))
       [break]
-      (emoj-bar emoj-fn inventory counts :chestnut blank-sprite (load-sprite :chestnut) break)
-      (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom) break)
+      (emoj-bar emoj-fn inventory counts :chestnut blank-sprite (load-sprite :chestnut) nil)
+      (emoj-bar emoj-fn inventory counts :mushroom blank-sprite (load-sprite :mushroom) nil)
       (emoj-bar emoj-fn inventory counts :gem-stone blank-sprite (load-sprite :gem-stone) break)
       (when (= break "\n")
         [break "https://rogule.com"]))))
@@ -214,48 +214,34 @@
                                (map js/parseInt)
                                (some neg?))]
         (if past-tomorrow
-          [:p
+          [:p.countdown
            [:button {:on-click #(-> js/window .-location .reload)}
             "Play next rogule"]]
-          [:p {:nothing @n}
+          [:p.countdown {:data-nothing @n}
            "Next rogule" [:br]
            (join ":" until)])))))
 
 (defn component-tombstone [state]
   (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
-    [:div#tombstone.pop
-     ;[:pre (-> (:statistics @state) clj->js (js/JSON.stringify nil 2))]
-     [:div (concat [] (map-indexed (fn [idx i] [:span {:key idx} i])
-                                   (make-share-string tile-mem [:br] @state)))]
-     [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
-     (let [stats (:statistics @state)
-           plays (+ (:ascended stats) (:died stats))]
-       [:div#stats
-        [:p "Plays: " plays]
-        [:p "Wins: " (-> (:ascended stats) (/ plays) (* 100) int) "%"]
-        [:p (str "Streak: " (:streak stats))]
-        [:p (str "Longest: " (:max-streak stats))]])
-     [component-countdown]
+    [:<>
+     [:div.tombstone.pop
+      ;[:pre (-> (:statistics @state) clj->js (js/JSON.stringify nil 2))]
+      [:div (concat [] (map-indexed (fn [idx i] [:span {:key idx} i])
+                                    (make-share-string tile-mem [:br] @state)))]
+      [:button {:autoFocus true :on-click #(copy-text text-share-string)} "share"]
+      [:hr]
+      (let [stats (:statistics @state)
+            plays (+ (:ascended stats) (:died stats))]
+        [:div#stats
+         [:p "Plays: " plays]
+         [:p "Wins: " (-> (:ascended stats) (/ plays) (* 100) int) "%"]
+         [:p (str "Streak: " (:streak stats))]
+         [:p (str "Longest: " (:max-streak stats))]])
+      [component-countdown]]
      [:p [:a
           {:href (str "https://twitter.com/search?q=rogule%20" (-> (js/Date.) .getFullYear) "&src=spelling_expansion_revert_click&f=live")
            :target "_BLANK"}
           "See other player scores"]]
-     [:p.donations
-      [:a {:href "https://patreon.com/chr15m" :target "_blank" :class "donation-patreon"}
-       [:svg {:viewBox "0 0 569 546"
-              :xmlns "http://www.w3.org/2000/svg"}
-        [:g
-         [:circle {:cx 362.589996
-                   :cy 204.589996
-                   :r 204.589996}]
-         [:rect {:height 545.799988
-                 :width 100
-                 :x 0
-                 :y 0}]]]
-       [:span.patreon-extended-message "Support on "] "Patreon"]
-      [:a {:href "https://ko-fi.com/chr15m" :target "_blank"}
-       [:span {:ref (fn [el] (when el (aset el "innerHTML" (rc/inline "ko-fi.svg"))))}]]
-      (emoj (load-sprite :folded-hands))]
      [:p [:a {:href "mailto:chris@rogule.com"} "Send feedback"]]]))
 
 (defn component-main [state]

@@ -326,7 +326,7 @@ span.xp {
   justify-content: center;
 }
 
-#tombstone {
+.tombstone {
   background-color: white;
   border-radius: 6px;
   border: 1px solid #CCD6DD;
@@ -339,14 +339,26 @@ span.xp {
   max-width: 600px;
   width: 95%;
   text-align: center;
+  font-size: 0.75em;
 }
 
-#tombstone #stats {
-  margin-top: 1em;
+.tombstone #stats {
 }
 
-#tombstone #stats p {
+.tombstone #stats p {
   margin: 0px;
+}
+
+.tombstone hr {
+  width: 100%;
+  border: none;
+  height: 1px;
+  background-color: #CCD6DD;
+}
+
+.tombstone .countdown {
+  margin: 0.5em;
+  margin-bottom: 0px;
 }
 
 .donations > * {
