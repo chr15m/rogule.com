@@ -377,12 +377,17 @@ span.xp {
   margin: 0.25em;
 }
 
+.tombstone + .tombstone {
+  margin-top: 1em;
+}
+
 .ad {
   display: flex;
   flex-direction: column;
   text-align: center;
   text-decoration: none;
   color: #111;
+  font-size: 1em;
 }
 
 .ad img {
