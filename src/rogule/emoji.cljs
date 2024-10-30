@@ -23,6 +23,7 @@
             (when (not= (.indexOf (aget el "className") "pop") -1)
               (let [cl (aget el "classList")]
                 (.remove cl "pop")
+                #_:clj-kondo/ignore
                 (aget el "offsetHeight")
                 (.add cl "pop")))))))
 
