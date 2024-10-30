@@ -1,6 +1,6 @@
 (ns rogule.util
   (:require
-    [sitefox.ui :refer [log csrf-token]]
+    [sitefox.ui :refer [log json-post]]
     [clojure.test :refer-macros [is]]))
 
 (log "util loaded")
@@ -98,11 +98,5 @@
 
 (defn share-game-log
   [log]
-  (-> (js/fetch "/share"
-                (clj->js {:method "POST"
-                          :credentials "same-origin"
-                          :headers {:Content-Type "application/json"
-                                    :XSRF-Token (csrf-token)}
-                          :body (js/JSON.stringify (clj->js log))}))
-      (.then (fn [res] (when (aget res "ok") (.json res))))
+  (-> (json-post "/share" log)
       (.then (fn [json] (js/console.log "shared game record:" json)))))
