@@ -231,6 +231,19 @@
            "Next rogule" [:br]
            (join ":" until)])))))
 
+(defn component-game-ad
+  "Ad for my other online roguelike game."
+  []
+  [:div.ad-feel-free-to-block.tombstone
+   [:a.ad {:href "https://asterogue.com?src=rogule"
+           :target "_BLANK"}
+    [:p "Want more?"]
+    [:p "Try my other game. " (emoj (load-sprite :grinning-face))]
+    [:p "Asterogue is a sci-fi browser roguelike. " (emoj (load-sprite :astronaut))]
+    [:img {:src "https://asterogue.com/ad-1.gif"}]
+    [:p "The first two levels are free to play."]
+    [:p "Thanks for checking it out! " (emoj (load-sprite :folded-hands))]]])
+
 (defn component-tombstone [state]
   (let [text-share-string (apply str (make-share-string emoj "\n" @state))]
     [:<>
@@ -268,6 +281,7 @@
                       "&serp_type=default")
            :target "_BLANK"}
           [icon (rc/inline "icons/outline/brand-threads.svg")]]])]
+     [component-game-ad]
      [:p [:a {:href "mailto:chris@rogule.com"} "Send feedback"]]]))
 
 (defn component-main [state]

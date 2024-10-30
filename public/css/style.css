@@ -377,6 +377,23 @@ span.xp {
   margin: 0.25em;
 }
 
+.ad {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  text-decoration: none;
+  color: #111;
+}
+
+.ad img {
+  max-width: 100%;
+  margin: 1em 0px;
+}
+
+.ad p {
+  margin: 0.5em;
+}
+
 .donations > * {
   display: block;
   margin: 0.25em;
