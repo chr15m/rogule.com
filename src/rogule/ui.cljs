@@ -29,7 +29,17 @@
 (def clear-dist 7)
 (def clear-dist-sq (js/Math.pow clear-dist 2))
 
+(def re-html-comment (js/RegExp. "<\\!--.*?-->" "g"))
+
 ; ***** rendering ***** ;
+
+(defn icon
+  ([attrs svg]
+   [:inline-icon
+    (merge {:dangerouslySetInnerHTML
+            {:__html (.replace svg re-html-comment "")}}
+           attrs)])
+  ([svg] (icon {} svg)))
 
 (defn component-cell [floor-tiles entities x y opacity]
   [:span.grid {:key x
@@ -237,11 +247,27 @@
          [:p "Wins: " (-> (:ascended stats) (/ plays) (* 100) int) "%"]
          [:p (str "Streak: " (:streak stats))]
          [:p (str "Longest: " (:max-streak stats))]])
-      [component-countdown]]
-     [:p [:a
-          {:href (str "https://twitter.com/search?q=rogule%20" (-> (js/Date.) .getFullYear) "&src=spelling_expansion_revert_click&f=live")
+      [component-countdown]
+      [:hr]
+      (let [year (-> (js/Date.) .getFullYear)]
+        [:p.shared
+         "Shared games:"
+         [:a
+          {:href (str "https://mastodon.social/tags/rogule")
            :target "_BLANK"}
-          "See other player scores"]]
+          [icon (rc/inline "icons/outline/brand-mastodon.svg")]]
+         [:a
+          {:href (str "https://x.com/search?q=rogule%20"
+                      year
+                      "&src=spelling_expansion_revert_click&f=live")
+           :target "_BLANK"}
+          [icon (rc/inline "icons/outline/brand-x.svg")]]
+         [:a
+          {:href (str "https://www.threads.net/search?q=%23rogule+"
+                      year
+                      "&serp_type=default")
+           :target "_BLANK"}
+          [icon (rc/inline "icons/outline/brand-threads.svg")]]])]
      [:p [:a {:href "mailto:chris@rogule.com"} "Send feedback"]]]))
 
 (defn component-main [state]

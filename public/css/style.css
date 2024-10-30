@@ -90,6 +90,13 @@ button.key svg path {
   fill: #555;
 }
 
+inline-icon {
+  width: 2em;
+  height: 2em;
+  color: #555;
+  fill: #555;
+}
+
 /***** specific styles *****/
 
 #app {
@@ -359,6 +366,15 @@ span.xp {
 .tombstone .countdown {
   margin: 0.5em;
   margin-bottom: 0px;
+}
+
+.tombstone .shared {
+  margin: 0px;
+  display: flex;
+}
+
+.tombstone .shared inline-icon {
+  margin: 0.25em;
 }
 
 .donations > * {
