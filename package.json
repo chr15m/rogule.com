@@ -7,6 +7,7 @@
     "chokidar": "3.5.3",
     "concurrently": "^6.3.0",
     "cookie-parser": "1.4.6",
+    "csrf-csrf": "3.0.3",
     "csurf": "1.11.0",
     "djb2a": "^2.0.0",
     "emoji.json": "^13.1.0",
