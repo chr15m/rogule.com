@@ -9863,7 +9863,7 @@ function $cljs$core$random_uuid$$() {
 }
 "undefined" !== typeof console && $cljs$core$enable_console_print_BANG_$$();
 $cljs$core$enable_console_print_BANG_$$();
-var $cljs$cst$383$testing_vars$$ = new $cljs$core$Keyword$$(null, "testing-vars", "testing-vars", -2114769150), $cljs$cst$380$pass$$ = new $cljs$core$Keyword$$(null, "pass", "pass", 1574159993), $cljs$cst$566$link$$ = new $cljs$core$Keyword$$(null, "link", "link", -1769163468), $cljs$cst$185$line$$ = new $cljs$core$Keyword$$(null, "line", "line", 212345235), $cljs$cst$313$string$$ = new $cljs$core$Keyword$$(null, "string", "string", -1989541586), $cljs$cst$197$prefix$$ = new $cljs$core$Keyword$$(null, 
+var $cljs$cst$383$testing_vars$$ = new $cljs$core$Keyword$$(null, "testing-vars", "testing-vars", -2114769150), $cljs$cst$380$pass$$ = new $cljs$core$Keyword$$(null, "pass", "pass", 1574159993), $cljs$cst$564$link$$ = new $cljs$core$Keyword$$(null, "link", "link", -1769163468), $cljs$cst$185$line$$ = new $cljs$core$Keyword$$(null, "line", "line", 212345235), $cljs$cst$313$string$$ = new $cljs$core$Keyword$$(null, "string", "string", -1989541586), $cljs$cst$197$prefix$$ = new $cljs$core$Keyword$$(null, 
 "prefix", "prefix", -265908465), $cljs$cst$214$trailing_white_space$$ = new $cljs$core$Keyword$$(null, "trailing-white-space", "trailing-white-space", 1496006996), $cljs$cst$418$namespace$$ = new $cljs$core$Keyword$$(null, "namespace", "namespace", -377510372), $cljs$cst$162$fn_STAR_$$ = new $cljs$core$Symbol$$(null, "fn*", "fn*", -752876845, null), $cljs$cst$149$case_STAR_$$ = new $cljs$core$Symbol$$(null, "case*", "case*", -1938255072, null), $cljs$cst$466$constructor$$ = new $cljs$core$Keyword$$(null, 
 "constructor", "constructor", -1953928811), $cljs$cst$3$dup$$ = new $cljs$core$Keyword$$(null, "dup", "dup", 556298533), $cljs$cst$227$relative_to$$ = new $cljs$core$Keyword$$(null, "relative-to", "relative-to", -470100051), $cljs$cst$446$no_cache$$ = new $cljs$core$Keyword$$(null, "no-cache", "no-cache", 1588056370), $cljs$cst$319$count$$ = new $cljs$core$Keyword$$(null, "count", "count", 2139924085), $cljs$cst$261$dispatch$$ = new $cljs$core$Keyword$$(null, "dispatch", "dispatch", 1319337009), 
 $cljs$cst$269$rest$$ = new $cljs$core$Keyword$$(null, "rest", "rest", -1241696419), $cljs$cst$196$intra_block_nl$$ = new $cljs$core$Keyword$$(null, "intra-block-nl", "intra-block-nl", 1808826875), $cljs$cst$320$right$$ = new $cljs$core$Keyword$$(null, "right", "right", -452581833), $cljs$cst$240$linear$$ = new $cljs$core$Keyword$$(null, "linear", "linear", 872268697), $cljs$cst$296$exponentchar$$ = new $cljs$core$Keyword$$(null, "exponentchar", "exponentchar", 1986664222), $cljs$cst$289$colon_up_arrow$$ = 
@@ -9884,7 +9884,7 @@ new $cljs$core$Symbol$$("clojure.core", "unquote", "clojure.core/unquote", 84308
 new $cljs$core$Keyword$$(null, "cljsLegacyRender", "cljsLegacyRender", -1527295613), $cljs$cst$158$new$$ = new $cljs$core$Symbol$$(null, "new", "new", -444906321, null), $cljs$cst$253$pretty_writer$$ = new $cljs$core$Keyword$$(null, "pretty-writer", "pretty-writer", -1222834267), $cljs$cst$480$function_components$$ = new $cljs$core$Keyword$$(null, "function-components", "function-components", 1492814963), $cljs$cst$344$lift_ns$$ = new $cljs$core$Symbol$$(null, "lift-ns", "lift-ns", 602311926, null), 
 $cljs$cst$490$store$$ = new $cljs$core$Keyword$$(null, "store", "store", 1512230022), $cljs$cst$321$allows_separator$$ = new $cljs$core$Keyword$$(null, "allows-separator", "allows-separator", -818967742), $cljs$cst$484$saveUninitialized$$ = new $cljs$core$Keyword$$(null, "saveUninitialized", "saveUninitialized", 1738726120), $cljs$cst$175$ns$$ = new $cljs$core$Keyword$$(null, "ns", "ns", 441598760), $cljs$cst$350$list$$ = new $cljs$core$Keyword$$(null, "list", "list", 765357683), $cljs$cst$244$buffering$$ = 
 new $cljs$core$Keyword$$(null, "buffering", "buffering", -876713613), $cljs$cst$325$arg1$$ = new $cljs$core$Keyword$$(null, "arg1", "arg1", 951899358), $cljs$cst$156$letfn_STAR_$$ = new $cljs$core$Symbol$$(null, "letfn*", "letfn*", -110097810, null), $cljs$cst$290$base_args$$ = new $cljs$core$Keyword$$(null, "base-args", "base-args", -1268706822), $cljs$cst$327$arg3$$ = new $cljs$core$Keyword$$(null, "arg3", "arg3", -1486822496), $cljs$cst$342$test$$ = new $cljs$core$Keyword$$(null, "test", "test", 
-577538877), $cljs$cst$326$arg2$$ = new $cljs$core$Keyword$$(null, "arg2", "arg2", 1729550917), $cljs$cst$128$parents$$ = new $cljs$core$Keyword$$(null, "parents", "parents", -2027538891), $cljs$cst$537$div$$ = new $cljs$core$Keyword$$(null, "div", "div", 1057191632), $cljs$cst$195$done_nl$$ = new $cljs$core$Keyword$$(null, "done-nl", "done-nl", -381024340), $cljs$cst$239$fill$$ = new $cljs$core$Keyword$$(null, "fill", "fill", 883462889), $cljs$cst$567$rel$$ = new $cljs$core$Keyword$$(null, "rel", 
+577538877), $cljs$cst$326$arg2$$ = new $cljs$core$Keyword$$(null, "arg2", "arg2", 1729550917), $cljs$cst$128$parents$$ = new $cljs$core$Keyword$$(null, "parents", "parents", -2027538891), $cljs$cst$537$div$$ = new $cljs$core$Keyword$$(null, "div", "div", 1057191632), $cljs$cst$195$done_nl$$ = new $cljs$core$Keyword$$(null, "done-nl", "done-nl", -381024340), $cljs$cst$239$fill$$ = new $cljs$core$Keyword$$(null, "fill", "fill", 883462889), $cljs$cst$565$rel$$ = new $cljs$core$Keyword$$(null, "rel", 
 "rel", 1378823488), $cljs$cst$280$remaining_arg_count$$ = new $cljs$core$Keyword$$(null, "remaining-arg-count", "remaining-arg-count", -1216589335), $cljs$cst$243$logical_blocks$$ = new $cljs$core$Keyword$$(null, "logical-blocks", "logical-blocks", -1466339776), $cljs$cst$393$begin_test_var$$ = new $cljs$core$Keyword$$(null, "begin-test-var", "begin-test-var", -908571100), $cljs$cst$285$commainterval$$ = new $cljs$core$Keyword$$(null, "commainterval", "commainterval", -1980061083), $cljs$cst$336$file$$ = 
 new $cljs$core$Keyword$$(null, "file", "file", -1269645878), $cljs$cst$355$condp$$ = new $cljs$core$Symbol$$(null, "condp", "condp", 1054325175, null), $cljs$cst$252$buffer_block$$ = new $cljs$core$Keyword$$(null, "buffer-block", "buffer-block", -10937307), $cljs$cst$357$defmacro$$ = new $cljs$core$Symbol$$(null, "defmacro", "defmacro", 2054157304, null), $cljs$cst$497$subject$$ = new $cljs$core$Keyword$$(null, "subject", "subject", -1411880451), $cljs$cst$318$generator_fn$$ = new $cljs$core$Keyword$$(null, 
 "generator-fn", "generator-fn", 811851656), $cljs$cst$378$cljs_DOT_test_SLASH_default$$ = new $cljs$core$Keyword$$("cljs.test", "default", "cljs.test/default", -1581405322), $cljs$cst$482$clear$$ = new $cljs$core$Keyword$$(null, "clear", "clear", 1877104959), $cljs$cst$474$id$$ = new $cljs$core$Keyword$$(null, "id", "id", -1388402092), $cljs$cst$300$else$$ = new $cljs$core$Keyword$$(null, "else", "else", -1508377146), $cljs$cst$462$contextType$$ = new $cljs$core$Keyword$$(null, "contextType", "contextType", 
@@ -9914,7 +9914,7 @@ null), $cljs$cst$483$secret$$ = new $cljs$core$Keyword$$(null, "secret", "secret
 $cljs$cst$385$formatter$$ = new $cljs$core$Keyword$$(null, "formatter", "formatter", -483008823), $cljs$cst$246$pos$$ = new $cljs$core$Keyword$$(null, "pos", "pos", -864607220), $cljs$cst$370$cond$$ = new $cljs$core$Symbol$$(null, "cond", "cond", 1606708055, null), $cljs$cst$152$ns_STAR_$$ = new $cljs$core$Symbol$$(null, "ns*", "ns*", 1840949383, null), $cljs$cst$169$throw$$ = new $cljs$core$Symbol$$(null, "throw", "throw", 595905694, null), $cljs$cst$258$length$$ = new $cljs$core$Keyword$$(null, 
 "length", "length", 588987862), $cljs$cst$437$key$$ = new $cljs$core$Keyword$$(null, "key", "key", -1516042587), $cljs$cst$139$type$$ = new $cljs$core$Keyword$$(null, "type", "type", 1174270348), $cljs$cst$265$suppress_namespaces$$ = new $cljs$core$Keyword$$(null, "suppress-namespaces", "suppress-namespaces", 2130686956), $cljs$cst$329$clojure_DOT_core_SLASH_deref$$ = new $cljs$core$Symbol$$("clojure.core", "deref", "clojure.core/deref", 188719157, null), $cljs$cst$106$alt_impl$$ = new $cljs$core$Keyword$$(null, 
 "alt-impl", "alt-impl", 670969595), $cljs$cst$287$char_format$$ = new $cljs$core$Keyword$$(null, "char-format", "char-format", -1016499218), $cljs$cst$533$href$$ = new $cljs$core$Keyword$$(null, "href", "href", -793805698), $cljs$cst$166$var$$ = new $cljs$core$Symbol$$(null, "var", "var", 870848730, null), $cljs$cst$281$minpad$$ = new $cljs$core$Keyword$$(null, "minpad", "minpad", 323570901), $cljs$cst$339$end_line$$ = new $cljs$core$Keyword$$(null, "end-line", "end-line", 1837326455), $cljs$cst$221$logical_block$$ = 
-new $cljs$core$Keyword$$(null, "logical-block", "logical-block", -581022564), $cljs$cst$184$cur$$ = new $cljs$core$Keyword$$(null, "cur", "cur", 1153190599), $cljs$cst$157$if$$ = new $cljs$core$Symbol$$(null, "if", "if", 1181717262, null), $cljs$cst$568$target$$ = new $cljs$core$Keyword$$(null, "target", "target", 253001721), $cljs$cst$303$else_params$$ = new $cljs$core$Keyword$$(null, "else-params", "else-params", -832171646), $cljs$cst$381$fail$$ = new $cljs$core$Keyword$$(null, "fail", "fail", 
+new $cljs$core$Keyword$$(null, "logical-block", "logical-block", -581022564), $cljs$cst$184$cur$$ = new $cljs$core$Keyword$$(null, "cur", "cur", 1153190599), $cljs$cst$157$if$$ = new $cljs$core$Symbol$$(null, "if", "if", 1181717262, null), $cljs$cst$566$target$$ = new $cljs$core$Keyword$$(null, "target", "target", 253001721), $cljs$cst$303$else_params$$ = new $cljs$core$Keyword$$(null, "else-params", "else-params", -832171646), $cljs$cst$381$fail$$ = new $cljs$core$Keyword$$(null, "fail", "fail", 
 1706214930);
 var $shadow$js$shim$module$0fs$$ = require("fs");
 var $promesa$protocols$IPromise$_bind$dyn_7767$$ = function() {
@@ -16520,14 +16520,14 @@ $cljs$core$first$$($args$jscomp$inline_1665$$);
 function $rogule$util$zero_pad$$($n$jscomp$193$$) {
   return [0 > $n$jscomp$193$$ ? "-" : null, $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$(["0", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$(Math.abs($n$jscomp$193$$))].join("").slice(-2))].join("");
 }
-function $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($p__12447$$) {
-  var $d$jscomp$135$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__12447$$, 0, null), $pad$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__12447$$, 1, null), $today$$ = $cljs$core$truth_$$($d$jscomp$135$$) ? new Date($d$jscomp$135$$) : new Date();
+function $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($p__18724$$) {
+  var $d$jscomp$135$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__18724$$, 0, null), $pad$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__18724$$, 1, null), $today$$ = $cljs$core$truth_$$($d$jscomp$135$$) ? new Date($d$jscomp$135$$) : new Date();
   return [$cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($today$$.getFullYear()), "-", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$(function() {
-    var $G__12468$$ = $today$$.getMonth() + 1, $fexpr__12467$$ = $cljs$core$truth_$$($pad$jscomp$3$$) ? $rogule$util$zero_pad$$ : $cljs$core$identity$$;
-    return $fexpr__12467$$.$cljs$core$IFn$_invoke$arity$1$ ? $fexpr__12467$$.$cljs$core$IFn$_invoke$arity$1$($G__12468$$) : $fexpr__12467$$.call(null, $G__12468$$);
+    var $G__18733$$ = $today$$.getMonth() + 1, $fexpr__18732$$ = $cljs$core$truth_$$($pad$jscomp$3$$) ? $rogule$util$zero_pad$$ : $cljs$core$identity$$;
+    return $fexpr__18732$$.$cljs$core$IFn$_invoke$arity$1$ ? $fexpr__18732$$.$cljs$core$IFn$_invoke$arity$1$($G__18733$$) : $fexpr__18732$$.call(null, $G__18733$$);
   }()), "-", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$(function() {
-    var $G__12472$$ = $today$$.getDate(), $fexpr__12471$$ = $cljs$core$truth_$$($pad$jscomp$3$$) ? $rogule$util$zero_pad$$ : $cljs$core$identity$$;
-    return $fexpr__12471$$.$cljs$core$IFn$_invoke$arity$1$ ? $fexpr__12471$$.$cljs$core$IFn$_invoke$arity$1$($G__12472$$) : $fexpr__12471$$.call(null, $G__12472$$);
+    var $G__18735$$ = $today$$.getDate(), $fexpr__18734$$ = $cljs$core$truth_$$($pad$jscomp$3$$) ? $rogule$util$zero_pad$$ : $cljs$core$identity$$;
+    return $fexpr__18734$$.$cljs$core$IFn$_invoke$arity$1$ ? $fexpr__18734$$.$cljs$core$IFn$_invoke$arity$1$($G__18735$$) : $fexpr__18734$$.call(null, $G__18735$$);
   }())].join("");
 }
 ;var $shadow$js$shim$module$0express_slow_down$$ = require("express-slow-down");
@@ -16535,8 +16535,8 @@ var $shadow$js$shim$module$0express_basic_auth$$ = require("express-basic-auth")
 var $args$jscomp$inline_1667$$ = $cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$(["server.cljs"]);
 $cljs$core$apply$cljs$0core$0IFn$0_invoke$0arity$02$$(console.log, $cljs$core$clj__GT_js$$($args$jscomp$inline_1667$$));
 $cljs$core$first$$($args$jscomp$inline_1667$$);
-var $admin_email_13332$$ = $sitefox$util$env$$("ADMIN_EMAIL");
-$cljs$core$truth_$$($admin_email_13332$$) && $sitefox$tracebacks$install_traceback_handler$$($admin_email_13332$$);
+var $admin_email_18836$$ = $sitefox$util$env$$("ADMIN_EMAIL");
+$cljs$core$truth_$$($admin_email_18836$$) && $sitefox$tracebacks$install_traceback_handler$$($admin_email_18836$$);
 var $rogule$server$admin_password$$ = function($var_args$jscomp$355$$) {
   for (var $args__5732__auto__$jscomp$35_msg$jscomp$inline_1671$$ = [], $k$jscomp$inline_1669_len__5726__auto___8059$$ = arguments.length, $i__5727__auto___8060_or__5002__auto__$jscomp$inline_1672$$ = 0;;) {
     if ($i__5727__auto___8060_or__5002__auto__$jscomp$inline_1672$$ < $k$jscomp$inline_1669_len__5726__auto___8059$$) {
@@ -16555,27 +16555,27 @@ function $rogule$server$to_minutes$$($ms$jscomp$5$$) {
   return [$cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($ms$jscomp$5$$ / 60000 | 0), ":", $rogule$util$zero_pad$$($seconds$jscomp$3$$)].join("");
 }
 function $rogule$server$compute_win_percent$$($outcomes_plays$$) {
-  $outcomes_plays$$ = $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__13236_SHARP_$$) {
-    if (null != $p1__13236_SHARP_$$ && "outcome" in $p1__13236_SHARP_$$) {
-      return $p1__13236_SHARP_$$.outcome;
+  $outcomes_plays$$ = $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__18765_SHARP_$$) {
+    if (null != $p1__18765_SHARP_$$ && "outcome" in $p1__18765_SHARP_$$) {
+      return $p1__18765_SHARP_$$.outcome;
     }
-  }, $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__13235_SHARP_$$) {
-    return $cljs$core$last$$($p1__13235_SHARP_$$);
+  }, $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__18764_SHARP_$$) {
+    return $cljs$core$last$$($p1__18764_SHARP_$$);
   }, $outcomes_plays$$));
-  return $cljs$core$count$$($cljs$core$filter$cljs$0core$0IFn$0_invoke$0arity$02$$(function($p1__13237_SHARP_$$) {
-    return $cljs$core$_EQ_$$.$cljs$core$IFn$_invoke$arity$2$($p1__13237_SHARP_$$, "ascended");
+  return $cljs$core$count$$($cljs$core$filter$cljs$0core$0IFn$0_invoke$0arity$02$$(function($p1__18766_SHARP_$$) {
+    return $cljs$core$_EQ_$$.$cljs$core$IFn$_invoke$arity$2$($p1__18766_SHARP_$$, "ascended");
   }, $outcomes_plays$$)) / $cljs$core$count$$($outcomes_plays$$) * 100 | 0;
 }
 function $rogule$server$get_duration$$($play$$) {
   return function() {
-    var $obj13244$$ = $cljs$core$last$$($play$$);
-    if (null != $obj13244$$ && "timestamp" in $obj13244$$) {
-      return $obj13244$$.timestamp;
+    var $obj18770$$ = $cljs$core$last$$($play$$);
+    if (null != $obj18770$$ && "timestamp" in $obj18770$$) {
+      return $obj18770$$.timestamp;
     }
   }() - function() {
-    var $obj13248$$ = $cljs$core$first$$($play$$);
-    if (null != $obj13248$$ && "timestamp" in $obj13248$$) {
-      return $obj13248$$.timestamp;
+    var $obj18773$$ = $cljs$core$first$$($play$$);
+    if (null != $obj18773$$ && "timestamp" in $obj18773$$) {
+      return $obj18773$$.timestamp;
     }
   }();
 }
@@ -16598,37 +16598,37 @@ function $rogule$server$compute_median_play_time$$($JSCompiler_inline_result$jsc
   return $JSCompiler_inline_result$jscomp$263_plays$jscomp$1_size$jscomp$inline_1183$$;
 }
 function $rogule$server$component_admin$$($_req$jscomp$2$$, $past_seven_dates$$, $data$jscomp$106$$) {
-  return new $cljs$core$PersistentVector$$(null, 5, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$537$div$$, new $cljs$core$PersistentVector$$(null, 2, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$566$link$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$567$rel$$, "stylesheet", $cljs$cst$533$href$$, "https://cdn.jsdelivr.net/gh/SebastianAigner/twemoji-amazing@1.0.0/twemoji-amazing.css"], null)], null), new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, 
+  return new $cljs$core$PersistentVector$$(null, 5, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$537$div$$, new $cljs$core$PersistentVector$$(null, 2, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$564$link$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$565$rel$$, "stylesheet", $cljs$cst$533$href$$, "https://cdn.jsdelivr.net/gh/SebastianAigner/twemoji-amazing@1.0.0/twemoji-amazing.css"], null)], null), new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, 
   [$cljs$cst$532$a$$, new $cljs$core$PersistentArrayMap$$(null, 1, [$cljs$cst$533$href$$, "/analytics/"], null), "Analytics"], null), new $cljs$core$PersistentVector$$(null, 2, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$538$h1$$, "Rogule Admin"], null), function() {
-    return function $rogule$server$component_admin_$_iter__13272$$($s__13273$$) {
+    return function $rogule$server$component_admin_$_iter__18797$$($s__18798$$) {
       return new $cljs$core$LazySeq$$(null, function() {
         for (;;) {
-          var $s__13273__$2_temp__5804__auto__$jscomp$71$$ = $cljs$core$seq$$($s__13273$$);
-          if ($s__13273__$2_temp__5804__auto__$jscomp$71$$) {
-            if ($cljs$core$chunked_seq_QMARK_$$($s__13273__$2_temp__5804__auto__$jscomp$71$$)) {
-              var $c__5478__auto__$jscomp$8$$ = $cljs$core$_chunked_first$$($s__13273__$2_temp__5804__auto__$jscomp$71$$), $size__5479__auto__$jscomp$8$$ = $cljs$core$count$$($c__5478__auto__$jscomp$8$$), $b__13275$$ = $cljs$core$chunk_buffer$$($size__5479__auto__$jscomp$8$$);
+          var $s__18798__$2_temp__5804__auto__$jscomp$71$$ = $cljs$core$seq$$($s__18798$$);
+          if ($s__18798__$2_temp__5804__auto__$jscomp$71$$) {
+            if ($cljs$core$chunked_seq_QMARK_$$($s__18798__$2_temp__5804__auto__$jscomp$71$$)) {
+              var $c__5478__auto__$jscomp$8$$ = $cljs$core$_chunked_first$$($s__18798__$2_temp__5804__auto__$jscomp$71$$), $size__5479__auto__$jscomp$8$$ = $cljs$core$count$$($c__5478__auto__$jscomp$8$$), $b__18800$$ = $cljs$core$chunk_buffer$$($size__5479__auto__$jscomp$8$$);
               return function() {
-                for (var $i__13274$$ = 0;;) {
-                  if ($i__13274$$ < $size__5479__auto__$jscomp$8$$) {
-                    var $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$ = $cljs$core$_nth$$($c__5478__auto__$jscomp$8$$, $i__13274$$), $JSCompiler_temp_const$jscomp$264$$ = $b__13275$$, $date$jscomp$inline_1186$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($past_seven_dates$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$), $link_date$jscomp$inline_1187$$ = $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$inline_1186$$])), 
+                for (var $i__18799$$ = 0;;) {
+                  if ($i__18799$$ < $size__5479__auto__$jscomp$8$$) {
+                    var $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$ = $cljs$core$_nth$$($c__5478__auto__$jscomp$8$$, $i__18799$$), $JSCompiler_temp_const$jscomp$264$$ = $b__18800$$, $date$jscomp$inline_1186$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($past_seven_dates$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$), $link_date$jscomp$inline_1187$$ = $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$inline_1186$$])), 
                     $plays$jscomp$inline_1188$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($data$jscomp$106$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$);
                     $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$ = new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$537$div$$, new $cljs$core$PersistentArrayMap$$(null, 1, [$cljs$cst$437$key$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$], null), new $cljs$core$PersistentVector$$(null, 8, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$540$h3$$, new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, 
-                    [$cljs$cst$532$a$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$533$href$$, ["/game.html?", $link_date$jscomp$inline_1187$$].join(""), $cljs$cst$568$target$$, "_BLANK"], null), $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$inline_1186$$, !0]))], null), " (", $cljs$core$count$$($plays$jscomp$inline_1188$$), ") ", $rogule$server$compute_win_percent$$($plays$jscomp$inline_1188$$), 
+                    [$cljs$cst$532$a$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$533$href$$, ["/game.html?", $link_date$jscomp$inline_1187$$].join(""), $cljs$cst$566$target$$, "_BLANK"], null), $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$inline_1186$$, !0]))], null), " (", $cljs$core$count$$($plays$jscomp$inline_1188$$), ") ", $rogule$server$compute_win_percent$$($plays$jscomp$inline_1188$$), 
                     "% wins ~", $rogule$server$to_minutes$$($rogule$server$compute_median_play_time$$($plays$jscomp$inline_1188$$))], null)], null);
                     $JSCompiler_temp_const$jscomp$264$$.add($JSCompiler_inline_result$jscomp$265_d$jscomp$139$$);
-                    $i__13274$$ += 1;
+                    $i__18799$$ += 1;
                   } else {
                     return !0;
                   }
                 }
-              }() ? $cljs$core$chunk_cons$$($b__13275$$.$chunk$(), $rogule$server$component_admin_$_iter__13272$$($cljs$core$_chunked_rest$$($s__13273__$2_temp__5804__auto__$jscomp$71$$))) : $cljs$core$chunk_cons$$($b__13275$$.$chunk$(), null);
+              }() ? $cljs$core$chunk_cons$$($b__18800$$.$chunk$(), $rogule$server$component_admin_$_iter__18797$$($cljs$core$_chunked_rest$$($s__18798__$2_temp__5804__auto__$jscomp$71$$))) : $cljs$core$chunk_cons$$($b__18800$$.$chunk$(), null);
             }
-            var $d$jscomp$138$$ = $cljs$core$first$$($s__13273__$2_temp__5804__auto__$jscomp$71$$);
+            var $d$jscomp$138$$ = $cljs$core$first$$($s__18798__$2_temp__5804__auto__$jscomp$71$$);
             return $cljs$core$cons$$(function() {
               var $date$jscomp$6$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($past_seven_dates$$, $d$jscomp$138$$), $link_date$jscomp$1$$ = $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$6$$])), $plays$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($data$jscomp$106$$, $d$jscomp$138$$);
               return new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$537$div$$, new $cljs$core$PersistentArrayMap$$(null, 1, [$cljs$cst$437$key$$, $d$jscomp$138$$], null), new $cljs$core$PersistentVector$$(null, 8, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$540$h3$$, new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$532$a$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$533$href$$, 
-              ["/game.html?", $link_date$jscomp$1$$].join(""), $cljs$cst$568$target$$, "_BLANK"], null), $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$6$$, !0]))], null), " (", $cljs$core$count$$($plays$jscomp$3$$), ") ", $rogule$server$compute_win_percent$$($plays$jscomp$3$$), "% wins ~", $rogule$server$to_minutes$$($rogule$server$compute_median_play_time$$($plays$jscomp$3$$))], null)], null);
-            }(), $rogule$server$component_admin_$_iter__13272$$($cljs$core$rest$$($s__13273__$2_temp__5804__auto__$jscomp$71$$)));
+              ["/game.html?", $link_date$jscomp$1$$].join(""), $cljs$cst$566$target$$, "_BLANK"], null), $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$6$$, !0]))], null), " (", $cljs$core$count$$($plays$jscomp$3$$), ") ", $rogule$server$compute_win_percent$$($plays$jscomp$3$$), "% wins ~", $rogule$server$to_minutes$$($rogule$server$compute_median_play_time$$($plays$jscomp$3$$))], null)], null);
+            }(), $rogule$server$component_admin_$_iter__18797$$($cljs$core$rest$$($s__18798__$2_temp__5804__auto__$jscomp$71$$)));
           }
           return null;
         }
@@ -16636,25 +16636,25 @@ function $rogule$server$component_admin$$($_req$jscomp$2$$, $past_seven_dates$$,
     }($cljs$core$range$cljs$0core$0IFn$0_invoke$0arity$03$$(0, $cljs$core$count$$($past_seven_dates$$)));
   }()], null);
 }
-function $rogule$server$admin_page$$($req$jscomp$41$$, $res$jscomp$47$$) {
+function $rogule$server$admin_page$$($req$jscomp$41$$, $res$jscomp$46$$) {
   return $promesa$protocols$_bind$$(null, function() {
     return $promesa$protocols$_bind$$((new Date()).getTime(), function($now$jscomp$2$$) {
       return $promesa$protocols$_bind$$(864E5, function($day$jscomp$1$$) {
-        return $promesa$protocols$_bind$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__13283_SHARP_$$) {
-          return new Date($now$jscomp$2$$ - $day$jscomp$1$$ * $p1__13283_SHARP_$$);
+        return $promesa$protocols$_bind$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__18801_SHARP_$$) {
+          return new Date($now$jscomp$2$$ - $day$jscomp$1$$ * $p1__18801_SHARP_$$);
         }, $cljs$core$range$cljs$0core$0IFn$0_invoke$0arity$03$$(0, 7)), function($past_seven_dates$jscomp$1$$) {
-          return $promesa$protocols$_bind$$($promesa$protocols$_map$$($promesa$impl$_STAR_default_promise_STAR_$$.all($cljs$core$into_array$cljs$0core$0IFn$0_invoke$0arity$02$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__13284_SHARP_$$) {
-            return $sitefox$db$ls$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([[$rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$p1__13284_SHARP_$$, !0])), ":"].join("")]));
+          return $promesa$protocols$_bind$$($promesa$protocols$_map$$($promesa$impl$_STAR_default_promise_STAR_$$.all($cljs$core$into_array$cljs$0core$0IFn$0_invoke$0arity$02$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__18802_SHARP_$$) {
+            return $sitefox$db$ls$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([[$rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$p1__18802_SHARP_$$, !0])), ":"].join("")]));
           }, $past_seven_dates$jscomp$1$$))), $cljs$core$vec$$), function($data$jscomp$107$$) {
             return $promesa$protocols$_bind$$($sitefox$html$render_into$$(new $cljs$core$PersistentVector$$(null, 4, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$rogule$server$component_admin$$, $req$jscomp$41$$, $past_seven_dates$jscomp$1$$, $data$jscomp$107$$], null)), function($html$jscomp$17$$) {
               return $promesa$protocols$_bind$$($sitefox$html$parse$$($html$jscomp$17$$), function($parsed$jscomp$1$$) {
                 return $promesa$protocols$_bind$$($parsed$jscomp$1$$.querySelector("body"), function($body$jscomp$4$$) {
                   return $promesa$protocols$_bind$$(null, function() {
                     return $promesa$protocols$_bind$$(function() {
-                      var $parent__7565__auto__$$ = $body$jscomp$4$$.classList;
-                      return $parent__7565__auto__$$.add.call($parent__7565__auto__$$, "admin");
+                      var $parent__10522__auto__$$ = $body$jscomp$4$$.classList;
+                      return $parent__10522__auto__$$.add.call($parent__10522__auto__$$, "admin");
                     }(), function() {
-                      return $promesa$protocols$_promise$$($res$jscomp$47$$.send($parsed$jscomp$1$$.toString()));
+                      return $promesa$protocols$_promise$$($res$jscomp$46$$.send($parsed$jscomp$1$$.toString()));
                     });
                   });
                 });
@@ -16666,7 +16666,7 @@ function $rogule$server$admin_page$$($req$jscomp$41$$, $res$jscomp$47$$) {
     });
   });
 }
-function $rogule$server$store_game_record$$($req$jscomp$42$$, $res$jscomp$48$$) {
+function $rogule$server$store_game_record$$($req$jscomp$42$$, $res$jscomp$47$$) {
   return $promesa$protocols$_bind$$(null, function() {
     return $promesa$protocols$_bind$$(new $shadow$js$shim$module$0keyv$$($sitefox$db$database_url$$, $cljs$core$clj__GT_js$$(new $cljs$core$PersistentArrayMap$$(null, 1, [$cljs$cst$418$namespace$$, "game-records"], null))), function($game_records$$) {
       var $JSCompiler_inline_result$jscomp$1237$$ = null != $req$jscomp$42$$ && "body" in $req$jscomp$42$$ ? $req$jscomp$42$$.body : void 0;
@@ -16674,20 +16674,20 @@ function $rogule$server$store_game_record$$($req$jscomp$42$$, $res$jscomp$48$$) 
         return $promesa$protocols$_bind$$($cljs$core$first$$((new Date()).toISOString().split("T")), function($date$jscomp$7$$) {
           return $promesa$protocols$_bind$$($cljs$core$first$$($cljs$core$random_uuid$$().toString().split("-")), function($id$jscomp$15$$) {
             return $promesa$protocols$_bind$$(function() {
-              var $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
-              $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$ = null != $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$ && "x-forwarded-for" in $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$ ? $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$["x-forwarded-for"] : void 0;
-              if ($cljs$core$truth_$$($obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$)) {
-                return $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$;
+              var $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
+              $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$ = null != $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$ && "x-forwarded-for" in $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$ ? $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$["x-forwarded-for"] : void 0;
+              if ($cljs$core$truth_$$($obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$)) {
+                return $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$;
               }
-              $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$ = null != $req$jscomp$42$$ && "connection" in $req$jscomp$42$$ ? $req$jscomp$42$$.connection : void 0;
-              if (null != $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$ && "remoteAddress" in $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$) {
-                return $obj13300$jscomp$inline_1717_obj13306_or__5002__auto__$jscomp$139$$.remoteAddress;
+              $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$ = null != $req$jscomp$42$$ && "connection" in $req$jscomp$42$$ ? $req$jscomp$42$$.connection : void 0;
+              if (null != $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$ && "remoteAddress" in $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$) {
+                return $obj18808$jscomp$inline_1717_obj18814_or__5002__auto__$jscomp$139$$.remoteAddress;
               }
             }(), function($ip$$) {
               return $promesa$protocols$_bind$$(function() {
-                var $obj13312$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
-                if (null != $obj13312$$ && "user-agent" in $obj13312$$) {
-                  return $obj13312$$["user-agent"];
+                var $obj18820$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
+                if (null != $obj18820$$ && "user-agent" in $obj18820$$) {
+                  return $obj18820$$["user-agent"];
                 }
               }(), function($ua$$) {
                 return $promesa$protocols$_bind$$([$cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($date$jscomp$7$$), ":", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($id$jscomp$15$$)].join(""), function($k$jscomp$286$$) {
@@ -16695,17 +16695,17 @@ function $rogule$server$store_game_record$$($req$jscomp$42$$, $res$jscomp$48$$) 
                     return $promesa$protocols$_bind$$(100000, function($size_limit$$) {
                       return $promesa$protocols$_bind$$($sitefox$auth$make_hmac_token$$(["rogule-client-id:", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($ip$$), ":", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($ua$$)].join(""), 8), function($client_id$$) {
                         return $promesa$protocols$_bind$$(function() {
-                          var $obj13316__$1$$ = null != $game_data$$ ? $game_data$$ : {};
-                          var $JSCompiler_inline_result$jscomp$266_child13317$jscomp$inline_1190_new_child__7473__auto__$jscomp$inline_1191$$ = $obj13316__$1$$[0];
-                          null == $JSCompiler_inline_result$jscomp$266_child13317$jscomp$inline_1190_new_child__7473__auto__$jscomp$inline_1191$$ && ($JSCompiler_inline_result$jscomp$266_child13317$jscomp$inline_1190_new_child__7473__auto__$jscomp$inline_1191$$ = {}, $obj13316__$1$$[0] = $JSCompiler_inline_result$jscomp$266_child13317$jscomp$inline_1190_new_child__7473__auto__$jscomp$inline_1191$$);
-                          $JSCompiler_inline_result$jscomp$266_child13317$jscomp$inline_1190_new_child__7473__auto__$jscomp$inline_1191$$["client-id"] = $client_id$$;
-                          return $obj13316__$1$$;
+                          var $obj18824__$1$$ = null != $game_data$$ ? $game_data$$ : {};
+                          var $JSCompiler_inline_result$jscomp$266_child18825$jscomp$inline_1190_new_child__10448__auto__$jscomp$inline_1191$$ = $obj18824__$1$$[0];
+                          null == $JSCompiler_inline_result$jscomp$266_child18825$jscomp$inline_1190_new_child__10448__auto__$jscomp$inline_1191$$ && ($JSCompiler_inline_result$jscomp$266_child18825$jscomp$inline_1190_new_child__10448__auto__$jscomp$inline_1191$$ = {}, $obj18824__$1$$[0] = $JSCompiler_inline_result$jscomp$266_child18825$jscomp$inline_1190_new_child__10448__auto__$jscomp$inline_1191$$);
+                          $JSCompiler_inline_result$jscomp$266_child18825$jscomp$inline_1190_new_child__10448__auto__$jscomp$inline_1191$$["client-id"] = $client_id$$;
+                          return $obj18824__$1$$;
                         }(), function($game_data__$1$$) {
                           return $promesa$protocols$_bind$$(null, function() {
                             if ($size$jscomp$37$$ > $size_limit$$) {
-                              var $JSCompiler_temp$jscomp$267$$ = $res$jscomp$48$$.status(403).send("Forbidden");
+                              var $JSCompiler_temp$jscomp$267$$ = $res$jscomp$47$$.status(403).send("Forbidden");
                             } else {
-                              $game_records$$.set($k$jscomp$286$$, $game_data__$1$$), $JSCompiler_temp$jscomp$267$$ = $res$jscomp$48$$.json($game_data__$1$$);
+                              $game_records$$.set($k$jscomp$286$$, $game_data__$1$$), $JSCompiler_temp$jscomp$267$$ = $res$jscomp$47$$.json($game_data__$1$$);
                             }
                             return $promesa$protocols$_promise$$($JSCompiler_temp$jscomp$267$$);
                           });
@@ -16734,8 +16734,8 @@ function $rogule$server$setup_routes$$($app$jscomp$11$$) {
 }
 ;$cljs$core$apply$cljs$0core$0IFn$0_invoke$0arity$02$$(function() {
   return $promesa$protocols$_bind$$(null, function() {
-    return $promesa$protocols$_bind$$($sitefox$web$start$$(), function($p__13328$$) {
-      var $app$jscomp$12$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__13328$$, 0, null), $host$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__13328$$, 1, null), $port$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__13328$$, 2, null);
+    return $promesa$protocols$_bind$$($sitefox$web$start$$(), function($p__18832$$) {
+      var $app$jscomp$12$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__18832$$, 0, null), $host$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__18832$$, 1, null), $port$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__18832$$, 2, null);
       return $promesa$protocols$_bind$$((new $shadow$js$shim$module$0keyv$$($sitefox$db$database_url$$)).opts.store, function($c$jscomp$211$$) {
         return $promesa$protocols$_bind$$($c$jscomp$211$$.query("PRAGMA journal_mode\x3dWAL;"), function($wal_mode$$) {
           return $promesa$protocols$_bind$$(null, function() {
