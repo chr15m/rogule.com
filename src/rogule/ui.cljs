@@ -281,17 +281,21 @@
            :target "_BLANK"}
           [icon (rc/inline "icons/outline/brand-mastodon.svg")]]
          [:a
-          {:href (str "https://x.com/search?q=rogule%20"
-                      year
-                      "&src=spelling_expansion_revert_click&f=live")
+          {:href (str "https://bsky.app/search?q=%23rogule")
            :target "_BLANK"}
-          [icon (rc/inline "icons/outline/brand-x.svg")]]
+          [icon (rc/inline "icons/outline/brand-bluesky.svg")]]
          [:a
           {:href (str "https://www.threads.net/search?q=%23rogule+"
                       year
                       "&serp_type=default")
            :target "_BLANK"}
-          [icon (rc/inline "icons/outline/brand-threads.svg")]]])]
+          [icon (rc/inline "icons/outline/brand-threads.svg")]]
+         [:a
+          {:href (str "https://x.com/search?q=rogule%20"
+                      year
+                      "&src=spelling_expansion_revert_click&f=live")
+           :target "_BLANK"}
+          [icon (rc/inline "icons/outline/brand-x.svg")]]])]
      [component-game-ad]
      [:p.feedback
       [:a {:href "mailto:chris@rogule.com"}
