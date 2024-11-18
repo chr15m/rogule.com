@@ -10,7 +10,7 @@
     [rogule.map :refer [distance-sq entities-by-pos-mem count-entities]]
     [rogule.generator :refer [make-level]]
     [rogule.engine :refer [install-arrow-key-handler trigger-key remove-entity]]
-    [rogule.util :refer [time-until tomorrow date-token]]
+    [rogule.util :refer [time-until tomorrow date-token build-id]]
     ["seedrandom" :as seedrandom])
   (:require-macros
     [rogule.loader :refer [load-sprite]]))
@@ -103,7 +103,8 @@
      [:p "Collect all the " (tile-mem (load-sprite :mushroom)) " items."]
      [:p "Shields " (tile-mem (load-sprite :shield)) " give you protection."]
      [:p "Weapons " (tile-mem (load-sprite :dagger)) " add to your hits."]
-     [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend and win the game."]]
+     [:p "Get to the shrine " (tile-mem (load-sprite :shinto-shrine) "shrine") " to ascend and win the game."]
+     [:p.build "Build: " build-id]]
     [:button#help.key {:on-click #(trigger-key 191)} "?"]))
 
 (defn component-messages [message]
@@ -294,7 +295,8 @@
      [component-game-ad]
      [:p.feedback
       [:a {:href "mailto:chris@rogule.com"}
-       (emoj (load-sprite :incoming-envelope)) " Send feedback"]]]))
+       (emoj (load-sprite :incoming-envelope)) " Send feedback"]]
+     [:p.build "Build: " build-id]]))
 
 (defn component-main [state]
   (if (:outcome @state)

@@ -5,6 +5,18 @@
 
 (log "util loaded")
 
+(def build-id
+  (or
+    (some->
+      (aget js/globalThis "document")
+      (aget "currentScript")
+      (aget "src")
+      (.split "?")
+      second)
+    "dev"))
+
+(js/console.log "build-id" build-id)
+
 (def day-ms (* 1000 60 60 24))
 
 (defn zero-pad [n]

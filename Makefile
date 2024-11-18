@@ -1,6 +1,7 @@
 STATIC=public/*.html public/css public/*.png # public/images public/assets
 BRANCH=$(shell git branch | grep '^*' | colrm 1 2)
 ZIPNAME=rogule
+GITHASH = $(shell git rev-parse HEAD | cut -b -8)
 
 all: build build/server.js
 
@@ -18,6 +19,7 @@ build/server.js: src/**/*.cljs shadow-cljs.edn node_modules
 build: src/**/* $(STATIC) node_modules
 	mkdir -p build/public
 	cp -LR --preserve=all $(STATIC) build/public
+	sed -i 's/main\.js\?[^"]*"/main.js?$(GITHASH)"/g' build/public/game.html
 	npx shadow-cljs release app
 	touch build
 

@@ -407,6 +407,11 @@ span.xp {
   text-decoration: none;
 }
 
+.build {
+  font-size: 0.5em;
+  color: grey;
+}
+
 .donations > * {
   display: block;
   margin: 0.25em;
