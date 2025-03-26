@@ -377,12 +377,12 @@
                                (let [player-updated-state
                                      (-> *state
                                          (reset-combat-list)
-                                         (update-in [:moves] inc)
                                          (move-to :player new-pos))
                                      player-moved (get-in player-updated-state [:entities :player :moved])
                                      game-outcome (get player-updated-state :outcome)]
                                  (if (and (not game-outcome) player-moved)
                                    (-> player-updated-state
+                                       (update-in [:moves] inc)
                                        (restore-player-health)
                                        (update-monsters)
                                        (expire-messages))
