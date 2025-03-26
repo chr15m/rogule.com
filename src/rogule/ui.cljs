@@ -54,7 +54,8 @@
        ;(tile-mem (load-sprite :brown-square) "corridor")
        :else nil))
    (for [layer [:floor :between :occupy :above]
-         entity (get entities [x y layer])]
+         ; sort :dead entities (corpses) below items
+         entity (sort-by (fn [e] (if (:dead e) 0 1)) (get entities [x y layer]))]
      (let [[animation disposal frame] (:animation entity)
            animation-callback (when (= disposal :destroy) (fn [] (swap! state remove-entity (:id entity))))]
        (when entity
