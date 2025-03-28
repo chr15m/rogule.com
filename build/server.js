@@ -16538,8 +16538,8 @@ var $shadow$js$shim$module$0express_basic_auth$$ = require("express-basic-auth")
 var $args$jscomp$inline_1678$$ = $cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$(["server.cljs"]);
 $cljs$core$apply$cljs$0core$0IFn$0_invoke$0arity$02$$(console.log, $cljs$core$clj__GT_js$$($args$jscomp$inline_1678$$));
 $cljs$core$first$$($args$jscomp$inline_1678$$);
-var $admin_email_24013$$ = $sitefox$util$env$$("ADMIN_EMAIL");
-$cljs$core$truth_$$($admin_email_24013$$) && $sitefox$tracebacks$install_traceback_handler$$($admin_email_24013$$);
+var $admin_email_7274$$ = $sitefox$util$env$$("ADMIN_EMAIL");
+$cljs$core$truth_$$($admin_email_7274$$) && $sitefox$tracebacks$install_traceback_handler$$($admin_email_7274$$);
 var $rogule$server$admin_password$$ = function($var_args$jscomp$355$$) {
   for (var $args__5732__auto__$jscomp$35_msg$jscomp$inline_1682$$ = [], $k$jscomp$inline_1680_len__5726__auto___8059$$ = arguments.length, $i__5727__auto___8060_or__5002__auto__$jscomp$inline_1683$$ = 0;;) {
     if ($i__5727__auto___8060_or__5002__auto__$jscomp$inline_1683$$ < $k$jscomp$inline_1680_len__5726__auto___8059$$) {
@@ -16558,27 +16558,27 @@ function $rogule$server$to_minutes$$($ms$jscomp$5$$) {
   return [$cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($ms$jscomp$5$$ / 60000 | 0), ":", $rogule$util$zero_pad$$($seconds$jscomp$3$$)].join("");
 }
 function $rogule$server$compute_win_percent$$($outcomes_plays$$) {
-  $outcomes_plays$$ = $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__23942_SHARP_$$) {
-    if (null != $p1__23942_SHARP_$$ && "outcome" in $p1__23942_SHARP_$$) {
-      return $p1__23942_SHARP_$$.outcome;
+  $outcomes_plays$$ = $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__7203_SHARP_$$) {
+    if (null != $p1__7203_SHARP_$$ && "outcome" in $p1__7203_SHARP_$$) {
+      return $p1__7203_SHARP_$$.outcome;
     }
-  }, $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__23941_SHARP_$$) {
-    return $cljs$core$last$$($p1__23941_SHARP_$$);
+  }, $cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__7202_SHARP_$jscomp$1$$) {
+    return $cljs$core$last$$($p1__7202_SHARP_$jscomp$1$$);
   }, $outcomes_plays$$));
-  return $cljs$core$count$$($cljs$core$filter$cljs$0core$0IFn$0_invoke$0arity$02$$(function($p1__23943_SHARP_$$) {
-    return $cljs$core$_EQ_$$.$cljs$core$IFn$_invoke$arity$2$($p1__23943_SHARP_$$, "ascended");
+  return $cljs$core$count$$($cljs$core$filter$cljs$0core$0IFn$0_invoke$0arity$02$$(function($p1__7204_SHARP_$$) {
+    return $cljs$core$_EQ_$$.$cljs$core$IFn$_invoke$arity$2$($p1__7204_SHARP_$$, "ascended");
   }, $outcomes_plays$$)) / $cljs$core$count$$($outcomes_plays$$) * 100 | 0;
 }
 function $rogule$server$get_duration$$($play$$) {
   return function() {
-    var $obj23947$$ = $cljs$core$last$$($play$$);
-    if (null != $obj23947$$ && "timestamp" in $obj23947$$) {
-      return $obj23947$$.timestamp;
+    var $obj7208$$ = $cljs$core$last$$($play$$);
+    if (null != $obj7208$$ && "timestamp" in $obj7208$$) {
+      return $obj7208$$.timestamp;
     }
   }() - function() {
-    var $obj23950$$ = $cljs$core$first$$($play$$);
-    if (null != $obj23950$$ && "timestamp" in $obj23950$$) {
-      return $obj23950$$.timestamp;
+    var $obj7211$$ = $cljs$core$first$$($play$$);
+    if (null != $obj7211$$ && "timestamp" in $obj7211$$) {
+      return $obj7211$$.timestamp;
     }
   }();
 }
@@ -16603,35 +16603,35 @@ function $rogule$server$compute_median_play_time$$($JSCompiler_inline_result$jsc
 function $rogule$server$component_admin$$($_req$jscomp$2$$, $past_seven_dates$$, $data$jscomp$106$$) {
   return new $cljs$core$PersistentVector$$(null, 5, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$537$div$$, new $cljs$core$PersistentVector$$(null, 2, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$564$link$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$565$rel$$, "stylesheet", $cljs$cst$533$href$$, "https://cdn.jsdelivr.net/gh/SebastianAigner/twemoji-amazing@1.0.0/twemoji-amazing.css"], null)], null), new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, 
   [$cljs$cst$532$a$$, new $cljs$core$PersistentArrayMap$$(null, 1, [$cljs$cst$533$href$$, "/analytics/"], null), "Analytics"], null), new $cljs$core$PersistentVector$$(null, 2, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$538$h1$$, "Rogule Admin"], null), function() {
-    return function $rogule$server$component_admin_$_iter__23974$$($s__23975$$) {
+    return function $rogule$server$component_admin_$_iter__7235$$($s__7236$$) {
       return new $cljs$core$LazySeq$$(null, function() {
         for (;;) {
-          var $s__23975__$2_temp__5804__auto__$jscomp$71$$ = $cljs$core$seq$$($s__23975$$);
-          if ($s__23975__$2_temp__5804__auto__$jscomp$71$$) {
-            if ($cljs$core$chunked_seq_QMARK_$$($s__23975__$2_temp__5804__auto__$jscomp$71$$)) {
-              var $c__5478__auto__$jscomp$8$$ = $cljs$core$_chunked_first$$($s__23975__$2_temp__5804__auto__$jscomp$71$$), $size__5479__auto__$jscomp$8$$ = $cljs$core$count$$($c__5478__auto__$jscomp$8$$), $b__23977$$ = $cljs$core$chunk_buffer$$($size__5479__auto__$jscomp$8$$);
+          var $s__7236__$2_temp__5804__auto__$jscomp$71$$ = $cljs$core$seq$$($s__7236$$);
+          if ($s__7236__$2_temp__5804__auto__$jscomp$71$$) {
+            if ($cljs$core$chunked_seq_QMARK_$$($s__7236__$2_temp__5804__auto__$jscomp$71$$)) {
+              var $c__5478__auto__$jscomp$8$$ = $cljs$core$_chunked_first$$($s__7236__$2_temp__5804__auto__$jscomp$71$$), $size__5479__auto__$jscomp$8$$ = $cljs$core$count$$($c__5478__auto__$jscomp$8$$), $b__7238$$ = $cljs$core$chunk_buffer$$($size__5479__auto__$jscomp$8$$);
               return function() {
-                for (var $i__23976$$ = 0;;) {
-                  if ($i__23976$$ < $size__5479__auto__$jscomp$8$$) {
-                    var $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$ = $cljs$core$_nth$$($c__5478__auto__$jscomp$8$$, $i__23976$$), $JSCompiler_temp_const$jscomp$264$$ = $b__23977$$, $date$jscomp$inline_1191$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($past_seven_dates$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$), $link_date$jscomp$inline_1192$$ = $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$inline_1191$$])), 
+                for (var $i__7237$$ = 0;;) {
+                  if ($i__7237$$ < $size__5479__auto__$jscomp$8$$) {
+                    var $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$ = $cljs$core$_nth$$($c__5478__auto__$jscomp$8$$, $i__7237$$), $JSCompiler_temp_const$jscomp$264$$ = $b__7238$$, $date$jscomp$inline_1191$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($past_seven_dates$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$), $link_date$jscomp$inline_1192$$ = $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$inline_1191$$])), 
                     $plays$jscomp$inline_1193$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($data$jscomp$106$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$);
                     $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$ = new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$537$div$$, new $cljs$core$PersistentArrayMap$$(null, 1, [$cljs$cst$437$key$$, $JSCompiler_inline_result$jscomp$265_d$jscomp$139$$], null), new $cljs$core$PersistentVector$$(null, 8, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$540$h3$$, new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, 
                     [$cljs$cst$532$a$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$533$href$$, ["/game.html?", $link_date$jscomp$inline_1192$$].join(""), $cljs$cst$566$target$$, "_BLANK"], null), $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$inline_1191$$, !0]))], null), " (", $cljs$core$count$$($plays$jscomp$inline_1193$$), ") ", $rogule$server$compute_win_percent$$($plays$jscomp$inline_1193$$), 
                     "% wins ~", $rogule$server$to_minutes$$($rogule$server$compute_median_play_time$$($plays$jscomp$inline_1193$$))], null)], null);
                     $JSCompiler_temp_const$jscomp$264$$.add($JSCompiler_inline_result$jscomp$265_d$jscomp$139$$);
-                    $i__23976$$ += 1;
+                    $i__7237$$ += 1;
                   } else {
                     return !0;
                   }
                 }
-              }() ? $cljs$core$chunk_cons$$($b__23977$$.$chunk$(), $rogule$server$component_admin_$_iter__23974$$($cljs$core$_chunked_rest$$($s__23975__$2_temp__5804__auto__$jscomp$71$$))) : $cljs$core$chunk_cons$$($b__23977$$.$chunk$(), null);
+              }() ? $cljs$core$chunk_cons$$($b__7238$$.$chunk$(), $rogule$server$component_admin_$_iter__7235$$($cljs$core$_chunked_rest$$($s__7236__$2_temp__5804__auto__$jscomp$71$$))) : $cljs$core$chunk_cons$$($b__7238$$.$chunk$(), null);
             }
-            var $d$jscomp$138$$ = $cljs$core$first$$($s__23975__$2_temp__5804__auto__$jscomp$71$$);
+            var $d$jscomp$138$$ = $cljs$core$first$$($s__7236__$2_temp__5804__auto__$jscomp$71$$);
             return $cljs$core$cons$$(function() {
               var $date$jscomp$6$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($past_seven_dates$$, $d$jscomp$138$$), $link_date$jscomp$1$$ = $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$6$$])), $plays$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$02$$($data$jscomp$106$$, $d$jscomp$138$$);
               return new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$537$div$$, new $cljs$core$PersistentArrayMap$$(null, 1, [$cljs$cst$437$key$$, $d$jscomp$138$$], null), new $cljs$core$PersistentVector$$(null, 8, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$540$h3$$, new $cljs$core$PersistentVector$$(null, 3, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$cljs$cst$532$a$$, new $cljs$core$PersistentArrayMap$$(null, 2, [$cljs$cst$533$href$$, 
               ["/game.html?", $link_date$jscomp$1$$].join(""), $cljs$cst$566$target$$, "_BLANK"], null), $rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$date$jscomp$6$$, !0]))], null), " (", $cljs$core$count$$($plays$jscomp$3$$), ") ", $rogule$server$compute_win_percent$$($plays$jscomp$3$$), "% wins ~", $rogule$server$to_minutes$$($rogule$server$compute_median_play_time$$($plays$jscomp$3$$))], null)], null);
-            }(), $rogule$server$component_admin_$_iter__23974$$($cljs$core$rest$$($s__23975__$2_temp__5804__auto__$jscomp$71$$)));
+            }(), $rogule$server$component_admin_$_iter__7235$$($cljs$core$rest$$($s__7236__$2_temp__5804__auto__$jscomp$71$$)));
           }
           return null;
         }
@@ -16643,19 +16643,19 @@ function $rogule$server$admin_page$$($req$jscomp$41$$, $res$jscomp$46$$) {
   return $promesa$protocols$_bind$$(null, function() {
     return $promesa$protocols$_bind$$((new Date()).getTime(), function($now$jscomp$2$$) {
       return $promesa$protocols$_bind$$(864E5, function($day$jscomp$1$$) {
-        return $promesa$protocols$_bind$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__23978_SHARP_$$) {
-          return new Date($now$jscomp$2$$ - $day$jscomp$1$$ * $p1__23978_SHARP_$$);
+        return $promesa$protocols$_bind$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__7239_SHARP_$$) {
+          return new Date($now$jscomp$2$$ - $day$jscomp$1$$ * $p1__7239_SHARP_$$);
         }, $cljs$core$range$cljs$0core$0IFn$0_invoke$0arity$03$$(0, 7)), function($past_seven_dates$jscomp$1$$) {
-          return $promesa$protocols$_bind$$($promesa$protocols$_map$$($promesa$impl$_STAR_default_promise_STAR_$$.all($cljs$core$into_array$cljs$0core$0IFn$0_invoke$0arity$02$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__23979_SHARP_$$) {
-            return $sitefox$db$ls$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([[$rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$p1__23979_SHARP_$$, !0])), ":"].join("")]));
+          return $promesa$protocols$_bind$$($promesa$protocols$_map$$($promesa$impl$_STAR_default_promise_STAR_$$.all($cljs$core$into_array$cljs$0core$0IFn$0_invoke$0arity$02$$($cljs$core$map$$.$cljs$core$IFn$_invoke$arity$2$(function($p1__7240_SHARP_$$) {
+            return $sitefox$db$ls$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([[$rogule$util$date_token$cljs$0core$0IFn$0_invoke$0arity$0variadic$$($cljs$core$prim_seq$cljs$0core$0IFn$0_invoke$0arity$02$$([$p1__7240_SHARP_$$, !0])), ":"].join("")]));
           }, $past_seven_dates$jscomp$1$$))), $cljs$core$vec$$), function($data$jscomp$107$$) {
             return $promesa$protocols$_bind$$($sitefox$html$render_into$$(new $cljs$core$PersistentVector$$(null, 4, 5, $cljs$core$PersistentVector$EMPTY_NODE$$, [$rogule$server$component_admin$$, $req$jscomp$41$$, $past_seven_dates$jscomp$1$$, $data$jscomp$107$$], null)), function($html$jscomp$17$$) {
               return $promesa$protocols$_bind$$($sitefox$html$parse$$($html$jscomp$17$$), function($parsed$jscomp$1$$) {
                 return $promesa$protocols$_bind$$($parsed$jscomp$1$$.querySelector("body"), function($body$jscomp$4$$) {
                   return $promesa$protocols$_bind$$(null, function() {
                     return $promesa$protocols$_bind$$(function() {
-                      var $parent__10723__auto__$$ = $body$jscomp$4$$.classList;
-                      return $parent__10723__auto__$$.add.call($parent__10723__auto__$$, "admin");
+                      var $parent__6033__auto__$$ = $body$jscomp$4$$.classList;
+                      return $parent__6033__auto__$$.add.call($parent__6033__auto__$$, "admin");
                     }(), function() {
                       return $promesa$protocols$_promise$$($res$jscomp$46$$.send($parsed$jscomp$1$$.toString()));
                     });
@@ -16677,20 +16677,20 @@ function $rogule$server$store_game_record$$($req$jscomp$42$$, $res$jscomp$47$$) 
         return $promesa$protocols$_bind$$($cljs$core$first$$((new Date()).toISOString().split("T")), function($date$jscomp$7$$) {
           return $promesa$protocols$_bind$$($cljs$core$first$$($cljs$core$random_uuid$$().toString().split("-")), function($id$jscomp$15$$) {
             return $promesa$protocols$_bind$$(function() {
-              var $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
-              $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$ = null != $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$ && "x-forwarded-for" in $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$ ? $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$["x-forwarded-for"] : void 0;
-              if ($cljs$core$truth_$$($obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$)) {
-                return $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$;
+              var $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
+              $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$ = null != $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$ && "x-forwarded-for" in $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$ ? $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$["x-forwarded-for"] : void 0;
+              if ($cljs$core$truth_$$($obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$)) {
+                return $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$;
               }
-              $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$ = null != $req$jscomp$42$$ && "connection" in $req$jscomp$42$$ ? $req$jscomp$42$$.connection : void 0;
-              if (null != $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$ && "remoteAddress" in $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$) {
-                return $obj23985$jscomp$inline_1728_obj23991_or__5002__auto__$jscomp$140$$.remoteAddress;
+              $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$ = null != $req$jscomp$42$$ && "connection" in $req$jscomp$42$$ ? $req$jscomp$42$$.connection : void 0;
+              if (null != $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$ && "remoteAddress" in $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$) {
+                return $obj7246$jscomp$inline_1728_obj7252_or__5002__auto__$jscomp$140$$.remoteAddress;
               }
             }(), function($ip$$) {
               return $promesa$protocols$_bind$$(function() {
-                var $obj23997$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
-                if (null != $obj23997$$ && "user-agent" in $obj23997$$) {
-                  return $obj23997$$["user-agent"];
+                var $obj7258$$ = null != $req$jscomp$42$$ && "headers" in $req$jscomp$42$$ ? $req$jscomp$42$$.headers : void 0;
+                if (null != $obj7258$$ && "user-agent" in $obj7258$$) {
+                  return $obj7258$$["user-agent"];
                 }
               }(), function($ua$$) {
                 return $promesa$protocols$_bind$$([$cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($date$jscomp$7$$), ":", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($id$jscomp$15$$)].join(""), function($k$jscomp$286$$) {
@@ -16698,11 +16698,11 @@ function $rogule$server$store_game_record$$($req$jscomp$42$$, $res$jscomp$47$$) 
                     return $promesa$protocols$_bind$$(100000, function($size_limit$$) {
                       return $promesa$protocols$_bind$$($sitefox$auth$make_hmac_token$$(["rogule-client-id:", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($ip$$), ":", $cljs$core$str$$.$cljs$core$IFn$_invoke$arity$1$($ua$$)].join(""), 8), function($client_id$$) {
                         return $promesa$protocols$_bind$$(function() {
-                          var $obj24001__$1$$ = null != $game_data$$ ? $game_data$$ : {};
-                          var $JSCompiler_inline_result$jscomp$266_child24002$jscomp$inline_1195_new_child__10649__auto__$jscomp$inline_1196$$ = $obj24001__$1$$[0];
-                          null == $JSCompiler_inline_result$jscomp$266_child24002$jscomp$inline_1195_new_child__10649__auto__$jscomp$inline_1196$$ && ($JSCompiler_inline_result$jscomp$266_child24002$jscomp$inline_1195_new_child__10649__auto__$jscomp$inline_1196$$ = {}, $obj24001__$1$$[0] = $JSCompiler_inline_result$jscomp$266_child24002$jscomp$inline_1195_new_child__10649__auto__$jscomp$inline_1196$$);
-                          $JSCompiler_inline_result$jscomp$266_child24002$jscomp$inline_1195_new_child__10649__auto__$jscomp$inline_1196$$["client-id"] = $client_id$$;
-                          return $obj24001__$1$$;
+                          var $obj7262__$1$$ = null != $game_data$$ ? $game_data$$ : {};
+                          var $JSCompiler_inline_result$jscomp$266_child7263$jscomp$inline_1195_new_child__5959__auto__$jscomp$inline_1196$$ = $obj7262__$1$$[0];
+                          null == $JSCompiler_inline_result$jscomp$266_child7263$jscomp$inline_1195_new_child__5959__auto__$jscomp$inline_1196$$ && ($JSCompiler_inline_result$jscomp$266_child7263$jscomp$inline_1195_new_child__5959__auto__$jscomp$inline_1196$$ = {}, $obj7262__$1$$[0] = $JSCompiler_inline_result$jscomp$266_child7263$jscomp$inline_1195_new_child__5959__auto__$jscomp$inline_1196$$);
+                          $JSCompiler_inline_result$jscomp$266_child7263$jscomp$inline_1195_new_child__5959__auto__$jscomp$inline_1196$$["client-id"] = $client_id$$;
+                          return $obj7262__$1$$;
                         }(), function($game_data__$1$$) {
                           return $promesa$protocols$_bind$$(null, function() {
                             if ($size$jscomp$37$$ > $size_limit$$) {
@@ -16737,8 +16737,8 @@ function $rogule$server$setup_routes$$($app$jscomp$11$$) {
 }
 ;$cljs$core$apply$cljs$0core$0IFn$0_invoke$0arity$02$$(function() {
   return $promesa$protocols$_bind$$(null, function() {
-    return $promesa$protocols$_bind$$($sitefox$web$start$$(), function($p__24009$$) {
-      var $app$jscomp$12$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__24009$$, 0, null), $host$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__24009$$, 1, null), $port$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__24009$$, 2, null);
+    return $promesa$protocols$_bind$$($sitefox$web$start$$(), function($p__7270$$) {
+      var $app$jscomp$12$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__7270$$, 0, null), $host$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__7270$$, 1, null), $port$jscomp$3$$ = $cljs$core$nth$cljs$0core$0IFn$0_invoke$0arity$03$$($p__7270$$, 2, null);
       return $promesa$protocols$_bind$$((new $shadow$js$shim$module$0keyv$$($sitefox$db$database_url$$)).opts.store, function($c$jscomp$211$$) {
         return $promesa$protocols$_bind$$($c$jscomp$211$$.query("PRAGMA journal_mode\x3dWAL;"), function($wal_mode$$) {
           return $promesa$protocols$_bind$$(null, function() {
