@@ -1,4 +1,4 @@
-STATIC=public/*.html public/css public/*.png # public/images public/assets
+STATIC=public/*.html public/css public/*.png public/sw.js public/manifest.json # public/images public/assets
 BRANCH=$(shell git branch | grep '^*' | colrm 1 2)
 ZIPNAME=rogule
 GITHASH = $(shell git rev-parse HEAD | cut -b -8)
