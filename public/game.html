@@ -1,13 +1,16 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>Rogule - a dungeon a day keeps the Balrog away</title>
+    <title>Rogule</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="description" content="An online roguelike in your browser with a fresh dungeon generated each day.">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
     <!-- twitter social -->
     <meta content="https://rogule.com/icon.png" name="twitter:image:src">
     <meta content="@mccrmx" name="twitter:site">
@@ -27,6 +30,9 @@
     <main id="app">
       <div id="loading"><div></div></div>
     </main>
+    <script>
+      if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+    </script>
     <script src="js/shared.js"></script>
     <script src="js/main.js"></script>
   </body>

@@ -19,7 +19,7 @@ build/server.js: src/**/*.cljs shadow-cljs.edn node_modules
 build: src/**/* $(STATIC) node_modules
 	mkdir -p build/public
 	cp -LR --preserve=all $(STATIC) build/public
-	sed -i 's/main\.js\?[^"]*"/main.js?$(GITHASH)"/g' build/public/game.html
+	sed -i 's/\.js"/.js?$(GITHASH)"/g' build/public/game.html
 	npx shadow-cljs release app
 	touch build
 
