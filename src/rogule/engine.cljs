@@ -197,7 +197,6 @@
 ; ***** item encounter fns ***** ;
 
 (defn increase-hp [*state their-id item-id]
-  (js/console.log "increase-hp" item-id)
   (if (not= their-id :player)
     ; If not the player, don't allow healing
     [false *state]
