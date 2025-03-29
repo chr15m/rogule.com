@@ -17,3 +17,11 @@ make watch
 make
 cd build && node server.js
 ```
+
+# Testing
+
+Re-generate level at a particular seed:
+
+```
+(reset-game! nil "2025-3-9")
+```
