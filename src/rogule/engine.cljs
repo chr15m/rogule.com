@@ -197,28 +197,37 @@
 ; ***** item encounter fns ***** ;
 
 (defn increase-hp [*state their-id item-id]
-  (let [hp (get-in *state [:entities their-id :stats :hp])
-        add-hp (< (first hp) (second hp))]
-    [false
-     (if add-hp
-       (-> *state
-           (update-in [:entities their-id :stats :hp 0] (fn [old-hp] (js/Math.min (+ old-hp 3) (second hp))))
-           ;(show-modal-sprites item-id)
-           (remove-entity item-id)
-           (add-message "You feel better."))
-       (add-message *state "You already have full health."))]))
+  (js/console.log "increase-hp" item-id)
+  (if (not= their-id :player)
+    ; If not the player, don't allow healing
+    [false *state]
+    ; Only the player can heal
+    (let [hp (get-in *state [:entities their-id :stats :hp])
+          add-hp (< (first hp) (second hp))]
+      [false
+       (if add-hp
+         (-> *state
+             (update-in [:entities their-id :stats :hp 0] (fn [old-hp] (js/Math.min (+ old-hp 3) (second hp))))
+             ;(show-modal-sprites item-id)
+             (remove-entity item-id)
+             (add-message "You feel better."))
+         (add-message *state "You already have full health."))])))
 
 (defn add-item-to-inventory [*state their-id item-id]
-  (let [them (get-in *state [:entities their-id])
-        item (get-in *state [:entities item-id])]
-    (if (:inventory them)
-      [false (-> *state
-                 (add-to-inventory their-id item-id item)
-                 ;(show-modal-sprites item-id)
-                 (remove-entity item-id)
-                 (add-game-log {:type :item :item (serialize-item item)})
-                 (add-message (str "you found the " (:name item))))]
-      [false *state])))
+  (if (not= their-id :player)
+    ; If not the player, don't allow item pickup
+    [false *state]
+    ; Only the player can pick up items
+    (let [them (get-in *state [:entities their-id])
+          item (get-in *state [:entities item-id])]
+      (if (:inventory them)
+        [false (-> *state
+                   (add-to-inventory their-id item-id item)
+                   ;(show-modal-sprites item-id)
+                   (remove-entity item-id)
+                   (add-game-log {:type :item :item (serialize-item item)})
+                   (add-message (str "you found the " (:name item))))]
+        [false *state]))))
 
 (defn uncover-item [*state their-id item-id]
   (let [item (get-in *state [:entities item-id])]
