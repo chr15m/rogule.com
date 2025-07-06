@@ -10,14 +10,16 @@ then
   echo "Usage: $(basename "$0") YYYY-M [DELETE_ONLY]"
 else
   if [ "$2" = "DELETE_ONLY" ]; then
-    DELETED_COUNT=$(sqlite3 database.sqlite << EOF
+    DELETED_OUTPUT=$(sqlite3 database.sqlite << EOF
     PRAGMA journal_mode=WAL;
+    PRAGMA busy_timeout = 5000;
     BEGIN TRANSACTION;
     DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
     SELECT changes();
     COMMIT;
 EOF
 )
+    DELETED_COUNT=$(echo "$DELETED_OUTPUT" | tail -n 1)
     echo "Deleted $DELETED_COUNT records for month '$1' from database.sqlite."
   else
     SCHEMA_ERROR=$(sqlite3 database.sqlite ".schema" | sqlite3 "database-$1.sqlite" 2>&1)
@@ -28,6 +30,7 @@ EOF
     fi
     COUNTS=$(sqlite3 database.sqlite << EOF
     PRAGMA journal_mode=WAL;
+    PRAGMA busy_timeout = 5000;
     ATTACH DATABASE "database-$1.sqlite" AS archive;
     BEGIN TRANSACTION;
     INSERT OR IGNORE INTO archive.keyv
@@ -38,7 +41,7 @@ EOF
     COMMIT;
 EOF
 )
-    COPIED_COUNT=$(echo "$COUNTS" | head -n 1)
+    COPIED_COUNT=$(echo "$COUNTS" | tail -n 2 | head -n 1)
     DELETED_COUNT=$(echo "$COUNTS" | tail -n 1)
     echo "Copied $COPIED_COUNT records for month '$1' to database-$1.sqlite."
     echo "Deleted $DELETED_COUNT records for month '$1' from database.sqlite."
