@@ -7,12 +7,23 @@ fi
 
 if [ "$1" = "" ]
 then
-  echo "Usage: `basename $0` YYYY-M"
+  echo "Usage: $(basename "$0") YYYY-M [DELETE_ONLY]"
 else
-  sqlite3 database.sqlite ".schema" | sqlite3 database-$1.sqlite
-  sqlite3 database.sqlite << EOF
-  ATTACH DATABASE "database-$1.sqlite" AS archive;
-  INSERT INTO archive.keyv
-    SELECT * FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+  if [ "$2" = "DELETE_ONLY" ]; then
+    sqlite3 database.sqlite << EOF
+    BEGIN TRANSACTION;
+    DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+    COMMIT;
 EOF
+  else
+    sqlite3 database.sqlite ".schema" | sqlite3 "database-$1.sqlite"
+    sqlite3 database.sqlite << EOF
+    ATTACH DATABASE "database-$1.sqlite" AS archive;
+    BEGIN TRANSACTION;
+    INSERT INTO archive.keyv
+      SELECT * FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+    DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+    COMMIT;
+EOF
+  fi
 fi
