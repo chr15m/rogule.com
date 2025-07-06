@@ -11,6 +11,7 @@ then
 else
   if [ "$2" = "DELETE_ONLY" ]; then
     DELETED_COUNT=$(sqlite3 database.sqlite << EOF
+    PRAGMA journal_mode=WAL;
     BEGIN TRANSACTION;
     DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
     SELECT changes();
@@ -26,6 +27,7 @@ EOF
       echo "$SCHEMA_ERROR"
     fi
     COUNTS=$(sqlite3 database.sqlite << EOF
+    PRAGMA journal_mode=WAL;
     ATTACH DATABASE "database-$1.sqlite" AS archive;
     BEGIN TRANSACTION;
     INSERT OR IGNORE INTO archive.keyv
