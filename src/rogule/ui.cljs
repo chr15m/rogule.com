@@ -265,6 +265,7 @@
                                     (make-share-string tile-mem [:br] @state)))]
       [:button {:autoFocus true :on-click #(copy-text text-share-string %)} "share"]
       [:hr]
+      [component-countdown]
       (let [stats (:statistics @state)
             plays (+ (:ascended stats) (:died stats))]
         [:div#stats
@@ -272,7 +273,6 @@
          [:p "Wins: " (-> (:ascended stats) (/ plays) (* 100) int) "%"]
          [:p (str "Streak: " (:streak stats))]
          [:p (str "Longest: " (:max-streak stats))]])
-      [component-countdown]
       [:hr]
       (let [year (-> (js/Date.) .getFullYear)]
         [:p.shared

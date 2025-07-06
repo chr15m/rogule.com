@@ -353,6 +353,7 @@ span.xp {
 }
 
 .tombstone #stats p {
+  color: #6C7A88;
   margin: 0px;
 }
 
@@ -365,7 +366,7 @@ span.xp {
 
 .tombstone .countdown {
   margin: 0.5em;
-  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 .tombstone .shared {
