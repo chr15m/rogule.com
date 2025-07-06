@@ -17,6 +17,7 @@ else
     DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
     SELECT changes();
     COMMIT;
+    VACUUM;
 EOF
 )
     DELETED_COUNT=$(echo "$DELETED_OUTPUT" | tail -n 1)
@@ -39,6 +40,7 @@ EOF
     DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
     SELECT changes();
     COMMIT;
+    VACUUM;
 EOF
 )
     COPIED_COUNT=$(echo "$COUNTS" | tail -n 2 | head -n 1)
