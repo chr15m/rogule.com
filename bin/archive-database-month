@@ -28,7 +28,7 @@ EOF
     COUNTS=$(sqlite3 database.sqlite << EOF
     ATTACH DATABASE "database-$1.sqlite" AS archive;
     BEGIN TRANSACTION;
-    INSERT INTO archive.keyv
+    INSERT OR IGNORE INTO archive.keyv
       SELECT * FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
     SELECT changes();
     DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
