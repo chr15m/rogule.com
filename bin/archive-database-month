@@ -10,20 +10,35 @@ then
   echo "Usage: $(basename "$0") YYYY-M [DELETE_ONLY]"
 else
   if [ "$2" = "DELETE_ONLY" ]; then
-    sqlite3 database.sqlite << EOF
+    DELETED_COUNT=$(sqlite3 database.sqlite << EOF
     BEGIN TRANSACTION;
     DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+    SELECT changes();
     COMMIT;
 EOF
+)
+    echo "Deleted $DELETED_COUNT records for month '$1' from database.sqlite."
   else
-    sqlite3 database.sqlite ".schema" | sqlite3 "database-$1.sqlite"
-    sqlite3 database.sqlite << EOF
+    SCHEMA_ERROR=$(sqlite3 database.sqlite ".schema" | sqlite3 "database-$1.sqlite" 2>&1)
+    if echo "$SCHEMA_ERROR" | grep -q "table keyv already exists"; then
+      echo "Destination database database-$1.sqlite already exists, skipping schema creation. This is OK."
+    elif [ -n "$SCHEMA_ERROR" ]; then
+      echo "$SCHEMA_ERROR"
+    fi
+    COUNTS=$(sqlite3 database.sqlite << EOF
     ATTACH DATABASE "database-$1.sqlite" AS archive;
     BEGIN TRANSACTION;
     INSERT INTO archive.keyv
       SELECT * FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+    SELECT changes();
     DELETE FROM keyv WHERE key LIKE 'game-records:%' AND value LIKE '%seed":"$1-%';
+    SELECT changes();
     COMMIT;
 EOF
+)
+    COPIED_COUNT=$(echo "$COUNTS" | head -n 1)
+    DELETED_COUNT=$(echo "$COUNTS" | tail -n 1)
+    echo "Copied $COPIED_COUNT records for month '$1' to database-$1.sqlite."
+    echo "Deleted $DELETED_COUNT records for month '$1' from database.sqlite."
   fi
 fi
