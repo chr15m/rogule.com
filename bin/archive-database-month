@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ ! -f "database.sqlite" ]; then
+  echo "database.sqlite not found. Run from the 'build' folder in prod."
+  exit 1
+fi
+
 if [ "$1" = "" ]
 then
   echo "Usage: `basename $0` YYYY-M"
