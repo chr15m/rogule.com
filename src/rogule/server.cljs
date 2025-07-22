@@ -7,7 +7,7 @@
     [sitefox.web :as web]
     [sitefox.util :refer [env env-required]]
     [sitefox.tracebacks :refer [install-traceback-handler]]
-    [sitefox.db :refer [kv ls client]]
+    [sitefox.db :refer [kv client]]
     [sitefox.auth :refer [make-hmac-token]]
     [sitefox.html :refer [render-into parse $]]
     [sitefox.ui :refer [log]]
@@ -47,18 +47,58 @@
            2)))))
 
 (defn compute-win-percent [plays]
-  (let [outcomes (->> plays
-                      (map #(last %))
-                      (map #(j/get % :outcome)))]
-    (->
-      (count (filter #(= % "ascended") outcomes))
-      (/ (count outcomes))
-      (* 100)
-      int)))
+  (when (seq plays)
+    (let [outcomes (map #(j/get % :outcome) plays)]
+      (->
+        (count (filter #(= % "ascended") outcomes))
+        (/ (count plays))
+        (* 100)
+        int))))
 
 (defn get-duration [play]
-  (- (j/get (last play) :timestamp)
-     (j/get (first play) :timestamp)))
+  (- (j/get play :end_time)
+     (j/get play :start_time)))
+
+(defn get-daily-play-summary [date]
+  (-> (p/let [c (client)
+              date-str (date-token date true)
+              query (str "SELECT
+                         json_extract(value, '$.value[0].timestamp') as start_time,
+                         json_array_length(json_extract(value, '$.value')) as len,
+                         json_extract(value, '$.value[' || (json_array_length(json_extract(value, '$.value')) - 1) || '].timestamp') as end_time,
+                         json_extract(value, '$.value[' || (json_array_length(json_extract(value, '$.value')) - 1) || '].outcome') as outcome
+                         FROM keyv
+                         WHERE key LIKE 'game-records:" date-str ":%'")
+              #_#_
+              like-clause (str "game-records:" date-str ":")
+              #_#_
+              record-count
+              (j/call c :query
+                      (str "SELECT * FROM keyv WHERE key LIKE 'game-records:"
+                           date-str ":%'"))
+              #_ (j/call c :query
+                         "SELECT * FROM keyv WHERE key LIKE ? || ':' || ? || '%'"
+                         #js ["game-records" date-str])
+              #_ (j/call c :query
+                         "SELECT count(*) from keyv where key like ? || '%'"
+                         #js [like-clause])
+              #_#_
+              fixed-count
+              (j/call c :query
+                      "SELECT count(*) FROM keyv WHERE key like
+                      'game-records:2025-07-18:' || '%'")
+              #_#_ newc (j/call-in c [:opts :connect])]
+        ;(js/console.dir c -1)
+        ;(js/console.dir (j/get-in c [:opts :connect]) -1)
+        ;(js/console.log "newc" newc)
+        ; debugging query
+        #_ (js/console.log like-clause "Record count:" record-count)
+        #_ (js/console.log "Fixed count (reference):" fixed-count)
+        #_ (js/console.log "Querying for date:" date-str "with clause:" like-clause)
+        (j/call c :query query))
+      (p/catch (fn [err]
+                 (js/console.error "Query failed for date" (date-token date true) err)
+                 []))))
 
 (defn compute-median-play-time [plays]
   (let [durations (map get-duration plays)]
@@ -114,7 +154,8 @@
   (p/let [now (-> (js/Date.) .getTime)
           day (* 1000 60 60 24)
           past-seven-dates (map #(js/Date. (- now (* day %))) (range 7))
-          data (p/all (map #(ls "game-records" (str (date-token % true) ":")) past-seven-dates))
+          data (p/all (map get-daily-play-summary past-seven-dates))
+          #_#_ _ (js/console.log "admin-page data:" (clj->js data))
           html (render-into template "main" [component-admin req past-seven-dates data])
           parsed (parse html)
           body ($ parsed "body")]
@@ -149,6 +190,7 @@
   (let [admin-auth (basic-auth (j/lit {:users {:admin admin-password}
                                        :challenge true}))]
     (web/reset-routes app)
+    (j/call app :use (fn [req _ done] (js/console.log (j/get req :originalUrl)) (done)))
     (j/call app :use rate-limiter)
     (j/call app :post "/share" store-game-record)
     (j/call app :get "/admin" admin-auth admin-page)
@@ -158,12 +200,23 @@
 (defn main! []
   (p/let [[app host port] (web/start)
           c (client)
-          wal-mode (.query c "PRAGMA journal_mode=WAL;")]
-    (js/console.log "WAL MODE" wal-mode)
+          wal-mode (j/call c :query "PRAGMA journal_mode=WAL;")]
+    (js/console.log "WAL MODE" (clj->js wal-mode))
     (reset! server app)
     (setup-routes app)
     (println "Serving on" (str "http://" host ":" port))))
 
 (defn ^:dev/after-load reload []
   (js/console.log "Reloading.")
-  (setup-routes @server))
+  (setup-routes @server)
+  (p/catch
+    (p/let [c (client)]
+      (j/call (js/require "sqlite3") :verbose)
+      (j/call c :on "trace" js/console.log)
+      (p/let [databases (.query c "PRAGMA database_list;")
+              size (.query c "SELECT (page_count * page_size) / (1024 * 1024)
+                             AS db_size_megabytes
+                             FROM pragma_page_count(), pragma_page_size();")]
+        (js/console.log "Db:" (j/get (first databases) :file)
+                        (str (j/get (first size) :db_size_megabytes) "mb"))))
+    (fn [err] (js/console.error err))))
