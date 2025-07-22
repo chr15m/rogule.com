@@ -1,0 +1,6 @@
+#!/bin/sh
+
+piku run -- 'mkdir -p /tmp/rogule-database; rm -f /tmp/rogule-database/*; rsync --progress build/database.sqlite /tmp/rogule-database/; gzip /tmp/rogule-database/database.sqlite'
+scp root@rogule.com:/tmp/rogule-database/database.sqlite.gz database.sqlite.gz
+mv database.sqlite database.sqlite.old
+gunzip database.sqlite
