@@ -14,14 +14,14 @@
 (defonce keymap (r/atom {}))
 
 (def key-dir-map
-  {37 [0 dec]
-   72 [0 dec]
-   39 [0 inc]
-   76 [0 inc]
-   38 [1 dec]
-   75 [1 dec]
-   40 [1 inc]
-   74 [1 inc]
+  {37 [0 dec]    ; left arrow
+   72 [0 dec]    ; h (left)
+   39 [0 inc]    ; right arrow
+   76 [0 inc]    ; l (right)
+   38 [1 dec]    ; up arrow
+   75 [1 dec]    ; k (up)
+   40 [1 inc]    ; down arrow
+   74 [1 inc]    ; j (down)
    190 []})
 
 (def rejuvination-rate 100)

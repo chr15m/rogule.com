@@ -97,7 +97,7 @@
     [:div.modal
      [:button#help.key {:on-click #(trigger-key 27)} "esc"]
      [:h2 "Rogule"]
-     [:p "Use the arrow keys to move. Press the " [:button.key "."]  " key to rest."]
+     [:p "Use the arrow keys or vim keys (hjkl) to move. Press the " [:button.key "."]  " key to rest."]
      [:p "Move onto items and " (tile-mem (load-sprite :ghost)) " monsters to interact."]
      [:p "The number above each monster's head is the maximum damage they can deal to you."]
      [:p "Health bars show up at the top of the screen during combat."]
