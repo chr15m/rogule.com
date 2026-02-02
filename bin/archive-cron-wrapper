@@ -1,0 +1,4 @@
+#!/bin/sh
+MONTH_TO_ARCHIVE=$(date -d "3 months ago" "+%Y-%-m")
+cd build
+../bin/archive-database-month "$MONTH_TO_ARCHIVE"
